@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>花语</title>
+		<link rel="stylesheet" href="css/flowerLanguage.css" />
+	</head>
+	<body>
+		<div id='list'>
+		<div class="block">
+			<div class="title">
+				<div class="head">
+					<img  src="img/head1.jpg"/>
+				</div>
+				<div class="name">
+					张三
+				</div>
+			</div>
+			<div class="info">
+				<div class="tt">灌水</div>
+				如何看待宝鸡一孕妇故意伸脚绊倒 4 岁男童，因孩子将门帘甩到其脸上的这种行为？
+			</div>
+			<div class="discuss">
+				评论 1.8K
+			</div>
+		</div>
+	   <div class="line"></div>
+	   
+	   <div class="block">
+			<div class="title">
+				<div class="head">
+					<img  src="img/head1.jpg"/>
+				</div>
+				<div class="name">
+					张三
+				</div>
+			</div>
+			<div class="info">
+				如何看待宝鸡一孕妇故意伸脚绊倒 4 岁男童，因孩子将门帘甩到其脸上的这种行为？
+				<img src="https://pic4.zhimg.com/50/v2-0fa5d5a2e93472419da2755aec3aecbe_400x224.jpg" />
+				
+			</div>
+			<div class="discuss">
+				评论 1.8K
+			</div>
+		</div>
+	   <div class="line"></div>
+	   
+	   <div class="block">
+			<div class="title">
+				<div class="head">
+					<img  src="img/head1.jpg"/>
+				</div>
+				<div class="name">
+					张三
+				</div>
+			</div>
+			<div class="info">
+				如何看待宝鸡一孕妇故意伸脚绊倒 4 岁男童，因孩子将门帘甩到其脸上的这种行为？
+			</div>
+			<div class="discuss">
+				评论 1.8K
+			</div>
+		</div>
+	   <div class="line"></div>
+	   </div>
+    </body>
+    <script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
+	<script type="text/javascript" src="js/common.js" ></script>
+	<script src="js/jquery-weui.min.js"></script>
+    <script type="text/javascript">
+    		$(document).ready(function(){
+    			var items = getInfo();
+    			 for(var i in items){
+    			 	var content='';
+    			 	if(items[i].content){
+    			 		content = items[i].content;
+    			 	}
+				  	 var h =  '<div class="block">'+
+									'<div class="title">'+
+										'<div class="head">'+
+											'<img  src="'+items[i].head+'"/>'+
+										'</div>'+
+										'<div class="name">'+
+											items[i].name+
+										'</div>'+
+									'</div>'+
+									'<div class="info">'+
+									 	'<div class="tt">'+items[i].title+'</div>'+
+										 content+
+										'<img src="'+items[i].src+'" />'+
+									'</div>'+
+									'<div class="discuss">'+
+										'评论 1.8K'+
+									'</div>'+
+								'</div>'+
+							   '<div class="line"></div>';
+					  $('#list').append(h);
+				  } 
+    		});
+    		
+    		function getInfo(){
+    			var info = [
+		    		{"id":50000,"title":"玫瑰花","content":"爱情、爱与美、容光焕发;在古希腊神话中，玫瑰集爱与美于一身，既是美神的化身，又溶进了爱神的血液..","src":"http://5b0988e595225.cdn.sohucs.com/images/20170928/c8379fdba9fb47a7a12a5511582c3fde.jpeg","name":"我是一朵花","head":"img/head1.jpg"},
+		    		{"id":50001,"title":"康乃馨花","content":"：谢谢你的爱、真情、母亲我爱你、温馨的祝福、热爱着你、不求代价的母爱、亲情思念、伟大，神圣，慈祥，温馨的母亲、思念。","src":"","name":"玫瑰之神","head":"img/head2.jpg"},
+		    		{"id":50002,"title":"百合花","content":"顺利、心想事成、祝福、高贵;百合花种类繁多，花色艳丽丰富；花形典雅大方，姿态娇艳因品种而异；..","src":"http://5b0988e595225.cdn.sohucs.com/images/20170928/19861443386d40b3b0069c11bec90c95.jpeg","name":"今天我恋爱","head":"img/head3.jpg"},
+		    		{"id":50003,"title":"向日葵花","content":"信念、光辉、高傲、忠诚、爱慕、沉默的爱;向日葵不仅可以送给追求梦想的人","src":"http://5b0988e595225.cdn.sohucs.com/images/20170928/3a66c1b6dbd847449683c27fb385fa4c.jpeg","name":"玫瑰之神","head":"img/head2.jpg"},
+		    		{"id":50004,"title":"郁金香花","src":"http://5b0988e595225.cdn.sohucs.com/images/20170928/5c652ca1c20643daae67bca9566c3895.jpeg","name":"我是一朵花","head":"img/head1.jpg"},
+		    		{"id":50005,"title":"风信子花","content":"胜利、竞技、喜悦、爱意、幸福、浓情、倾慕、顽固、生命;女神维纳斯最喜欢收集风信子花瓣上的露水..","src":"http://5b0988e595225.cdn.sohucs.com/images/20170928/40aba15e2b2b409592efccb7692a36e3.jpeg","name":"玫瑰之神","head":"img/head2.jpg"},
+		    		{"id":50006,"title":"罂粟花","src":"http://5b0988e595225.cdn.sohucs.com/images/20170928/6fcfeec2c1ba4a0881c9dfdd0172804b.jpeg","name":"今天我恋爱","head":"img/head3.jpg"},
+		    		{"id":50007,"title":"四叶草花","content":"幸运、幸福四叶草的四个叶子分别代表着不同的含义，一片叶子代表真爱，第二片叶子代表健康，第三片叶子代表名誉，第四片叶子代表幸福","name":"我是一朵花","head":"img/head1.jpg"},
+		    		{"id":50008,"title":"栀子花","content":"栀子花从冬季开始孕育花苞，直到近夏至才会绽放，含苞期愈长，清芬愈久远；栀子树的叶，也是经年在风霜雪雨中翠绿不凋。","src":"http://5b0988e595225.cdn.sohucs.com/images/20170928/1c75edec778341e4b24879736491682c.jpeg","name":"我是一朵花","head":"img/head1.jpg"},
+		    		{"id":50009,"title":"雏菊花","content":"纯洁的美、天真、幼稚、愉快、幸福、和平、希望雏菊花细小玲珑，惹人喜爱、具有很高的观赏价值，意大利人十分喜爱清丽姣娆的雏菊，认为它有君子之风，因此将雏菊定为国花","src":"http://5b0988e595225.cdn.sohucs.com/images/20170928/91247217313e42ef9bc4c7792e1830dc.jpeg","name":"玫瑰之神","head":"img/head2.jpg"},
+		    		{"id":50010,"title":"紫罗兰花","content":"永恒的美、质朴、美德、盛夏的清凉紫罗兰是一种盛开在五、六月间，成鞋钉状的花卉。这种花的香气逼人，虽然属于野生植物，但是园丁特别喜欢把它种在窗台下。主要是希望藉由紫罗兰，把芬芳的香气带进屋子里。凡是受到这种花祝福而诞生的人具有带给周遭的人爽朗的特质，纯纯的爱比较适合这样的你。至于目前流行的婚外情嘛还是少碰为妙。","name":"玫瑰之神","head":"img/head2.jpg"}
+		    	];
+		    	return info;
+    		}
+    </script>
+</html>

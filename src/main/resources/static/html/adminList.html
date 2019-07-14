@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>酒水饮料销售管理</title>
+<meta
+	content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'
+	name='viewport'>
+<meta name="description" content="Developed By M Abdur Rokib Promy">
+<meta name="keywords"
+	content="Admin, Bootstrap 3, Template, Theme, Responsive">
+<!-- bootstrap 3.0.2 -->
+<link href="html/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<!-- font Awesome -->
+<link href="html/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<!-- Ionicons -->
+<link href="html/css/ionicons.min.css" rel="stylesheet" type="text/css" />
+<!-- Morris chart -->
+<link href="html/css/morris/morris.css" rel="stylesheet" type="text/css" />
+<!-- jvectormap -->
+<link href="html/css/jvectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet"
+	type="text/css" />
+<!-- Date Picker -->
+<link href="html/css/datepicker/datepicker3.css" rel="stylesheet"
+	type="text/css" />
+<!-- fullCalendar -->
+<!-- <link href="css/fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css" /> -->
+<!-- Daterange picker -->
+<link href="html/css/daterangepicker/daterangepicker-bs3.css"
+	rel="html/stylesheet" type="text/css" />
+<!-- iCheck for checkboxes and radio inputs -->
+<link href="html/css/iCheck/all.css" rel="stylesheet" type="text/css" />
+<!-- bootstrap wysihtml5 - text editor -->
+<!-- <link href="css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" /> -->
+<link href='http://fonts.googleapis.com/css?family=Lato'
+	rel='stylesheet' type='text/css'>
+<!-- Theme style -->
+<link href="html/css/style.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body class="skin-black">
+	<!-- header logo: style can be found in header.less -->
+	<header class="header">
+		<a href="/" class="logo"> 酒水饮料销售管理 </a>
+		<!-- Header Navbar: style can be found in header.less -->
+		<nav class="navbar navbar-static-top" role="navigation">
+			<!-- Sidebar toggle button-->
+			<a href="javascript:void(0)" class="navbar-btn sidebar-toggle" data-toggle="offcanvas"
+				role="button"> <span class="sr-only">Toggle navigation</span> <span
+				class="icon-bar"></span> <span class="icon-bar"></span> <span
+				class="icon-bar"></span>
+			</a>
+			<div class="navbar-right">
+				<ul class="nav navbar-nav">
+					<li class="dropdown user user-menu"><a href="#"
+						class="dropdown-toggle" data-toggle="dropdown"> <i
+							class="fa fa-user"></i> <span><i class='userName'>admin</i> <i class="caret"></i></span>
+					</a>
+						<ul class="dropdown-menu dropdown-custom dropdown-menu-right">
+							<li class="dropdown-header text-center">Account</li>
+							<li><a id="changePassword"><i class="glyphicon glyphicon-pencil"></i>
+									修改密码</a></li>
+							<li><a id="loginOut"><i class="glyphicon glyphicon-ban-circle"></i>
+									退出</a></li>
+						</ul></li>
+				</ul>
+			</div>
+		</nav>
+	</header>
+	<div class="wrapper row-offcanvas row-offcanvas-left">
+		<!-- Left side column. contains the logo and sidebar -->
+		<aside class="left-side sidebar-offcanvas">
+			<!-- sidebar: style can be found in sidebar.less -->
+			<section class="sidebar">
+				<!-- Sidebar user panel -->
+				<div class="user-panel">
+					<div class="pull-left image">
+						<img src="html/img/26115.jpg" class="img-circle" alt="User Image" />
+					</div>
+					<div class="pull-left info">
+						<p>Hello, [<i class='userName'>admin</i>]</p>
+					</div>
+				</div>
+				<ul class="sidebar-menu">
+					<li>
+						<a data-href="/"> <i class="glyphicon glyphicon glyphicon-home"></i> <span>首页</span></a>
+					</li>
+					<li class="active">
+						<a data-href="/adminList"> <i class="glyphicon glyphicon-user"></i> <span>管理员管理</span></a>
+					</li>
+					<li>
+						<a data-href="/goodsList"> <i class="glyphicon glyphicon-th-list"></i> <span>商品管理</span></a>
+					</li>
+					<li>
+						<a data-href="/customerList"> <i class="glyphicon glyphicon-th-list"></i> <span>客户管理</span></a>
+					</li>
+					<li>
+						<a data-href="/salesOrderList"> <i class="glyphicon glyphicon-th-list"></i> <span>销售列表</span></a>
+					</li>
+					<li>
+						<a data-href="/fileList"> <i class="fa fa-file"></i> <span>图片管理</span></a>
+					</li>
+					<li>
+						<a data-href="/imgWords"> <i class="glyphicon glyphicon-cloud"></i> <span>图片文识别</span></a>
+					</li>      
+				</ul>
+			</section>
+		</aside>
+		<aside class="right-side">
+			<!-- Main content -->
+			<section class="content">
+				<div class="row">
+					<div class="panel">
+						<header class="panel-heading">
+                                                                      管理员信息列表
+                        </header>
+	                    <div class="panel-body">
+							<form class="form-inline" id="form" role="form">
+							  <div class="form-group">
+							    <input type="text" class="form-control" name="userName"  placeholder="请输入用户账号">
+							  </div>
+							  <button type="button" class="btn btn-primary" onclick="search()"><span class="glyphicon glyphicon-search"></span>&nbsp;查询</button>
+							  &nbsp;
+							  <button type="button" class="btn btn-primary" onclick="add()"><span class="glyphicon glyphicon-plus"></span>&nbsp;新增</button>
+							</form>
+							<table id="table" class="text-center table table-bordered table-hover  table-striped"></table>
+	                    </div>
+					</div>
+				</div>
+			</section>
+		</aside>
+	</div>
+	<!-- jQuery 2.0.2 -->
+	<script src="html/js/jquery.min.js" type="text/javascript"></script>
+	<!-- Bootstrap -->
+	<script src="html/js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="html/js/bootstrap-paginator.js" type="text/javascript"></script>
+	<script type="text/javascript" src="html/js/crc.js"></script>
+	<script type="text/javascript" src="html/js/common.js"></script>
+	<script type="text/javascript">
+		/**
+		** 查询
+		**/
+		function search(){
+			/**
+			** 调用分页 
+			**/
+			$("#table").search2('/admin/getPageInfo','form',
+		            [
+		                {"text":"用户名","title":"userName"},
+		                {"text":"昵称","title":"nick"},
+		                {"text":"用户类型","title":"userType"},
+		                {"text":"最近登录时间","title":"lastLoginTime"},
+		                {"text":"状态","format":function(obj){
+		                        var statusDescHtml = "";
+		                        if (obj.status.code == -1) {
+		                            statusDescHtml = "<span style='color:red;'>" + obj.status.value + "</span>";
+		                        } else if (obj.status.code == 1) {
+		                            statusDescHtml = "<span style='color:green;'>" + obj.status.value + "</span>";
+		                        } else if (obj.status.code == 2) {
+		                            statusDescHtml = "<span style='color:blue;'>" + obj.status.value + "</span>";
+		                        }
+		                        return statusDescHtml;
+		                    }},
+		                {
+		                    "text":"操作",
+		                    "format":function(obj){
+		                        var opeHtml = '';
+		                        if (obj.status.code != -1) {
+		                            opeHtml += " <a href='javascript:void(0)' onclick='del(" + obj.id + ")' title='删除'>[删除]</a>";
+		                        }
+		                        if (obj.status.code == 1) {
+		                            opeHtml += " <a href='javascript:void(0)' onclick='frozen(" + obj.id + ")' title='冻结账户'>[冻结]</a>";
+		                        }
+		                        if (obj.status.code == 2) {
+		                            opeHtml += "<a href='javascript:void(0)' onclick='unFrozen(" + obj.id + ")' title='解冻账户'>[解冻]</a>";
+		                        }
+		                        return opeHtml;
+		                    }
+		                }
+		            ]
+		        );
+		}
+		search();
+		 /**
+	     ** 冻结账户
+	     **/
+	    function frozen(id) {
+	        $.confirm("确认要冻结?", function () {
+	            changeStatus(id, 2);
+	        });
+	    }
+
+	    /**
+	     ** 解冻账户
+	     **/
+	    function unFrozen(id) {
+	        $.confirm("确认要解冻?", function () {
+	            changeStatus(id, 1);
+	        });
+	    }
+
+	    //修改状态
+	    function changeStatus(id, status) {
+	        $.dialogClose();
+	        $.ajax({
+	            url: '/admin/changeStatus',
+	            data: {
+	                "status": status,
+	                "id": id
+	            },
+	            type: 'get',
+	            dataType: 'json',
+	            success: function (res) {
+	                $.alert(res.msg);
+	                if (res.code == '0000') {
+	                    search();
+	                }
+	            }
+	        });
+	    }
+
+	    //删除
+	    function del(id) {
+	        $.confirm("确定要删除?", function () {
+	            $.ajax({
+	                url:rootPath+ '/admin/deleteAdminUser/' + id,
+	                type: 'post',
+	                dataType: 'json',
+	                success: function (res) {
+	                    alert(res.msg);
+	                    if (res.code == '0000') {
+	                        search();
+	                    }
+	                }
+	            });
+	        })
+	    }
+		//添加
+		function add(){
+			var html = '<div class="form-group">'+
+		    '<label for="userName" class="col-sm-3 control-label">用户名:</label>'+
+		    '<div class="col-sm-7">'+
+		      '<input type="text" class="form-control" id="userName" placeholder="请输入用户名">'+
+		    '</div>'+
+		  '</div>';
+		  html += '<div class="form-group">'+
+		    '<label for="password" class="col-sm-3 control-label">密码:</label>'+
+		    '<div class="col-sm-7">'+
+		      '<input type="text" class="form-control" id="password" placeholder="请输入密码">'+
+		    '</div>'+
+		  '</div>';
+		  html += '<div class="form-group">'+
+		    '<label for="roomCards" class="col-sm-3 control-label">真实姓名:</label>'+
+		    '<div class="col-sm-7">'+
+		      '<input type="text" class="form-control" id="realName" value="" placeholder="真实姓名">'+
+		    '</div>'+
+		  '</div>';
+		  html += '<div class="form-group">'+
+		    '<label for="roomCards" class="col-sm-3 control-label">昵称:</label>'+
+		    '<div class="col-sm-7">'+
+		      '<input type="text" class="form-control" id="nick" value="" placeholder="昵称">'+
+		    '</div>'+
+		  '</div>';
+		  html += '<div class="form-group">'+
+		    '<label for="roomCards" class="col-sm-3 control-label">联系方式:</label>'+
+		    '<div class="col-sm-7">'+
+		      '<input type="text" class="form-control" id="mobile" value="" placeholder="联系方式">'+
+		    '</div>'+
+		  '</div>';
+		  html += '<div class="form-group">'+
+		    '<label for="remark" class="col-sm-3 control-label">备注:</label>'+
+		    '<div class="col-sm-7">'+
+		      '<input type="text" class="form-control" id="remark"  placeholder="请填写备注">'+
+		    '</div>'+
+		  '</div>';
+			$.dialog("添加管理员", html,function(){
+				var userName = $("#userName").val().trim();
+				var password = $("#password").val().trim();
+				var realName = $("#realName").val().trim();
+				var nick = $("#nick").val().trim();
+				var mobile = $("#mobile").val().trim();
+				var remark = $("#remark").val().trim();
+				
+				if(!userName){
+					alert("用户名不可以为空!");
+					return false;
+				}
+				if(!password){
+					alert("密码不可以为空!");
+					return false;
+				}
+				if(!realName){
+					alert("真实姓名不可以为空!");
+					return false;
+				}
+				
+				$.ajax({
+					url:'/admin/addUser',
+					type:'post',
+					dataType:'json',
+					data:{
+						"userName":userName,
+						"password":password,
+						"realName":realName,
+						"nick":nick,
+						"mobile":mobile,
+						"remark":remark
+					},
+					success:function(res){
+						if(res.code == '0000'){
+							$.dialogClose();
+							search();
+						}else{
+							alert("添加失败，请联系管理员");
+						}
+					},error:function(){
+						alert("添加失败");
+					}
+				});
+				
+			},null, 150);
+			
+		}
+		
+	</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+body{
+	font-size: 28px;
+}
+.swiper-wrapper img{
+	height: 350px;
+	width:100%
+}
+.typs{
+	text-align: center;
+	padding: 10px;
+	font-size: 30px;
+	box-sizing: border-box;
+}
+.redLine{
+	border-bottom: red 2px solid;
+}
+.goodsList{
+	 background-color:#F0F0F0;
+                 box-sizing: border-box;
+}
+.left{
+	box-sizing: border-box;
+	margin: 15px 7px 15px 15px;
+	
+}
+.right{
+	box-sizing: border-box;
+	margin: 15px 15px 15px 7px;
+	
+}
+
+.goods{
+	width: 100%;
+    margin-bottom: 15px;
+    background-color: #FFFFFF;
+	border-radius: 3px;
+		position: relative;
+	box-sizing: border-box;
+}
+.goods img{
+	width: 100%;
+	height: auto;
+	box-sizing: border-box;
+	}
+.goods .title{
+	text-align: center;
+	margin: 10px;
+}
+.info{
+	position: relative;
+	margin: 15px;
+	bottom: 15px;
+}
+.info .price{
+	text-align: left;
+	color: red;
+  left: 10px;
+
+}
+.info .sale{
+	text-align: rigth;
+	color: red;
+position:absolute;
+right: 10px;
+
+}

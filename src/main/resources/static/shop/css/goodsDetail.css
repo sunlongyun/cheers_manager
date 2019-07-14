@@ -1,0 +1,195 @@
+body{
+	font-size: 30px;
+	background-color: #FFFFFF;
+}
+.swiper-wrapper img{
+	width:100%;
+	border-radius: 2px;
+}
+.title{
+	padding: 10px;
+	width: 100%;
+	box-sizing: border-box;
+	float: left;
+}
+.price{
+	padding: 10px;
+	color: red;
+	float: left;
+	width: 50%;
+	box-sizing: border-box;
+}
+.originPrice{
+	padding: 10px;
+	color: #9D9D9D;
+	right: left;
+	width: 50%;
+	box-sizing: border-box;
+}
+.freight{
+	padding: 10px;
+	color: #9D9D9D;
+	width: 50%;
+	display: block;
+	box-sizing: border-box;
+	float: left;
+}
+.sale{
+	color: #9D9D9D;
+	width: 50%;
+	display: block;
+	box-sizing: border-box;
+	float: left;
+}
+.guige{
+	padding: 10px;
+	width: 100%;
+	box-sizing: border-box;
+	float: left;
+}
+.into{
+	width: 100%;
+	box-sizing: border-box;
+	float: left;
+	padding: 10px;
+}
+.discus{
+	width: 50%;
+	box-sizing: border-box;
+	float: left;
+	text-align: center;
+	padding: 10px;
+}
+.desc1{
+	width: 50%;
+	box-sizing: border-box;
+	float: left;
+	text-align: center;
+padding: 10px;
+}
+.act{
+	color: red;
+	border-bottom: solid 3px red;
+}
+.descBlock{
+	width: 100%;
+	box-sizing: border-box;
+	float: left;
+	padding: 10px;
+}
+.descBlock img{
+	width: 100%;
+		float: left;
+}
+.disBlock{
+	width: 100%;
+		float: left;
+		text-align: center;
+		padding: 20px;
+		height: 400px;
+}
+.line{
+	width: 100%;
+	height: 10px;
+	display: block;
+	box-sizing: border-box;
+	float: left;
+	background-color: #F8F8F8;
+}
+.cart{
+	background-color: #FFFFFF;
+	height: 100px;
+	width: 100%;
+	position: fixed;
+	bottom: 0px;
+	text-align: center;
+       box-sizing: border-box;
+}
+.cart .chat{
+	width: 15%;
+	height: 100%;
+	float: left;
+	border: 3px solid #F8F8F8;
+	position: relative;
+         box-sizing: border-box;
+}
+.chat img{
+	position: relative;
+	top: 50%;
+	height: 60%;
+	transform: translateY(-50%);
+}
+.cart .car{
+	width: 15%;
+	height: 100%;
+	border: 3px solid #F8F8F8;
+	float: left;
+	position: relative;
+        box-sizing: border-box;
+}
+.cart .num{
+	position: absolute;
+	background-color: red;
+	color: #FFFFFF;
+	border-radius: 18px;
+	padding: 4px 10px;
+	right: 15%;
+	font-size: 24px;
+	top: 2px;
+}
+.car img{
+	position: relative;
+	top: 50%;
+	height: 55%;
+	transform: translateY(-50%);
+}
+.cart .butCart{
+	width: 35%;
+	height: 100%;
+	border-left: 3px solid #F8F8F8;
+	border-top: 3px solid #F8F8F8;
+	border-bottom: 3px solid #F8F8F8;
+	float: left;
+	background-color: #FF8855;
+	color: #FFFFFF;
+	line-height: 100px;
+         box-sizing: border-box;
+}
+
+.cart .butSubmit{
+	width: 35%;
+	height: 100%;
+	border-right: 3px solid #F8F8F8;
+	border-top: 3px solid #F8F8F8;
+	border-bottom: 3px solid #F8F8F8;
+	float: left;
+	background-color: #FF4444;
+    color: #FFFFFF;
+    line-height: 100px;
+    box-sizing: border-box;
+}
+.cartgood{
+	background-color: #FFFFFF;
+}
+.carimg{
+	width: 20%;
+	height: 150px;
+	float: left;
+	background-color: #FFFFFF;
+}
+.carimg img{
+	height: 100%;
+	border-radius: 5px;
+}
+.cartext{
+	width: 60%;
+	float: left;
+	line-height: 150px;
+	background-color: #FFFFFF;
+}
+.carnn{
+	width: 20%;
+	float: left;
+	line-height: 150px;
+	background-color: #FFFFFF;
+}

@@ -1,0 +1,101 @@
+<!DOCTYPE html><html>	<head>		<meta charset="utf-8" />		<title>商城首页</title>		<link rel="stylesheet" href="html/shop/css/weui.min.css">		<link rel="stylesheet" href="html/shop/css/jquery-weui.min.css">		<link rel="stylesheet" href="html/shop/css/index.css" />	</head>	<body style="">		<div class="swiper-container" data-autoplay: true, data-space-between='10' data-pagination='.swiper-pagination' data-autoplay="1000">
+		  <div class="swiper-wrapper">
+		  </div>
+		</div>
+		<div class="weui-flex">
+			<div class="weui-flex__item typs  redLine" data-tab='0'>
+				<labe>最新商品</label> 
+			</div>
+			<div class="weui-flex__item typs" data-tab='1'>
+				<labe>七夕专场</label>
+			</div>
+			<div class="weui-flex__item typs" data-tab='2'>
+				<labe>开业专区</label>
+			</div>		</div>		<div class="weui-flex goodsList">			<div class="weui-flex__item left" >			</div>			<div class="weui-flex__item right">			</div>		</div>	</body>
+	<script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>	<script src="html/shop/js/jquery-weui.min.js"></script>	<script type='text/javascript' src='html/shop/js/swiper.min.js' charset='utf-8'></script>	<script type="text/javascript">
+		$(document).ready(function(){
+		  var items = ["https://img.yzcdn.cn/public_files/2017/03/16/e9a63b3d5dba5365d2b7610bab808ef9.png"
+		  ];
+		  for(var i in items){
+		  	$(".swiper-wrapper").append('<div class="swiper-slide"><img src="'+items[i]+'"></div>')
+		  }
+		  $(".swiper-container").swiper();
+		  $('.typs').click(function(){
+		  	$('.typs').removeClass("redLine")
+		  	$(this).addClass("redLine");
+		  	var tab = $(this).data('tab');
+		  	 initGoods(tab)
+		  })
+		  initGoods(0)
+		});
+		function initGoods(tap){
+			var hua1 = [
+		    		{"id":11,"title":"中礼 七夕节鲜花速递 情人节33枝红玫瑰","src":"https://img14.360buyimg.com/n7/jfs/t1174/9/37058058/650886/f3b7961/54fd01dfN91990a8c.jpg"},
+		    		{"id":12,"title":"爱唯一 鲜花速递 同城送花 33朵香槟玫瑰花束 送爱人生日七夕节鲜花礼","src":"https://img10.360buyimg.com/n7/jfs/t18979/255/628288312/364048/a3f02695/5a9cd221N3f55050d.jpg"},
+		    		{"id":13,"title":"最美时光 11朵红色玫瑰","src":"http://www.ismei.net/storage/master/product/thumbs310/310_201611031006248907470.jpg"},
+		    		{"id":14,"title":"牵手一辈子 16朵粉色玫","src":"http://www.ismei.net/storage/master/product/thumbs310/310_201610101107558522910.jpg"},
+		    		{"id":15,"title":"红掌4 又名火鹤花, 致喜","src":"http://www.ismei.net/storage/master/product/thumbs310/310_201610281006458318690.jpg"},
+		    		{"id":16,"title":"发财树2 致喜,乔迁,祝贺","src":"http://www.ismei.net/storage/master/product/thumbs310/310_201612120943455096310.jpg"},
+		    		{"id":17,"title":"八方招财 致喜,乔迁,祝贺","src":"http://www.ismei.net/storage/master/product/thumbs310/310_201610201025456288900.jpg"},
+		    		{"id":18,"title":"大叶绿萝 致喜,乔迁,祝贺","src":"http://www.ismei.net/storage/master/product/thumbs310/310_201610200925268145170.jpeg"},
+		    		{"id":19,"title":"蝴蝶兰-幸福美满,心想事","src":"http://www.ismei.net/storage/master/product/thumbs310/310_201801221432507993690.jpg"},
+		    		{"id":111,"title":"红掌—小盆栽 致喜,乔迁,祝贺","src":"http://www.ismei.net/storage/master/product/thumbs220/220_201710261342530760840.jpg"},
+		    		{"id":112,"title":"绿航绿萝-小盆栽 致喜,乔迁,祝贺","src":"http://www.ismei.net/storage/master/product/thumbs220/220_201710261011348440330.jpg"},
+		    		{"id":113,"title":"蝴蝶兰-幸福美满,心想事成,事业发达,生意兴隆,快乐天使","src":"http://www.ismei.net/storage/master/product/thumbs220/220_201801221541302995680.jpg"}
+		    	];
+		    	var qx = [
+		    		{"id":2,"title":"今生至爱----红玫瑰19枝","src":"http://www.ismei.net/storage/master/product/images/201710261626019857280.jpg"},
+		    		{"id":20,"title":"美丽的诺言-11枝红玫瑰,小熊 ","src":"http://www.ismei.net/storage/master/product/images/201808071553405490720.jpg"},
+		    		{"id":21,"title":"爱你到老 19朵蓝色妖姬 ","src":"http://www.ismei.net/storage/master/product/images/201611181048208929730.jpg"},
+		    		{"id":22,"title":"爱与心在一起 21朵红玫瑰礼盒装 ","src":"http://www.ismei.net/storage/master/product/images/201708241009569388460.jpg"},
+		    		{"id":23,"title":"爱你每一天 33朵红玫瑰 ","src":"http://www.ismei.net/storage/master/product/images/201610171134109320350.jpg"},
+		    		{"id":24,"title":"幸福甜蜜-99朵红玫瑰 ","src":"http://www.ismei.net/storage/master/product/images/201707241340294053510.png"},
+		    		{"id":25,"title":"紧紧拥抱你 33支蓝色妖姬","src":"http://www.ismei.net/storage/master/product/images/201709261722473060900.jpg"},
+		    		{"id":26,"title":"美丽的你 19朵红玫瑰高级礼盒装 ","src":"http://www.ismei.net/storage/master/product/images/201610171047443677080.jpg"},
+		    		{"id":27,"title":"爱的祝福- 5支多头粉色百合 礼盒 ","src":"http://www.ismei.net/storage/master/product/images/201804131143214197390.jpg"},
+		    		{"id":28,"title":"爱与心在一起 21朵红玫瑰礼盒装 ","src":"http://www.ismei.net/storage/master/product/images/201708241009569388460.jpg"},
+		    		{"id":29,"title":"一生一世爱你 33朵混色玫瑰1314... ","src":"http://www.ismei.net/storage/master/product/images/201708241023025495950.jpg"},
+		    		{"id":200,"title":"美丽的诺言-11枝红玫瑰,小熊 ","src":"http://www.ismei.net/storage/master/product/images/201803121643293561790.jpg"}
+		    	];
+		    	var dr = [
+		    		{"id":31,"title":"开业吉利（一对）庆典,开业,会议,展会,奠基仪式,新闻发布会,商品发布会","src":"http://www.ismei.net/storage/master/product/thumbs220/220_201805181515123031020.jpg"},
+		    		{"id":32,"title":"前程无量 庆典,开业,会议,展会,奠基仪式,新闻发布会,商品发布会","src":"http://www.ismei.net/storage/master/product/thumbs220/220_201612051103338246710.jpg"},
+		    		{"id":33,"title":"生意红红火火 庆典,开业,会议,展会,奠基仪式,新闻发布会,商品发布会","src":"http://www.ismei.net/storage/master/product/thumbs220/220_201807251701240334240.jpg"},
+		    		{"id":34,"title":"财源广进-庆典,开业,会议,展会,奠基仪式,新闻发布会,三角架","src":"http://www.ismei.net/storage/master/product/thumbs220/220_201707241118133708940.png"},
+		    		{"id":35,"title":"大吉大利2—庆典,开业,会议,展会,奠基仪式,新闻发布会,商品发布会三角架","src":"http://www.ismei.net/storage/master/product/thumbs220/220_201803211626367054420.jpg"},
+		    		{"id":36,"title":"吉祥-商务用花,公司用花,讲台用花,开业庆典,桌花","src":"http://www.ismei.net/storage/master/product/thumbs220/220_201711151118006245480.jpg"},
+		    		{"id":37,"title":"财源广进 庆典,开业,会议,展会,奠基仪式,新闻发布会,商品发布会","src":"http://www.ismei.net/storage/master/product/thumbs220/220_201609271127040947300.jpg"},
+		    		{"id":38,"title":"大吉大利 庆典,开业,会议,展会,奠基仪式,新闻发布会,商品发布会","src":"http://www.ismei.net/storage/master/product/thumbs220/220_201610201442470863000.jpg"},
+		    		{"id":39,"title":"好运连年-庆典,开业,会议,展会,奠基仪式,新闻发布会,商品发布会,酒会","src":"http://www.ismei.net/storage/master/product/thumbs220/220_201804171708417102000.jpg"},
+		    		{"id":330,"title":"前程似锦-庆典,开业,会议,展会,奠基仪式,新闻发布会,商品","src":"http://www.ismei.net/storage/master/product/thumbs220/220_201707241135383014620.png"},
+		    		{"id":321,"title":"红红火火-庆典,开业,会议,展会,奠基仪式,新闻发布会,商","src":"http://www.ismei.net/storage/master/product/thumbs220/220_201707241129026672520.png"},
+		    		{"id":344,"title":"弘基永固-庆典,开业,会议,展会,奠基仪式,新闻发布会,商品发布会,酒会,其他仪式等","src":"http://www.ismei.net/storage/master/product/thumbs220/220_f81e75bd96c844569bff3e84db7d95ea.jpg"}
+		    	];
+		    	var info = [];
+		    	if(tap == 0){
+		    		info = hua1;
+		    	}else if(tap == 1){
+		    		info = qx;
+		    	}else if(tap == 2){
+		    		info = dr;
+		    	}
+		    	var left = "";
+		    		var right = "";
+		     for(var i in info){
+			  	var g = '<div class="goods" onclick="goDetail('+info[i].id+')"><img  src="'+info[i].src+'"/><div class="title">'+info[i].title+'</div>';
+			  	g +='<div class="info"><span class="price">￥123</span><span class="sale">123人已付款</span></div></div>';
+			  	if(i%2 == 0){
+			  		left +=g;
+			  	}else{
+			  		right+=g;
+			  	}
+			  
+			  }
+		     $('.left').html(left);
+		        $('.right').html(right);
+		}
+		function goDetail(id){
+			window.location.href="./goodsDetail.html?goodsId="+id;
+		}
+	</script>
+</html>
