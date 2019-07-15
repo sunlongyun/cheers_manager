@@ -1,26 +1,24 @@
 package goods.platform.controller;
 
+import com.caichao.chateau.app.constants.enums.Validity;
+import com.caichao.chateau.app.dto.CustomerInfoDto;
+import com.caichao.chateau.app.example.CustomerInfoExample;
+import com.caichao.chateau.app.example.CustomerInfoExample.Criteria;
 import com.caichao.chateau.app.service.CustomerInfoService;
+import com.lianshang.generator.commons.PageInfo;
 import java.security.MessageDigest;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.zip.CRC32;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import goods.platform.commons.PageInfo;
 import goods.platform.commons.Response;
-import goods.platform.constant.UserTypeEnum;
-import goods.platform.utils.RefOpenIdGenerateUtil;
 import lombok.extern.slf4j.Slf4j;
 /**
  * 管理员管理controller
@@ -40,22 +38,22 @@ public class AdminController {
 	@ResponseBody
 	@RequestMapping(value="/login", method=RequestMethod.POST)
 	public Response login(String userName, String password, HttpSession session){
+		log.info("customerInfoService:{}",customerInfoService.getById(2));
 		this.log.info("登录==={}", userName);
 		if(StringUtils.isEmpty(userName) || StringUtils.isEmpty(password)){
 			return Response.fail("用户名或者密码为空");
 		}else{
-//			AdminUser adminUser = adminUserService.getAdminUserByUserName(userName.trim());
-//			if(null == adminUser){
-//				return Response.fail("管理员信息不存在");
-//			}else {
-//				String prePass = MD5(password);
-//				if(!prePass.equals(adminUser.getPassword())){
-//					return Response.fail("密码错误");
-//				}else if(!adminUser.getStatus().equals(UserStatusEnum.NORMAL.code())){
-//					return Response.fail("账户被锁定(或者失效)，请联系管理员");
-//				}
-//			}
-//			session.setAttribute("adminUser", adminUser);
+			CustomerInfoDto customerInfoDto = customerInfoService.getAdminUserByUserName(userName.trim());
+			if(null == customerInfoDto){
+				return Response.fail("管理员信息不存在");
+			}else {
+				String prePass = MD5(password);
+				log.info("prePass:{}", prePass);
+				if(!prePass.equals(customerInfoDto.getPassword())){
+					return Response.fail("密码错误");
+				}
+			}
+			session.setAttribute("adminUser", customerInfoDto);
 			return Response.success("登录成功");
 		}
 	}
@@ -69,12 +67,16 @@ public class AdminController {
 	@ResponseBody
 	@RequestMapping(value="/getPageInfo", method=RequestMethod.GET)
 	public PageInfo getPageInfo(int pageNo, int pageSize, String userName){
-		Map<String, String> params = new HashMap<>();
+
+		CustomerInfoExample customerInfoExample = new CustomerInfoExample();
+		Criteria criteria =  customerInfoExample.createCriteria();
+		criteria.andValidityEqualTo(Validity.AVAIL.code());
 		if(!StringUtils.isEmpty(userName)){
-			params.put("userName", userName);
+			criteria.andUserNameEqualTo(userName);
 		}
-//		PageInfo pageInfo = adminUserService.getPageInfo(pageNo, pageSize, params);
-		return null;
+		PageInfo pageInfo = customerInfoService.getPageInfo(pageNo, pageSize, customerInfoExample);
+
+		return pageInfo;
 	}
 	/**
 	 * 退出登录

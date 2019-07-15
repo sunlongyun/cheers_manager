@@ -1,5 +1,6 @@
 package goods.platform.config;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;

@@ -19,6 +19,7 @@ public class MyIntercept extends HandlerInterceptorAdapter {
 		HttpSession session = request.getSession(false);
 		if(null != session){
 			CustomerInfoDto customerInfoDto = (CustomerInfoDto) session.getAttribute("adminUser");
+			log.info("customerInfoDto:{}", customerInfoDto);
 			if(null != customerInfoDto){
 				checkResult = true;
 			}

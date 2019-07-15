@@ -1,4 +1,7 @@
 package goods.platform.constant;
+
+import com.caichao.chateau.app.constants.enums.BaseServiceEnum;
+
 /**
  * 支付类型
  * @author 孙龙云

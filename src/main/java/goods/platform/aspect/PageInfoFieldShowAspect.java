@@ -1,5 +1,6 @@
 package goods.platform.aspect;
 
+import com.lianshang.generator.commons.PageInfo;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -14,9 +15,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import goods.platform.annotation.AmountUnitChange;
-import goods.platform.annotation.ServiceTypeAnnotation;
-import goods.platform.commons.PageInfo;
-import goods.platform.constant.BaseServiceEnum;
+import com.caichao.chateau.app.annotation.ServiceTypeAnnotation;
+import com.caichao.chateau.app.constants.enums.BaseServiceEnum;
 /**
  * pageInfo中的bean字段根据枚举类型自动回显
  * @author 孙龙云
@@ -35,6 +35,7 @@ public class PageInfoFieldShowAspect {
 			e.printStackTrace();
 		}
 		if(target instanceof PageInfo){
+
 			PageInfo pageInfo = (PageInfo) target;
 			List<Map<String, Object>> newDataList = new ArrayList<>();
 			if(null != pageInfo){

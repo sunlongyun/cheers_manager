@@ -1,9 +1,12 @@
 package goods.platform.constant;
+
+import com.caichao.chateau.app.constants.enums.BaseServiceEnum;
+
 /**
  * 商品状态
  * @author 孙龙云
  */
-public enum GoodsStatusEnum implements BaseServiceEnum{
+public enum GoodsStatusEnum implements BaseServiceEnum {
 	NORMAL(1,"正常"),
 	FORZEN(2, "已下架"),
 	DELETED(-1, "已删除");

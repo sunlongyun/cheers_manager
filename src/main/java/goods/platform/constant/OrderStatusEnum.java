@@ -1,4 +1,7 @@
 package goods.platform.constant;
+
+import com.caichao.chateau.app.constants.enums.BaseServiceEnum;
+
 /**
  * 订单状态
  * @author 孙龙云
