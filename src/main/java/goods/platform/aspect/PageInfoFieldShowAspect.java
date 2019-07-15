@@ -14,7 +14,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import goods.platform.annotation.AmountUnitChange;
+import com.caichao.chateau.app.annotation.AmountUnitChange;
 import com.caichao.chateau.app.annotation.ServiceTypeAnnotation;
 import com.caichao.chateau.app.constants.enums.BaseServiceEnum;
 /**

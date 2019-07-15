@@ -18,6 +18,7 @@ public class MvcConfig implements WebMvcConfigurer {
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
 		registry.addViewController("/").setViewName("html/index");
+		registry.addViewController("/firstPage").setViewName("html/firstPage");
 		registry.addViewController("/login").setViewName("login/login");
 		registry.addViewController("/adminList").setViewName("html/adminList");
 		registry.addViewController("/goodsList").setViewName("html/goodsList");
@@ -30,7 +31,6 @@ public class MvcConfig implements WebMvcConfigurer {
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry
 			.addInterceptor(new MyIntercept())
-			.excludePathPatterns("/")
 			.excludePathPatterns("/admin/login")
 			.excludePathPatterns("/login/**")
 			.excludePathPatterns("/html/**")

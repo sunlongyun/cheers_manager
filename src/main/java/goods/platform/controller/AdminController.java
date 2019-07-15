@@ -1,5 +1,7 @@
 package goods.platform.controller;
 
+import com.caichao.chateau.app.constants.enums.UserStatusEnum;
+import com.caichao.chateau.app.constants.enums.UserTypeEnum;
 import com.caichao.chateau.app.constants.enums.Validity;
 import com.caichao.chateau.app.dto.CustomerInfoDto;
 import com.caichao.chateau.app.example.CustomerInfoExample;
@@ -7,13 +9,16 @@ import com.caichao.chateau.app.example.CustomerInfoExample.Criteria;
 import com.caichao.chateau.app.service.CustomerInfoService;
 import com.lianshang.generator.commons.PageInfo;
 import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.zip.CRC32;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.embedded.undertow.UndertowServletWebServer;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,6 +33,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/admin")
 @Slf4j
 public class AdminController {
+
+	public static final String ADMIN_USER = "adminUser";
 	@Autowired
 	private CustomerInfoService customerInfoService;
 
@@ -46,7 +53,11 @@ public class AdminController {
 			CustomerInfoDto customerInfoDto = customerInfoService.getAdminUserByUserName(userName.trim());
 			if(null == customerInfoDto){
 				return Response.fail("管理员信息不存在");
-			}else {
+			}else if(customerInfoDto.getType() == UserTypeEnum.CUSTOMER.code()){
+				return Response.fail("只有平台管理员和供应商可以登录");
+			}else if(customerInfoDto.getStatus() == UserStatusEnum.FORZEN.code()){
+				return Response.fail("账号已经冻结，请联系平台管理员");
+			}else{
 				String prePass = MD5(password);
 				log.info("prePass:{}", prePass);
 				if(!prePass.equals(customerInfoDto.getPassword())){
@@ -66,13 +77,17 @@ public class AdminController {
 	 */
 	@ResponseBody
 	@RequestMapping(value="/getPageInfo", method=RequestMethod.GET)
-	public PageInfo getPageInfo(int pageNo, int pageSize, String userName){
+	public PageInfo getPageInfo(int pageNo, int pageSize, String userName, Integer type){
 
 		CustomerInfoExample customerInfoExample = new CustomerInfoExample();
 		Criteria criteria =  customerInfoExample.createCriteria();
-		criteria.andValidityEqualTo(Validity.AVAIL.code());
+		criteria.andValidityEqualTo(Validity.AVAIL.code()).andTypeIn(Arrays.asList(UserTypeEnum.ADMIN.code(),
+			UserTypeEnum.SUPPLIER.code()));;
 		if(!StringUtils.isEmpty(userName)){
-			criteria.andUserNameEqualTo(userName);
+			criteria.andUserNameLike("%"+userName+"%");
+		}
+		if(null != type){
+			criteria.andTypeEqualTo(type);
 		}
 		PageInfo pageInfo = customerInfoService.getPageInfo(pageNo, pageSize, customerInfoExample);
 
@@ -101,94 +116,64 @@ public class AdminController {
 	 */
 	@ResponseBody
 	@RequestMapping(value="/changePass", method = RequestMethod.POST)
-	public Response changePass(String lastPass, String newPass, HttpSession session){
-		if(StringUtils.isEmpty(lastPass) || StringUtils.isEmpty(newPass)){
-			return Response.fail("远密码和新密码都不能为空!");
+	public Response changePass(String newPass, HttpSession session){
+		if( StringUtils.isEmpty(newPass)){session.setMaxInactiveInterval(1);
+			return Response.fail("新密码都不能为空!");
 		}else{
-//			AdminUser adminUser = (AdminUser) session.getAttribute("adminUser");
-//			if(null == adminUser){
-//				return Response.fail("登录状态过期!");
-//			}else if(!MD5(lastPass).equals(adminUser.getPassword())){
-//				return Response.fail("原密码错误!");
-//			}else{
-//				AdminUser admin = new AdminUser();
-//				admin.setPassword(MD5(newPass));
-//				admin.setId(adminUser.getId());
-//				adminUserService.editAdminUser(admin);
-//				session.setMaxInactiveInterval(1);
-//				try {
-//					Thread.sleep(100);
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
-//			}
+			CustomerInfoDto adminUser = (CustomerInfoDto) session.getAttribute("adminUser");
+			if(null == adminUser){
+				return Response.fail("登录状态过期!");
+			}else{
+				CustomerInfoDto customerInfoDto = new CustomerInfoDto();
+				customerInfoDto.setPassword(MD5(newPass));
+				customerInfoDto.setId(adminUser.getId());
+				customerInfoService.update(customerInfoDto);
+
+				session.removeAttribute(ADMIN_USER);
+			}
 		}
 		return Response.success();
 	}
 
-//	/**
-//	 * 管理员注册
-//	 * @param adminUser
-//	 * @param request
-//	 * @param session
-//	 * @return
-//	 */
-//	@ResponseBody
-//	@RequestMapping(value="/addUser",method=RequestMethod.POST)
-//	public Response createUser(AdminUser adminUser,
-//			HttpServletRequest request,
-//			HttpSession session){
-//		AdminUser oldAminUser = adminUserService.getAdminUserByUserName(adminUser.getUserName());
-//		if(null != oldAminUser){
-//			return Response.fail("用户名已经存在");
-//		}else{
-//			adminUser.setPassword(MD5(adminUser.getPassword()));
-//			adminUser.setRefOpenId(RefOpenIdGenerateUtil.getAdminRefOpenId());
-//			adminUser.setUserType(UserTypeEnum.ADMINPLATFORM.code());
-//			adminUserService.addAdminUser(adminUser);
-//			session.setAttribute("adminUser", adminUser);
-//		}
-//		return Response.success();
-//	}
-//	/**
-//	 * 查询用户名
-//	 * @param session
-//	 * @return
-//	 */
-//	@ResponseBody
-//	@RequestMapping(value="/getUserName", method=RequestMethod.GET)
-//	public Response  getUserName(HttpSession session){
-//		AdminUser adminUser = (AdminUser) session.getAttribute("adminUser");
-//		if(null == adminUser){
-//			return Response.fail( "会话已过期");
-//		}else{
-//			return Response.success(adminUser.getUserName());
-//		}
-//
-//	}
-//	/**
-//	 * 删除
-//	 * @param id
-//	 * @return
-//	 */
-//	@ResponseBody
-//	@RequestMapping("/deleteAdminUser/{id}")
-//	public Response deleteAdminUser(@PathVariable Long id){
-//		adminUserService.deleleAdminUser(id);
-//		return Response.success();
-//	}
-//	/**
-//	 * 修改账户状态
-//	 * @param id
-//	 * @param status
-//	 * @return
-//	 */
-//	@ResponseBody
-//	@RequestMapping("/changeStatus")
-//	public Response changeStatus(Integer id, Integer status){
-//		adminUserService.changeStatus(id, status);
-//		return Response.success();
-//	}
+	/**
+	 * 查询用户名
+	 * @param session
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="/getUserName", method=RequestMethod.GET)
+	public Response  getUserName(HttpSession session){
+		CustomerInfoDto customerInfoDto = (CustomerInfoDto) session.getAttribute("adminUser");
+		if(null == customerInfoDto){
+			return Response.fail( "会话已过期");
+		}else{
+			return Response.success(customerInfoDto);
+		}
+
+	}
+	/**
+	 * 删除
+	 * @param id
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/deleteAdminUser/{id}")
+	public Response deleteAdminUser(@PathVariable Long id){
+		customerInfoService.deleteById(id);
+		return Response.success();
+	}
+	/**
+	 * 修改账户状态
+	 * @param id
+	 * @param status
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/changeStatus")
+	public Response changeStatus(Long id, Integer status){
+		customerInfoService.changeStatus(id, status);
+		return Response.success();
+	}
 	private static String MD5(String key) {
 		CRC32 crc32 = new CRC32();
 		crc32.update(key.getBytes());

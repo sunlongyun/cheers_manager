@@ -22,7 +22,8 @@ $(function(){
 
 	$("a[data-href],button[data-href]").click(function(){
 		var url = $(this).data("href");
-		window.location.href = url;
+		//window.location.href = url;
+		$("#mainDiv").load(url);
 	});
 	$("a.sidebar-toggle").click(function(){
 		if($("aside.left-side").is(":hidden")){
@@ -128,45 +129,35 @@ $.dialog = function(title, content, fn, params, height){
     $(function(){
 		$("#changePassword").click(function(){
 			var html = '<div class="form-group">'+
-		    '<label for="lastname" class="col-sm-3 control-label">当前密码:</label>'+
-		    '<div class="col-sm-7">'+
-		      '<input type="password" class="form-control" id="lastPass" placeholder="请输入当前密码">'+
-		    '</div>'+
-		  '</div>';
-		  html += '<div class="form-group">'+
 		    '<label for="lastname" class="col-sm-3 control-label">新密码:</label>'+
 		    '<div class="col-sm-7">'+
 		      '<input type="password" class="form-control" id="newPass" placeholder="请输入新密码">'+
 		    '</div>'+
 		  '</div>';
 		  
-			$.dialog("修改密码", html,function(){
-				var lastPass = $("#lastPass").val().trim();
+			$.dialog("重置密码", html,function(){
+
 				var newPass = $("#newPass").val().trim();
-				if(!lastPass || !newPass){
-					alert("当前密码和新密码都不能为空!");
-					return false;
-				}
+
 				$.ajax({
 					url:'/admin/changePass',
 					type:'post',
 					dataType:'json',
 					data:{
-						"lastPass":lastPass,
 						"newPass":newPass
 					},
 					success:function(res){
 						alert(res.msg);
-						if(res.code == 'success'){
+						if(res.code == '0000'){
 							$.dialogClose();
 							window.location.href ='/login';
 						}
 						
-					},error:function(){
-						window.location.href='/login';
+					},error:function(e){
+						$.alert("操作失败:"+e);
 					}
 				});
-			},null,80);
+			},null,50);
 			
 		});
 	})
