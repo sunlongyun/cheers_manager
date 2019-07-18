@@ -1,5 +1,5 @@
 <header class="panel-heading">
-  销售订单列表
+  订单管理
 </header>
 <div class="panel-body">
   <form class="form-inline" id="form" role="form">
@@ -26,7 +26,7 @@
     /**
      ** 调用分页
      **/
-    $("#table").search2('/order/getPageInfo', 'form',
+    $("#table").search2('/admin/order/getPageInfo', 'form',
         [
           {"text": "订单编码", "title": "orderNo"},
           {"text": "订单总金额", "title": "totalAmount"},

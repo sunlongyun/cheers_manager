@@ -1,0 +1,56 @@
+<header class="panel-heading">
+  供应商管理
+</header>
+<div class="panel-body">
+  <form class="form-inline" id="form" role="form">
+    <div class="form-group">
+      <input type="text" class="form-control" name="companyName" placeholder="供应商名称">
+    </div>
+    <div class="form-group">
+      <input type="text" class="form-control" name="address" placeholder="供应商地址">
+    </div>
+    <div class="form-group">
+      <input type="text" class="form-control" name="mobile" placeholder="联系人手机号">
+    </div>
+    <div class="form-group">
+      <input type="text" class="form-control" name="telephone" placeholder="座机">
+    </div>
+    <button type="button" class="btn btn-primary" onclick="search()"><span class="glyphicon glyphicon-search"></span>&nbsp;查询
+    </button>
+  </form>
+  <table id="table" class="text-center table table-bordered table-hover  table-striped"></table>
+</div>
+
+<script src="html/js/bootstrap-paginator.js" type="text/javascript"></script>
+<script type="text/javascript">
+  /**
+   ** 查询
+   **/
+  function search() {
+    /**
+     ** 调用分页
+     **/
+    $("#table").search2('/admin/supplier/getPageInfo', 'form',
+        [
+          {"text": "Logo",  "format": function (obj) {
+            var html = "<img width='50px' src='"+obj.logo+"'/>";
+            return html;
+            }},
+          {"text": "公司名称", "title": "companyName"},
+          {"text": "地址", "title": "address"},
+
+          {"text": "座机", "title": "telephone"},
+          {"text": "联系人", "title": "linker"},
+          {"text": "创建时间", "title": "createTime"},
+
+        ]
+    );
+
+  }
+
+  //默认查询
+  search();
+
+</script>
+</body>
+</html>

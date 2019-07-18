@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 import goods.platform.commons.Response;
-@RequestMapping("/customer")
+@RequestMapping("/admin/customer")
 @RestController
 public class CustomerInfoController {
 	@Autowired

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author 孙龙云
  */
 
-@RequestMapping("/order")
+@RequestMapping("admin/order")
 @RestController
 public class OrderInfoController {
 
