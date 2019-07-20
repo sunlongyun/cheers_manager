@@ -1,0 +1,117 @@
+<header class="panel-heading">
+  酒庄管理
+</header>
+<div class="panel-body">
+  <form class="form-inline" id="form" role="form">
+    <div class="form-group">
+      <input type="text" class="form-control" name="title" placeholder="酒庄名称">
+    </div>
+    <div class="form-group">
+      <input type="text" class="form-control" name="countryName" placeholder="国家">
+    </div>
+    <button type="button" class="btn btn-primary" onclick="search()"><span class="glyphicon glyphicon-search"></span>&nbsp;查询
+    </button>
+  </form>
+  <table id="table" class="text-center table table-bordered table-hover  table-striped"></table>
+</div>
+
+<script src="html/js/bootstrap-paginator.js" type="text/javascript"></script>
+<script type="text/javascript">
+  /**
+   ** 查询
+   **/
+  function search() {
+    /**
+     ** 调用分页
+     **/
+    $("#table").search2('/admin/chateau/getPageInfo', 'form',
+        [
+          {"text": "名称", "title": "title"},
+          {"text": "缩略图", "format": function (obj) {
+              var html = "<a href='"+obj.picUrl+"' target='_blank'><img width='50px' src='"+obj.minPicUrl+"'/></a>";
+              return html;
+            }},
+          {
+            "text": "国家", "title":"countryName"
+          },
+          {
+            "text": "日常直播二维码",  "format": function (obj) {
+              var html =
+                  "<a href='/admin/chateau/showQrCode?content="+obj.dailyBroadcast+"&width=500&height=500' target='_blank'><img width='50px' src='/admin/chateau/showQrCode?content="+obj.dailyBroadcast+"&width=50&height=50'/></a> ";
+              return html;
+            }
+          },
+          {
+            "text": "庄主直播二维码", "format": function (obj) {
+              var html =
+                  "<a href='/admin/chateau/showQrCode?content="+obj.masterBroadcast+"&width=500&height=500' target='_blank'>" +
+                  "<img width='50px' src='/admin/chateau/showQrCode?content="+obj.masterBroadcast+"&width=50&height=50'/></a>";
+              return html;
+            }
+          },
+          {"text": "创建时间", "title":"createTime"}
+        ]
+    );
+  }
+
+  /**
+   ** 冻结账户
+   **/
+  function frozen(id) {
+    $.confirm("确认要冻结?", function () {
+      changeStatus(id, 2);
+    });
+  }
+
+  /**
+   ** 解冻账户
+   **/
+  function unFrozen(id) {
+    $.confirm("确认要解冻?", function () {
+      changeStatus(id, 1);
+    });
+  }
+
+  //修改状态
+  function changeStatus(id, status) {
+    $.dialogClose();
+    $.ajax({
+      url: '/admin/changeStatus',
+      data: {
+        "status": status,
+        "id": id
+      },
+      type: 'get',
+      dataType: 'json',
+      success: function (res) {
+        $.alert(res.msg);
+        if (res.code == '0000') {
+          search();
+        }
+      }
+    });
+  }
+
+  //删除
+  function del(id) {
+    $.confirm("确定要删除?", function () {
+      $.ajax({
+        url: rootPath + '/admin/deleteAdminUser/' + id,
+        type: 'post',
+        dataType: 'json',
+        success: function (res) {
+          alert(res.msg);
+          if (res.code == '0000') {
+            search();
+          }
+        }
+      });
+    })
+  }
+
+  //默认查询
+  search();
+
+</script>
+</body>
+</html>

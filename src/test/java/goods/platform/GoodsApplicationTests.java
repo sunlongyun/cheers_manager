@@ -30,6 +30,10 @@ public class GoodsApplicationTests {
 
 	@Test
 	public void testCountryService(){
-//		log.info("countryMapper:{}", countryService.getList(new CountryExample()));
+		LsCodeGeneratorUtil.generateCode("app", "com.caichao.chateau", "jdbc:mysql://www"
+				+ ".tom235.com:3306/chateau?useUnicode=true&characterEncoding=utf8", "com.mysql.jdbc.Driver",
+			"chisong", "csz123$%", Arrays.asList(GenerateFileTypeEnum.DTO, GenerateFileTypeEnum.MAPPER_XML,
+				GenerateFileTypeEnum.EXAMPLE, GenerateFileTypeEnum.ENTITY),
+			"country_chateau");
 	}
 }
