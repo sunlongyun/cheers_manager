@@ -1,6 +1,7 @@
 package goods.platform.controller;
 
 import com.caichao.chateau.app.constants.enums.Validity;
+import com.caichao.chateau.app.dto.CountryChateauDto;
 import com.caichao.chateau.app.example.CountryChateauExample;
 import com.caichao.chateau.app.example.CountryChateauExample.Criteria;
 import com.caichao.chateau.app.service.CountryChateauService;
@@ -40,8 +41,11 @@ public class ChateauController {
 			criteria.andCountryNameLike("%"+countryName+"%");
 		}
 
-		PageInfo pageInfo = countryChateauService.getPageInfo(pageNo, pageSize, countryChateauExample);
-
+		PageInfo<CountryChateauDto> pageInfo = countryChateauService.getPageInfo(pageNo, pageSize, countryChateauExample);
+		pageInfo.getDataList().forEach(countryChateauDto -> {
+			countryChateauDto.setDailyBroadcastPusher(countryChateauService.getDailyPusherUlr(countryChateauDto.getId()));
+			countryChateauDto.setMasterBroadcastPusher(countryChateauService.getMasterPusherUlr(countryChateauDto.getId()));
+		});
 		return pageInfo;
 	}
 

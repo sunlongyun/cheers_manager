@@ -37,15 +37,15 @@
           {
             "text": "日常直播二维码",  "format": function (obj) {
               var html =
-                  "<a href='/admin/chateau/showQrCode?content="+obj.dailyBroadcast+"&width=500&height=500' target='_blank'><img width='50px' src='/admin/chateau/showQrCode?content="+obj.dailyBroadcast+"&width=50&height=50'/></a> ";
+                  "<a href='/admin/chateau/showQrCode?content="+obj.dailyBroadcastPusher+"&width=500&height=500' target='_blank'><img width='50px' src='/admin/chateau/showQrCode?content="+obj.dailyBroadcastPusher+"&width=50&height=50'/></a> ";
               return html;
             }
           },
           {
             "text": "庄主直播二维码", "format": function (obj) {
               var html =
-                  "<a href='/admin/chateau/showQrCode?content="+obj.masterBroadcast+"&width=500&height=500' target='_blank'>" +
-                  "<img width='50px' src='/admin/chateau/showQrCode?content="+obj.masterBroadcast+"&width=50&height=50'/></a>";
+                  "<a href='/admin/chateau/showQrCode?content="+obj.dailyBroadcastPusher+"&width=500&height=500' target='_blank'>" +
+                  "<img width='50px' src='/admin/chateau/showQrCode?content="+obj.masterBroadcastPusher+"&width=50&height=50'/></a>";
               return html;
             }
           },
