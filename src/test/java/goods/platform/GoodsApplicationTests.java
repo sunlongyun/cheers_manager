@@ -36,4 +36,12 @@ public class GoodsApplicationTests {
 				GenerateFileTypeEnum.EXAMPLE, GenerateFileTypeEnum.ENTITY),
 			"country_chateau");
 	}
+
+	@Test
+	void test4() {
+		LsCodeGeneratorUtil.generateCode("app", "com.caichao.chateau", "jdbc:mysql://www"
+				+ ".tom235.com:3306/chateau?useUnicode=true&characterEncoding=utf8", "com.mysql.cj.jdbc.Driver",
+			"chisong", "csz123$%",
+			"refund_order");
+	}
 }

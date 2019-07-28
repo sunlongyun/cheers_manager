@@ -43,7 +43,6 @@
       <version>0.0.1</version>
     </dependency>
 
-
     <!-- https://mvnrepository.com/artifact/com.github.lafa.twelvemonkeyspurejava.imageio/imageio-jpeg -->
     <dependency>
       <groupId>com.github.lafa.twelvemonkeyspurejava.imageio</groupId>
