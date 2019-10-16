@@ -7,6 +7,10 @@ import org.springframework.boot.SpringApplication;
 
 import goods.platform.annotation.ChiSongTechApplicationRun;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
+
 @ComponentScan(basePackages = {"com.caichao.chateau","goods.platform"})
 @ChiSongTechApplicationRun
 public class GoodsApplication {
