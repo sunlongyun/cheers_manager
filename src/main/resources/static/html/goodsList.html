@@ -1,5 +1,7 @@
 <header class="panel-heading">
-  商品管理
+  商品管理 &nbsp;<button type="button" class="btn btn-info" style="margin-left: 50px;" onclick="addGoods()"><span
+    class="glyphicon glyphicon glyphicon-plus"></span>&nbsp;添加商品
+</button>
 </header>
 <div class="panel-body">
   <form class="form-inline" id="form" role="form">
@@ -7,22 +9,8 @@
       <input type="text" class="form-control" name="title" placeholder="名称">
     </div>
     <div class="form-group">
-      <input type="text" class="form-control" name="enTitle" placeholder="英文名称">
-    </div>
-    <div class="form-group">
       <input type="text" class="form-control" name="supplierCompanyName" placeholder="供应商名称">
     </div>
-    <div class="form-group">
-      <select class="form-control" name="countryName">
-        <option value="">选择国家</option>
-        <option value="法国">法国</option>
-        <option value="澳大利亚">澳大利亚</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <input type="text" class="form-control" name="chateauTitle" placeholder="庄园名称">
-    </div>
-
     <button type="button" class="btn btn-primary" onclick="search()"><span class="glyphicon glyphicon-search"></span>&nbsp;查询
     </button>
   </form>
@@ -45,15 +33,23 @@
               return html;
             }},
           {"text": "名称", "title": "title"},
-          {"text": "英文名称", "title": "enTitle"},
-          {"text": "国家", "title": "countryName"},
-          {"text": "庄园", "title": "chateauTitle"},
           {"text": "供应商", "title": "supplierCompanyName"},
-          {"text": "进货价格", "title": "originPrice"},
-          {"text": "销售价格", "title": "price"},
-          {"text": "年份", "title": "year"},
+          {"text": "零售价", "title": "price"},
           {"text": "规格", "title": "specs"},
-          {"text": "创建时间", "title": "createTime"},
+          {"text": "状态", format:function(obj){
+            var statusObj = obj.status;
+            var html = "";
+            if(statusObj.code==1){
+             html =  "<div><span style='color:green;'>"+statusObj.value+"</span>" +
+                 "<span>【<a href='javascript:changeStatus("+obj.id+","+0+")'>下架</a>】</span></div>";
+            }
+            if(statusObj.code==0){
+            html =  "<div><span style='color:red;'>"+statusObj.value+"</span>" +
+                "<span>【<a href='javascript:changeStatus("+obj.id+","+1+")'>上架</a>】</span></div>";
+            }
+              return html;
+            }},
+          {"text": "上架时间", "title": "createTime"},
           {
             "text": "操作",
             "format": function (obj) {
@@ -71,6 +67,34 @@
   //默认查询
   search();
 
+  /**
+   * 上架，下架
+   * @param id
+   * @param status
+   */
+  function changeStatus(id, status) {
+    var statusName = status==1?"上架":"下架";
+    $.confirm("确定要"+statusName+"该商品?",function () {
+      var url = '/admin/goods/changeStatus/'+id+"/"+status;
+      $.ajax({
+        url: url,
+        type: 'post',
+        dataType: 'json',
+        success: function (res) {
+          $.alert(res.msg);
+          search();
+        }
+      });
+    })
+  }
+
+  /**
+   * 添加商品
+   */
+  function addGoods() {
+  var url="/addGoods";
+    $("#mainDiv").load(url);
+  }
 </script>
 </body>
 </html>

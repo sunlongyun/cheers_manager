@@ -1,0 +1,114 @@
+<header class="panel-heading">
+  商品管理 <button type="button" class="btn btn-info" onclick="search()" style="margin-left: 50px;"><span
+    class="glyphicon glyphicon glyphicon-plus"></span>&nbsp;添加商品
+</button>
+</header>
+<div class="panel-body">
+  <form class="form-horizontal" id="form" role="form">
+    <div class="form-group">
+      <label class="col-sm-2 control-label">商品名称</label>
+      <div class="col-sm-8">
+        <input type="text" name="title" class="form-control"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">供应商</label>
+      <div class="col-sm-8">
+        <select name="supplierId"  class="form-control">
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">商品图片地址</label>
+      <div class="col-sm-8">
+        <input type="text" name="picUrl" class="form-control"  value=""/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">缩略图地址</label>
+      <div class="col-sm-8">
+        <input type="text" name="minPicUrl" class="form-control"  value=""/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">规格</label>
+      <div class="col-sm-8">
+        <input type="text" name="specs" class="form-control"  value=""/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-2 control-label">单位进价</label>
+      <div class="col-sm-8">
+        <input type="number" name="originPrice" class="form-control" min="0" value="0"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">售价</label>
+      <div class="col-sm-8">
+        <input type="number" name="price" class="form-control" min="0" value="0"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">库存</label>
+      <div class="col-sm-8">
+        <input type="number" name="stock" class="form-control" min="0" value="0"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-2 control-label"></label>
+      <div class="col-sm-8">
+        <button type="button" class="btn btn-primary" onclick="save()"><span
+            class="glyphicon glyphicon-floppy-saved"></span>&nbsp;添加商品
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+  $(function () {
+    //查询供应商列表
+    $.ajax({
+      type:'get',
+      dataType:'json',
+      url:'/admin/supplier/getPageInfo',
+      success:function(pageInfo){
+        var list = pageInfo.dataList;
+        $("select[name='supplierId']").html("");
+        $.each(list, function(index, item){
+          var option = $("<option value='"+item.id+"'>"+item.companyName+"</option>");
+          $("select[name='supplierId']").append(option);
+        })
+
+      }
+
+    });
+  });
+  /**
+   * 添加商品
+   */
+  function save() {
+    var data = getParamsByFormId("form");
+    console.log("data------------------")
+    console.log(data)
+    $.ajax({
+      url:'/admin/goods/save',
+      type:'post',
+      dataType:'json',
+      data:JSON.stringify(data) ,
+      contentType:"application/json",
+      success:function(res){
+        if(res.code='0000'){
+          var url="/goodsList";
+          $("#mainDiv").load(url);
+        }else{
+          $.alert(res.msg);
+        }
+      }
+    })
+  }
+</script>
+</body>
+</html>

@@ -1,12 +1,15 @@
 package goods.platform.controller;
 import com.chisong.green.farm.app.constants.enums.UserTypeEnum;
 import com.chisong.green.farm.app.constants.enums.Validity;
+import com.chisong.green.farm.app.dto.CustomerInfoDto;
 import com.chisong.green.farm.app.example.CustomerInfoExample;
 import com.chisong.green.farm.app.example.CustomerInfoExample.Criteria;
 import com.chisong.green.farm.app.service.CustomerInfoService;
 import com.lianshang.generator.commons.PageInfo;
+import goods.platform.commons.Response;
 import java.util.Arrays;
 
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,11 +31,11 @@ public class CustomerInfoController {
 	 * @param session
 	 * @return
 	 */
-//	@RequestMapping("/save")
-//	public Response saveCustomerInfo(CustomerInfoDto customerInfo, HttpSession session){
-//
-//		CustomerInfoDto adminUser = (CustomerInfoDto) session.getAttribute("adminUser");
-//
+	@RequestMapping("/save")
+	public Response saveCustomerInfo(CustomerInfoDto customerInfo, HttpSession session){
+
+		CustomerInfoDto adminUser = (CustomerInfoDto) session.getAttribute("adminUser");
+
 //		if(null == customerInfo.getId()){
 //			customerInfo.setCreateId(adminUser.getId());
 //			customerInfo.setCreator(adminUser.getUserName());
@@ -40,8 +43,8 @@ public class CustomerInfoController {
 //		}else{
 //			customerInfoService.updateCustomerInfo(customerInfo);
 //		}
-//		return Response.success();
-//	}
+		return Response.success();
+	}
 
 	/**
 	 * 分页查询

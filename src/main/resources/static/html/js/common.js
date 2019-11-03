@@ -274,6 +274,58 @@ $.fn.search2 = function(url, formId, titleList,callBack){
 }
 
 /**
+ * 根据formId，进行简单的赋值
+ */
+function setDataByFormId(formId, data){
+	if(!data){
+		$.alert("对象不能为空")
+	}else{
+		for(key in data){
+			$("#"+formId).find("[name=]"+key).val(data[key]);
+		}
+	}
+}
+/**
+ * 根据formid获取表单内容
+ * @param formId
+ */
+function getParamsByFormId(formId){
+	var params = {};
+	if(formId) {
+		var form = $("#" + formId);
+		////所有的input//////////////
+		var inputs = form.find("input[name]");
+		inputs.each(function (index, obj) {
+			var name = $(obj).attr("name");
+			var value = $(obj).val().trim();
+			if (value) {
+				params[name] = value;
+			}
+		});
+		//////////////所有的select/////////////////////////
+		var selects = form.find("select[name]");
+		selects.each(function (index, obj) {
+			var name = $(obj).attr("name");
+			var value = $(obj).val();
+			if (value) {
+				params[name] = value;
+			}
+		});
+
+		//////////////所有的textarea/////////////////////////
+		var selects = form.find("textArea[name]");
+		selects.each(function (index, obj) {
+			var name = $(obj).attr("name");
+			var value = $(obj).val();
+			if (value) {
+				params[name] = value;
+			}
+		});
+	}
+		return params;
+}
+
+/**
  * 分页查询
  * @param url  请求地址
  * @param fn  回调函数
