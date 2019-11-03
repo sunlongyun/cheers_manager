@@ -1,16 +1,11 @@
 package goods.platform.controller;
-import com.caichao.chateau.app.constants.enums.UserTypeEnum;
-import com.caichao.chateau.app.constants.enums.Validity;
-import com.caichao.chateau.app.dto.CustomerInfoDto;
-import com.caichao.chateau.app.example.CustomerInfoExample;
-import com.caichao.chateau.app.example.CustomerInfoExample.Criteria;
-import com.caichao.chateau.app.service.CustomerInfoService;
+import com.chisong.green.farm.app.constants.enums.UserTypeEnum;
+import com.chisong.green.farm.app.constants.enums.Validity;
+import com.chisong.green.farm.app.example.CustomerInfoExample;
+import com.chisong.green.farm.app.example.CustomerInfoExample.Criteria;
+import com.chisong.green.farm.app.service.CustomerInfoService;
 import com.lianshang.generator.commons.PageInfo;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -22,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
  *
  */
 
-import goods.platform.commons.Response;
 @RequestMapping("/admin/customer")
 @RestController
 public class CustomerInfoController {

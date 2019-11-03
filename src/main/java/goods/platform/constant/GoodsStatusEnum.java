@@ -1,6 +1,6 @@
 package goods.platform.constant;
 
-import com.caichao.chateau.app.constants.enums.BaseServiceEnum;
+import com.chisong.green.farm.app.constants.enums.BaseServiceEnum;
 
 /**
  * 商品状态
@@ -16,12 +16,12 @@ public enum GoodsStatusEnum implements BaseServiceEnum {
 		this.code = code;
 		this.value = value;
 	}
-	
+
 	public int code(){
 		return this.code;
 	}
 	public String value(){
 		return this.value;
 	}
-	
+
 }

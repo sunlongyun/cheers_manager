@@ -1,6 +1,6 @@
 package goods.platform.constant;
 
-import com.caichao.chateau.app.constants.enums.BaseServiceEnum;
+import com.chisong.green.farm.app.constants.enums.BaseServiceEnum;
 
 /**
  * 支付状态 0-未支付，1-支付成功

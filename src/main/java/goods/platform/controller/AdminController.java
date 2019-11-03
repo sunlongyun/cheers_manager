@@ -1,12 +1,12 @@
 package goods.platform.controller;
 
-import com.caichao.chateau.app.constants.enums.UserStatusEnum;
-import com.caichao.chateau.app.constants.enums.UserTypeEnum;
-import com.caichao.chateau.app.constants.enums.Validity;
-import com.caichao.chateau.app.dto.CustomerInfoDto;
-import com.caichao.chateau.app.example.CustomerInfoExample;
-import com.caichao.chateau.app.example.CustomerInfoExample.Criteria;
-import com.caichao.chateau.app.service.CustomerInfoService;
+import com.chisong.green.farm.app.constants.enums.UserStatusEnum;
+import com.chisong.green.farm.app.constants.enums.UserTypeEnum;
+import com.chisong.green.farm.app.constants.enums.Validity;
+import com.chisong.green.farm.app.dto.CustomerInfoDto;
+import com.chisong.green.farm.app.example.CustomerInfoExample;
+import com.chisong.green.farm.app.example.CustomerInfoExample.Criteria;
+import com.chisong.green.farm.app.service.CustomerInfoService;
 import com.lianshang.generator.commons.PageInfo;
 import java.security.MessageDigest;
 import java.util.Arrays;
@@ -14,8 +14,8 @@ import java.util.zip.CRC32;
 
 import javax.servlet.http.HttpSession;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.embedded.undertow.UndertowServletWebServer;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import goods.platform.commons.Response;
-import lombok.extern.slf4j.Slf4j;
 /**
  * 管理员管理controller
  * @author 孙龙云
@@ -35,9 +34,9 @@ import lombok.extern.slf4j.Slf4j;
 public class AdminController {
 
 	public static final String ADMIN_USER = "adminUser";
+
 	@Autowired
 	private CustomerInfoService customerInfoService;
-
 	/**
 	 * 登录
 	 * @return

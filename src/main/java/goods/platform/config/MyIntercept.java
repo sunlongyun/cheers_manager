@@ -1,6 +1,6 @@
 package goods.platform.config;
 
-import com.caichao.chateau.app.dto.CustomerInfoDto;
+import com.chisong.green.farm.app.dto.CustomerInfoDto;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;

@@ -1,10 +1,9 @@
 package goods.platform.controller;
 
-import ch.qos.logback.core.util.StringCollectionUtil;
-import com.caichao.chateau.app.constants.enums.Validity;
-import com.caichao.chateau.app.example.SupplierExample;
-import com.caichao.chateau.app.example.SupplierExample.Criteria;
-import com.caichao.chateau.app.service.SupplierService;
+import com.chisong.green.farm.app.constants.enums.Validity;
+import com.chisong.green.farm.app.example.SupplierExample;
+import com.chisong.green.farm.app.example.SupplierExample.Criteria;
+import com.chisong.green.farm.app.service.SupplierService;
 import com.lianshang.generator.commons.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;

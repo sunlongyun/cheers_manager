@@ -18,7 +18,6 @@
   <name>cheers_manager</name>
   <description>cheers_manager</description>
 
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -30,7 +29,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
@@ -38,66 +36,21 @@
     </dependency>
 
     <dependency>
-      <groupId>com.caichao</groupId>
-      <artifactId>chateau</artifactId>
-      <version>0.0.1</version>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/com.github.lafa.twelvemonkeyspurejava.imageio/imageio-jpeg -->
-    <dependency>
-      <groupId>com.github.lafa.twelvemonkeyspurejava.imageio</groupId>
-      <artifactId>imageio-jpeg</artifactId>
-      <version>1.0.1</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/com.twelvemonkeys.imageio/imageio-jpeg -->
-    <dependency>
-      <groupId>com.twelvemonkeys.imageio</groupId>
-      <artifactId>imageio-jpeg</artifactId>
-      <version>3.3.2</version>
-    </dependency>
-
-
-    <!-- https://mvnrepository.com/artifact/com.google.zxing/core -->
-    <dependency>
-      <groupId>com.google.zxing</groupId>
-      <artifactId>core</artifactId>
-      <version>3.3.3</version>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/com.google.zxing/javase -->
-    <dependency>
-      <groupId>com.google.zxing</groupId>
-      <artifactId>javase</artifactId>
-      <version>3.3.3</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-aop</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>green.farm</groupId>
+      <artifactId>app</artifactId>
+      <version>0.0.1</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>slf4j-simple</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <!-- 指定该Main Class为全局的唯一入口 -->
-          <mainClass>goods.platform.GoodsApplication</mainClass>
-          <layout>ZIP</layout>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>repackage</goal><!--可以把依赖的包都打包到生成的Jar包中-->
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

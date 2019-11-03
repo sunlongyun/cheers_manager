@@ -1,8 +1,8 @@
 package goods.platform.controller;
 
-import com.caichao.chateau.app.constants.enums.Validity;
-import com.caichao.chateau.app.example.CountryChateauBeverageExample;
-import com.caichao.chateau.app.service.CountryChateauBeverageService;
+import com.chisong.green.farm.app.constants.enums.Validity;
+import com.chisong.green.farm.app.example.GoodsExample;
+import com.chisong.green.farm.app.service.GoodsService;
 import com.lianshang.generator.commons.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
  * @AUTHOR 孙龙云
  * @date 2019-07-18 21:53
  */
-@RestController
+@RestController("goodsMangerController")
 @RequestMapping("/admin/goods")
 public class GoodsController {
 
 	@Autowired
-	private CountryChateauBeverageService countryChateauBeverageService;
+	private GoodsService goodsService;
 
 	/**
 	 * 分页查询
@@ -29,8 +29,8 @@ public class GoodsController {
 	@RequestMapping("getPageInfo")
 	public PageInfo getPageInfo(Integer pageNo, Integer pageSize,
 		String title, String enTitle, String countryName, String chateauTitle, String supplierCompanyName) {
-		CountryChateauBeverageExample countryChateauBeverageExample = new CountryChateauBeverageExample();
-		CountryChateauBeverageExample.Criteria criteria = countryChateauBeverageExample.createCriteria()
+		GoodsExample goodsExample = new GoodsExample();
+		GoodsExample.Criteria criteria = goodsExample.createCriteria()
 			.andValidityEqualTo(Validity.AVAIL.code());
 
 		if(!StringUtils.isEmpty(title)) {
@@ -43,14 +43,9 @@ public class GoodsController {
 		if(!StringUtils.isEmpty(countryName)) {
 			criteria.andCountryNameLike("%" + countryName + "%");
 		}
-		if(!StringUtils.isEmpty(chateauTitle)) {
-			criteria.andChateauTitleLike("%" + chateauTitle + "%");
-		}
-		if(!StringUtils.isEmpty(supplierCompanyName)) {
-			criteria.andSupplierCompanyNameLike("%" + supplierCompanyName + "%");
-		}
 
-		PageInfo pageInfo = countryChateauBeverageService.getPageInfo(pageNo, pageSize, countryChateauBeverageExample);
+
+		PageInfo pageInfo = goodsService.getPageInfo(pageNo, pageSize, goodsExample);
 
 		return pageInfo;
 	}
