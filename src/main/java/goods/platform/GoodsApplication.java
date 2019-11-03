@@ -6,7 +6,7 @@ import goods.platform.annotation.ChiSongTechApplicationRun;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 
-@ComponentScan(basePackages = {"com.caichao.chateau","goods.platform"})
+@ComponentScan(basePackages = {"com.chisong.green.farm","goods.platform"})
 @ChiSongTechApplicationRun
 @PropertySource("file:${green_farm_path_file}")
 public class GoodsApplication {
