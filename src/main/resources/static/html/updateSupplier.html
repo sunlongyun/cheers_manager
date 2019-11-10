@@ -7,6 +7,7 @@
     <div class="form-group">
       <label class="col-sm-2 control-label">名称</label>
       <div class="col-sm-8">
+        <input type="hidden" name="id"/>
         <input type="text" name="companyName" class="form-control"/>
       </div>
     </div>
@@ -73,25 +74,26 @@
 </div>
 
 <script>
-  $(function () {
-    //查询省份
+
+  function getDetail(){
+    var id =getQueryString("id");
     $.ajax({
-      type: 'get',
-      dataType: 'json',
-      url: '/area/getProvinceList',
-      success: function (res) {
-        $("#province").html("<option value='-1'>选择省份</option>");
-        $("#city").html("<option value='-1'>选择城市</option>");
-        $("#area").html("").hide();
+      type:'get',
+      dataType:'json',
+      url:'/admin/supplier/getSupplier/'+id,
+      success:function(res){
+        var data = res.data;
+        setDataByFormId("form", data);
 
-        var list = res.data;
-        $.each(list, function (i, obj) {
-          var option = $("<option value='" + obj.id + "'>" + obj.name + "</option>");
-          $("#province").append(option);
-        })
+        //省市区回显
+        initAreaList(data);
+        initCityList(data);
+       initProvinceList(data);
       }
-
-    })
+    });
+  }
+  //初始化城市列表
+  function initCityList(data){
     //选择省份
     $("#province").change(function () {
       $("#city").html("<option value='-1'>选择城市</option>");
@@ -107,9 +109,43 @@
             var option = $("<option value='" + obj.id + "'>" + obj.name + "</option>");
             $("#city").append(option);
           })
+
+          if(data.cityId){
+            $("#city").val(data.cityId).trigger("change");
+          }
         }
+
+
       });
     });
+  }
+
+  //初始化省份列表
+  function initProvinceList(data){
+    //查询省份
+    $.ajax({
+      type: 'get',
+      dataType: 'json',
+      url: '/area/getProvinceList',
+      success: function (res) {
+        $("#province").html("<option value='-1'>选择省份</option>");
+        $("#city").html("<option value='-1'>选择城市</option>");
+        $("#area").html("").hide();
+
+        var list = res.data;
+        $.each(list, function (i, obj) {
+          var option = $("<option value='" + obj.id + "'>" + obj.name + "</option>");
+          $("#province").append(option);
+        })
+
+        $("#province").val(data.provinceId).trigger("change");
+
+      }
+    })
+  }
+
+  //初始化区县列表
+  function initAreaList(data){
     //选择城市
     $("#city").change(function () {
       $("#area").html("<option value='-1'>选择区/县</option>");
@@ -127,12 +163,16 @@
               $("#area").append(option);
             })
           }
-
+          $("#area").val(data.areaId)
         }
       });
 
     });
+  }
 
+
+  $(function () {
+    getDetail()
   });
   /**
    * 添加商品
@@ -141,13 +181,13 @@
     var data = getParamsByFormId("form");
     $.ajax({
       type:'post',
-      url:'/admin/supplier/addSupplier',
+      url:'/admin/supplier/saveSupplier',
       contentType:'application/json',
       dataType:'json',
       data:JSON.stringify(data) ,
       success:function(res){
         if(res.code=='0000'){
-          $.alert("添加成功", function(){
+          $.alert("修改成功", function(){
             redirectTo("/supplierList")
           })
         }

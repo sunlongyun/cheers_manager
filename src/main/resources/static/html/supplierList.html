@@ -71,7 +71,9 @@
   }
  //编辑供应商
   function update(id) {
-    var url ="/updateSupplier?id"+id;
+    var new_url =rootPath+"?id="+id;
+    window.history.pushState(null, null, new_url)
+    var url ="/updateSupplier";
     redirectTo(url);
   }
   //默认查询

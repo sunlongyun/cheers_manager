@@ -17,6 +17,7 @@ import goods.platform.commons.Response;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,14 +69,23 @@ public class SupplierController {
 	}
 
 	/**
+	 * 跟姐姐id查询供应商信息
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/getSupplier/{id}")
+	public Response getSupplier(@PathVariable Integer id){
+		SupplierDto supplierDto = supplierService.getById(id);
+		return Response.success(supplierDto);
+	}
+	/**
 	 * 添加供应商
 	 * @return
 	 */
-	@RequestMapping("/addSupplier")
+	@RequestMapping("/saveSupplier")
 	public Response addSupplier(@RequestBody SupplierDto supplierDto, HttpSession session){
-		CustomerInfoDto customerInfoDto = (CustomerInfoDto) session.getAttribute("adminUser");
-		supplierDto.setCreatorId(customerInfoDto.getId());
-		supplierDto.setCreatorName(customerInfoDto.getNickName());
+
+
 
 		Integer provinceId = supplierDto.getProvinceId();
 		Integer cityId = supplierDto.getCityId();
@@ -86,9 +96,20 @@ public class SupplierController {
 		ProvinceCityAreaDto area =  provinceCityAreaService.getById(areaId);
 		supplierDto.setProvince(province.getName());
 		supplierDto.setCity(city.getName());
-		supplierDto.setArea(area.getName());
+		if(null != area){
+			supplierDto.setArea(area.getName());
+		}
 
-		supplierService.save(supplierDto);
+
+		if(supplierDto.getId() == null){
+			CustomerInfoDto customerInfoDto = (CustomerInfoDto) session.getAttribute("adminUser");
+			supplierDto.setCreatorId(customerInfoDto.getId());
+			supplierDto.setCreatorName(customerInfoDto.getNickName());
+			supplierService.save(supplierDto);
+		}else{
+			supplierService.update(supplierDto);
+		}
+
 
 		return Response.success();
 	}

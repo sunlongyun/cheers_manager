@@ -281,7 +281,7 @@ function setDataByFormId(formId, data){
 		$.alert("对象不能为空")
 	}else{
 		for(key in data){
-			$("#"+formId).find("[name=]"+key).val(data[key]);
+			$("#"+formId).find("[name="+key+"]").val(data[key]);
 		}
 	}
 }

@@ -141,7 +141,7 @@
     var data = getParamsByFormId("form");
     $.ajax({
       type:'post',
-      url:'/admin/supplier/addSupplier',
+      url:'/admin/supplier/saveSupplier',
       contentType:'application/json',
       dataType:'json',
       data:JSON.stringify(data) ,
