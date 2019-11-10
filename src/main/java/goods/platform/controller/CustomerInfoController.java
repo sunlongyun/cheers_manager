@@ -12,6 +12,8 @@ import java.util.Arrays;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 /**
@@ -25,6 +27,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class CustomerInfoController {
 	@Autowired
 	private CustomerInfoService customerInfoService;
+
+	@PostMapping("/bindSupplier/{id}/{supplierId}")
+	public Response bindSupplier(@PathVariable Long id, @PathVariable Integer supplierId){
+		CustomerInfoDto customerInfoDto=  customerInfoService.getById(id);
+		if(null == customerInfoDto){
+			throw new RuntimeException("客户信息不存在");
+		}
+		customerInfoDto.setSupplierId(supplierId);
+		customerInfoService.update(customerInfoDto);
+		return Response.success();
+	}
 	/**
 	 * 添加客户信息
 	 * @param customerInfo

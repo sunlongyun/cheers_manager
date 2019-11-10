@@ -17,10 +17,30 @@
         class="glyphicon glyphicon-search"></span>&nbsp;查询
     </button>
   </form>
+  <div id="supplierDialog" style="display: none">
+    <select id="supplierId" class="form-control">
+      <option value="-1">请选择供应商</option>
+    </select>
+  </div>
   <table id="table" class="text-center table table-bordered table-hover  table-striped"></table>
 </div>
 <script src="html/js/bootstrap-paginator.js" type="text/javascript"></script>
 <script type="text/javascript">
+
+  $(function(){
+    $.ajax({
+      url:'/admin/supplier/getPageInfo?pageNo=1&pageSize=50',
+      type:'get',
+      dataType:'json',
+      success:function(res){
+        var dataList = res.dataList;
+        $.each(dataList, function(i, item){
+          var option = $("<option value='"+item.id+"'>"+item.companyName+"</option>");
+          $("#supplierId").append(option);
+        });
+      }
+    })
+  })
   /**
    ** 查询
    **/
@@ -38,6 +58,7 @@
           },
           {"text": "用户名", "title": "userName"},
           {"text": "用户类别", "title":"type.value"},
+          {"text": "供应商编号", "title":"supplierId"},
           {"text": "昵称", "title": "nickName"},
           {"text": "手机号", "title": "mobile"},
           {"text": "省份", "title": "province"},
@@ -64,6 +85,9 @@
               }
               if (obj.status.code == 2) {
                 opeHtml += "<a href='javascript:void(0)' onclick='unFrozen(" + obj.id + ")' title='解冻账户'>[解冻]</a>";
+              }
+              if (obj.type.code == 2) {
+                opeHtml += "<a href='javascript:void(0)' onclick='bind(" + obj.id + ")' title='关联供应商'>[绑定供应商]</a>";
               }
               return opeHtml;
             }
@@ -129,6 +153,29 @@
     })
   }
 
+  function bind(id) {
+    var html = $("#supplierDialog").html();
+    $.dialog("绑定供应商", html, function () {
+      var supplierId = $("div.modal-dialog").find("#supplierId").val();
+      if(supplierId == -1){
+        alert("请选择供应商");
+      }else{
+        var url ='/admin/customer/bindSupplier/'+id+'/'+supplierId;
+        alert(url)
+        $.ajax({
+          type:'post',
+          dataType:'json',
+          url:url,
+          success:function(res){
+            if(res.code='0000'){
+                redirectTo('/customerList')
+            }
+          }
+      })
+      }
+
+    });
+  }
   //添加
   function add() {
     var html = '<div class="form-group">' +
