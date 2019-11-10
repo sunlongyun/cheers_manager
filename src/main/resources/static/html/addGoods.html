@@ -1,6 +1,5 @@
 <header class="panel-heading">
-  商品管理 <button type="button" class="btn btn-info" onclick="search()" style="margin-left: 50px;"><span
-    class="glyphicon glyphicon glyphicon-plus"></span>&nbsp;添加商品
+  商品管理 / 添加商品
 </button>
 </header>
 <div class="panel-body">
@@ -91,8 +90,6 @@
    */
   function save() {
     var data = getParamsByFormId("form");
-    console.log("data------------------")
-    console.log(data)
     $.ajax({
       url:'/admin/goods/save',
       type:'post',

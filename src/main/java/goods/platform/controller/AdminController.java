@@ -44,7 +44,6 @@ public class AdminController {
 	@ResponseBody
 	@RequestMapping(value="/login", method=RequestMethod.POST)
 	public Response login(String userName, String password, HttpSession session){
-		log.info("customerInfoService:{}",customerInfoService.getById(2));
 		this.log.info("登录==={}", userName);
 		if(StringUtils.isEmpty(userName) || StringUtils.isEmpty(password)){
 			return Response.fail("用户名或者密码为空");

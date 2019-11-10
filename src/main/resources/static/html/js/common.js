@@ -313,8 +313,8 @@ function getParamsByFormId(formId){
 		});
 
 		//////////////所有的textarea/////////////////////////
-		var selects = form.find("textArea[name]");
-		selects.each(function (index, obj) {
+		var textAreas = form.find("textArea[name]");
+		textAreas.each(function (index, obj) {
 			var name = $(obj).attr("name");
 			var value = $(obj).val();
 			if (value) {
@@ -579,3 +579,10 @@ function formToJson(formId){
     return result;
 }
 
+/**
+ * 跳转至
+ * @param url
+ */
+function redirectTo(url){
+	$("#mainDiv").load(url);
+}
