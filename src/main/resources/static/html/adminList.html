@@ -58,7 +58,7 @@
           },
           {"text": "用户名", "title": "userName"},
           {"text": "用户类别", "title":"type.value"},
-          {"text": "供应商编号", "title":"supplierId"},
+          {"text": "供应商名称", "title":"companyName"},
           {"text": "昵称", "title": "nickName"},
           {"text": "手机号", "title": "mobile"},
           {"text": "省份", "title": "province"},
@@ -161,14 +161,13 @@
         alert("请选择供应商");
       }else{
         var url ='/admin/customer/bindSupplier/'+id+'/'+supplierId;
-        alert(url)
         $.ajax({
           type:'post',
           dataType:'json',
           url:url,
           success:function(res){
             if(res.code='0000'){
-                redirectTo('/customerList')
+                redirectTo('/adminList')
             }
           }
       })

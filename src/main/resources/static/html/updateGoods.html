@@ -1,5 +1,5 @@
 <header class="panel-heading">
-  商品管理 / 添加商品
+  商品管理 / 编辑商品
 </button>
 </header>
 <div class="panel-body">
@@ -8,6 +8,7 @@
       <label class="col-sm-2 control-label">商品名称</label>
       <div class="col-sm-8">
         <input type="text" name="title" class="form-control"/>
+        <input type="hidden" name="id"/>
       </div>
     </div>
     <div class="form-group">
@@ -37,21 +38,30 @@
     </div>
 
     <div class="form-group">
-      <label class="col-sm-2 control-label">单位进价</label>
+      <label class="col-sm-2 control-label">单位进价(元)</label>
       <div class="col-sm-8">
-        <input type="number" name="originPrice" class="form-control" min="0" value="0"/>
+        <input type="number" id="originPrice" name="originPrice" class="form-control" min="0" value="0"/>
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">售价</label>
+      <label class="col-sm-2 control-label">售价(元)</label>
       <div class="col-sm-8">
-        <input type="number" name="price" class="form-control" min="0" value="0"/>
+        <input type="number" id="price" name="price" class="form-control" min="0" value="0"/>
       </div>
     </div>
     <div class="form-group">
       <label class="col-sm-2 control-label">库存</label>
       <div class="col-sm-8">
         <input type="number" name="stock" class="form-control" min="0" value="0"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">状态</label>
+      <div class="col-sm-8">
+        <select name="status" class="form-control">
+          <option value="1">销售中</option>
+          <option value="0">已下架</option>
+        </select>
       </div>
     </div>
     <div class="form-group">
@@ -71,7 +81,7 @@
       <label class="col-sm-2 control-label"></label>
       <div class="col-sm-8">
         <button type="button" class="btn btn-primary" onclick="save()"><span
-            class="glyphicon glyphicon-floppy-saved"></span>&nbsp;添加商品
+            class="glyphicon glyphicon-floppy-saved"></span>&nbsp;编辑商品
         </button>
       </div>
     </div>
@@ -79,8 +89,8 @@
 </div>
 
 <script>
-  $(function () {
-    //查询供应商列表
+  //查询供应商列表
+  function getSupplier(data){
     $.ajax({
       type:'get',
       dataType:'json',
@@ -91,14 +101,43 @@
         $.each(list, function(index, item){
           var option = $("<option value='"+item.id+"'>"+item.companyName+"</option>");
           $("select[name='supplierId']").append(option);
-        })
+        });
 
+        $("select[name='supplierId']").val(data.supplierId);
+
+        $("#origin")
       }
 
     });
+  }
+  //获取商品详情
+  function getDetail() {
+    var id = getQueryString("id");
+    $.ajax({
+      url:'/admin/goods/detail/'+id,
+      type:'get',
+      dataType:'json',
+      success:function(res){
+        var data = res.data;
+        setDataByFormId("form", data);
+        getSupplier(data);
+
+       var topImages =  data.topImages;
+       var tailImages =  data.tailImages;
+       $("#topImages").val(topImages.join(","));
+       $("#tailImages").val(tailImages.join(","))
+
+       $("#originPrice").val(parseInt(data.originPrice)/100);
+        $("#price").val(parseInt(data.price)/100);
+      }
+    })
+  }
+
+  $(function () {
+    getDetail();
   });
   /**
-   * 添加商品
+   * 编辑商品
    */
   function save() {
     var data = getParamsByFormId("form");
@@ -106,7 +145,6 @@
     var tailImages = $("#tailImages").val().trim().split(",");
     data["topImages"] = topImages;
     data["tailImages"] = tailImages;
-  console.log(data);
     $.ajax({
       url:'/admin/goods/save',
       type:'post',

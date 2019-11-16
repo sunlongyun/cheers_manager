@@ -2,9 +2,11 @@ package goods.platform.controller;
 import com.chisong.green.farm.app.constants.enums.UserTypeEnum;
 import com.chisong.green.farm.app.constants.enums.Validity;
 import com.chisong.green.farm.app.dto.CustomerInfoDto;
+import com.chisong.green.farm.app.dto.SupplierDto;
 import com.chisong.green.farm.app.example.CustomerInfoExample;
 import com.chisong.green.farm.app.example.CustomerInfoExample.Criteria;
 import com.chisong.green.farm.app.service.CustomerInfoService;
+import com.chisong.green.farm.app.service.SupplierService;
 import com.lianshang.generator.commons.PageInfo;
 import goods.platform.commons.Response;
 import java.util.Arrays;
@@ -27,6 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class CustomerInfoController {
 	@Autowired
 	private CustomerInfoService customerInfoService;
+	@Autowired
+	private SupplierService supplierService;
 
 	@PostMapping("/bindSupplier/{id}/{supplierId}")
 	public Response bindSupplier(@PathVariable Long id, @PathVariable Integer supplierId){
@@ -34,7 +38,9 @@ public class CustomerInfoController {
 		if(null == customerInfoDto){
 			throw new RuntimeException("客户信息不存在");
 		}
+	    SupplierDto supplierDto =  supplierService.getById(supplierId);
 		customerInfoDto.setSupplierId(supplierId);
+		customerInfoDto.setCompanyName(supplierDto.getCompanyName());
 		customerInfoService.update(customerInfoDto);
 		return Response.success();
 	}

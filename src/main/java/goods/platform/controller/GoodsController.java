@@ -46,10 +46,20 @@ public class GoodsController {
 			+(int)(Math.random()*1000);
 		goodsDto.setSkuCode(skuCode);
 		goodsDto.setDetailPicUrl(goodsDto.getPicUrl());
-		goodsService.save(goodsDto);
-
+		goodsService.saveOrUpdateGoods(goodsDto);
 
 		return Response.success();
+	}
+
+	/**
+	 * 根据id查询商品详情
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/detail/{id}")
+	public Response getDetail(@PathVariable Long id){
+		GoodsDto goodsDto = goodsService.getDetailById(id);
+		return Response.success(goodsDto);
 	}
 	/**
 	 * 改变商品状态，（上架，下架)
