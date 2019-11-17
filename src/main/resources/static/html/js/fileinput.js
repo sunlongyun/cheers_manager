@@ -4155,19 +4155,19 @@
         initialPreviewConfig: [],
         initialPreviewThumbTags: [],
         previewThumbTags: {},
-        initialPreviewShowDelete: true,
+        initialPreviewShowDelete: false,
         initialPreviewDownloadUrl: '',
         removeFromPreviewOnError: false,
         deleteUrl: '',
         deleteExtraData: {},
-        overwriteInitial: true,
+        overwriteInitial: false,
         previewZoomButtonIcons: {
             prev: '<i class="glyphicon glyphicon-triangle-left"></i>',
             next: '<i class="glyphicon glyphicon-triangle-right"></i>',
             toggleheader: '<i class="glyphicon glyphicon-resize-vertical"></i>',
             fullscreen: '<i class="glyphicon glyphicon-fullscreen"></i>',
             borderless: '<i class="glyphicon glyphicon-resize-full"></i>',
-            close: '<i class="fa fa-trash"></i>'
+            close: '<i class="glyphicon glyphicon-remove"></i>'
         },
         previewZoomButtonClasses: {
             prev: 'btn btn-navigate',

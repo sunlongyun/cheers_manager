@@ -146,25 +146,25 @@ $.dialog = function(title, content, fn, params, height){
 					data:{
 						"newPass":newPass
 					},
-					success:function(res){
+					success:function(event,res){
 						alert(res.msg);
 						if(res.code == '0000'){
 							$.dialogClose();
 							window.location.href ='/login';
 						}
-						
+
 					},error:function(e){
 						$.alert("操作失败:"+e);
 					}
 				});
 			},null,50);
-			
+
 		});
 	})
 
-	
+
   /**
-	** 分页 
+	** 分页
 	**/
 	function showPage(url, currentPage, totalPages, fn, thisObj){
 		if(!currentPage){
@@ -281,7 +281,12 @@ function setDataByFormId(formId, data){
 		$.alert("对象不能为空")
 	}else{
 		for(key in data){
-			$("#"+formId).find("[name="+key+"]").val(data[key]);
+			try {
+				$("#"+formId).find("[name="+key+"]").val(data[key]);
+			}catch (e) {
+
+			}
+
 		}
 	}
 }
@@ -333,7 +338,7 @@ function getParamsByFormId(formId){
  * @param formId  入参form
  */
 	$.fn.search = function(url, fn,pageNo, formId, table, callBak){
-		
+
 		var pageDiv = $("#pageDiv");
 		if(pageDiv.size()==0){
 			pageDiv = $('<div id="pageDiv" style="text-align: center"> <ul id="pageLimit"></ul> </div>');
@@ -378,7 +383,7 @@ function getParamsByFormId(formId){
 //			var href = window.location.href+"?page="+page;
 //            window.history.pushState(null, null, href);
 //		}
-      
+
 		//曾经保存过参数，且当前表单参数为空，则用之前的参数查询
 //		if(attrNum == 0 && params.pageNo == 0 && sessionStorage.getItem(page)){
 //			params = JSON.parse(sessionStorage.getItem(page)) ;
@@ -426,25 +431,25 @@ function getParamsByFormId(formId){
 	 * @param times
 	 * @returns
 	 */
-	Date.prototype.format = function(fmt) { 
-	     var o = { 
-	        "M+" : this.getMonth()+1,                 //月份 
-	        "d+" : this.getDate(),                    //日 
-	        "h+" : this.getHours(),                   //小时 
-	        "m+" : this.getMinutes(),                 //分 
-	        "s+" : this.getSeconds(),                 //秒 
-	        "q+" : Math.floor((this.getMonth()+3)/3), //季度 
-	        "S"  : this.getMilliseconds()             //毫秒 
-	    }; 
+	Date.prototype.format = function(fmt) {
+	     var o = {
+	        "M+" : this.getMonth()+1,                 //月份
+	        "d+" : this.getDate(),                    //日
+	        "h+" : this.getHours(),                   //小时
+	        "m+" : this.getMinutes(),                 //分
+	        "s+" : this.getSeconds(),                 //秒
+	        "q+" : Math.floor((this.getMonth()+3)/3), //季度
+	        "S"  : this.getMilliseconds()             //毫秒
+	    };
 	    if(/(y+)/.test(fmt)) {
-	            fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
+	            fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
 	    }
 	     for(var k in o) {
 	        if(new RegExp("("+ k +")").test(fmt)){
 	             fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
 	         }
 	     }
-	    return fmt; 
+	    return fmt;
 	}
 	function date_format(times){
 		if(!times){
@@ -585,4 +590,102 @@ function formToJson(formId){
  */
 function redirectTo(url){
 	$("#mainDiv").load(url);
+}
+
+/**
+ * @param dir 文件目录
+ * @param fileId 文件上传组件的id
+ * @param fileName 文件名，不填写则自动生成
+ * @param urlName input输入框名字，用来承载上传成功后的下载路径
+ */
+function initFile(fileId,dir, fileName, urlName, initFileName){
+	//初始化token
+	var url ='/qiniu/token';
+	if(fileName){
+		url +="?fileName="+fileName;
+		if(dir){
+			url +="&dir="+dir
+		}
+	}else{
+		if(dir){
+			url +="?dir="+dir
+		}
+	}
+
+	fileConfig = {};
+	$.ajax({
+		type:'get',
+		url:url,
+		dataType:'json',
+		success:function(res){
+			var data = res.data;
+			console.log(data)
+			fileConfig["token"] = data.token;
+			fileConfig["uploadUrl"] = data.uploadUrl;
+			fileConfig["key"] = data.key;
+			fileConfig["download"] = data.download;
+
+			initFileUpload(fileId, urlName, initFileName)
+		}
+	});
+
+}
+//初始化图片上传插件
+function initFileUpload(fileId, urlName, initFileName) {
+	if(!initFileName) initFileName= [];
+	var initFiles = [];
+	$.each(initFileName, function(i, url){
+		var img = "<img src='"+url+"'/>";
+		initFiles.push(img)
+	})
+	//商品图片上传
+	$('#'+fileId).fileinput({
+		theme: 'fa',
+		language: 'fr',
+		uploadUrl:fileConfig["uploadUrl"],
+		allowedFileExtensions: ['jpg', 'png', 'gif'],
+		allowedFileTypes: ['image'],
+		showRemove: false,
+		initialPreview: initFiles,
+		uploadExtraData:{
+			"token":fileConfig["token"],
+			"key":fileConfig["key"]
+		},
+		showUpload: false
+	}).on("fileuploaded", function(res) {
+		console.log("res---------------")
+		$.alert("图片上传成功", function () {
+
+			var url = fileConfig["download"]+fileConfig["key"];
+			if(urlName){
+			 var  multiple = 	$('#'+fileId).attr("multiple");
+			 if(multiple){
+				 var v = $("[name='"+urlName+"']").val();
+				 if(v && v.trim()!=''){
+					 v = v+ ",";
+				 }
+				 v = v+url;
+				 $("[name='"+urlName+"']").val(v);
+			 }else{
+				 $("[name='"+urlName+"']").val(url);
+			 }
+			}
+
+			//刷新fileConfig 为下一个图片上传使用
+			$.ajax({
+				type: 'get',
+				url: url,
+				dataType: 'json',
+				success: function (res) {
+					var data = res.data;
+					fileConfig["token"] = data.token;
+					fileConfig["uploadUrl"] = data.uploadUrl;
+					fileConfig["key"] = data.key;
+					fileConfig["download"] = data.download;
+				}
+			});
+
+		})
+
+	});
 }

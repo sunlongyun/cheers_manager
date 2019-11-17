@@ -46,6 +46,9 @@ public class GoodsController {
 			+(int)(Math.random()*1000);
 		goodsDto.setSkuCode(skuCode);
 		goodsDto.setDetailPicUrl(goodsDto.getPicUrl());
+		if(StringUtils.isEmpty(goodsDto.getMinPicUrl())){
+			goodsDto.setMinPicUrl(goodsDto.getPicUrl());
+		}
 		goodsService.saveOrUpdateGoods(goodsDto);
 
 		return Response.success();
