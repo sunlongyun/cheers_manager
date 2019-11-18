@@ -20,31 +20,76 @@
     <div class="form-group">
       <label class="col-sm-2 control-label">商品图片地址</label>
       <div class="col-sm-8">
-        <input type="text" name="picUrl"   class="form-control"  value=""/>
+        <input type="hidden" name="picUrl"   class="form-control"  value=""/>
         <input type="file" id="picUrl" name="file"  class="form-control"  value=""/>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label class="col-sm-2 control-label">统一规格</label>
+      <div class="col-sm-8">
+        <input type="radio" name="uniformSpecs" checked value="1"/> 是
+        &nbsp;  &nbsp;
+        <input type="radio" name="uniformSpecs"   value="0"/> 否
       </div>
     </div>
 
     <div class="form-group">
       <label class="col-sm-2 control-label">规格</label>
-      <div class="col-sm-8">
+      <div class="col-sm-8 uniformSpecs_1">
         <input type="text" name="specs" class="form-control"  value=""/>
+      </div>
+      <div class="col-sm-8 uniformSpecs_0"  style="display: none">
+
+         <table class="table table-hover table-bordered table-condensed">
+           <thead>
+            <tr>
+              <td>
+                <input type="text" name="specsName" class="form-control" placeholder="规格名称">
+              </td>
+              <td>
+                <input type="number" name="specsOriginPrice" class="form-control" placeholder="进货价格" min="0">
+              </td>
+              <td>
+                <input type="number" name="specsPrice" class="form-control" placeholder="销售价格" min="0">
+              </td>
+              <td>
+                <input type="number" name="specsStock" class="form-control" placeholder="库存" min="0">
+              </td>
+              <td>
+                <a href="javascript:$.alert('正在开发中，请稍后')">
+                  <span class="glyphicon glyphicon-plus"></span>
+                </a>
+              </td>
+            </tr>
+           </thead>
+           <tbody>
+             <tr class="bg-primary text-center">
+               <th>规格</th>
+               <th>进价</th>
+               <th>售价</th>
+               <th>库存</th>
+               <th>操作</th>
+             </tr>
+           </tbody>
+         </table>
       </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group uniformSpecs_1">
       <label class="col-sm-2 control-label">单位进价</label>
       <div class="col-sm-8">
         <input type="number" name="originPrice" class="form-control" min="0" value="0"/>
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group uniformSpecs_1">
       <label class="col-sm-2 control-label">售价</label>
       <div class="col-sm-8">
         <input type="number" name="price" class="form-control" min="0" value="0"/>
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group uniformSpecs_1">
       <label class="col-sm-2 control-label">库存</label>
       <div class="col-sm-8">
         <input type="number" name="stock" class="form-control" min="0" value="0"/>
@@ -78,6 +123,16 @@
 
 <script>
   $(function () {
+    $("input[name='uniformSpecs']").change(function () {
+      var value = $(this).val();
+      if(value == 1){
+        $("div.uniformSpecs_1").show();
+        $("div.uniformSpecs_0").hide();
+      }else if(value == 0){
+        $("div.uniformSpecs_1").hide();
+        $("div.uniformSpecs_0").show();
+      }
+    });
     //查询供应商列表
     $.ajax({
       type:'get',

@@ -612,7 +612,6 @@ function initFile(fileId,dir, fileName, urlName, initFileName){
 		}
 	}
 
-	fileConfig = {};
 	$.ajax({
 		type:'get',
 		url:url,
@@ -620,18 +619,13 @@ function initFile(fileId,dir, fileName, urlName, initFileName){
 		success:function(res){
 			var data = res.data;
 			console.log(data)
-			fileConfig["token"] = data.token;
-			fileConfig["uploadUrl"] = data.uploadUrl;
-			fileConfig["key"] = data.key;
-			fileConfig["download"] = data.download;
-
-			initFileUpload(fileId, urlName, initFileName)
+			initFileUpload(fileId, urlName, initFileName, data.token, data.uploadUrl, data.download)
 		}
 	});
 
 }
 //初始化图片上传插件
-function initFileUpload(fileId, urlName, initFileName) {
+function initFileUpload(fileId, urlName, initFileName,token, uploadUrl, download) {
 	if(!initFileName) initFileName= [];
 	var initFiles = [];
 	$.each(initFileName, function(i, url){
@@ -642,21 +636,22 @@ function initFileUpload(fileId, urlName, initFileName) {
 	$('#'+fileId).fileinput({
 		theme: 'fa',
 		language: 'fr',
-		uploadUrl:fileConfig["uploadUrl"],
+		uploadUrl:uploadUrl,
 		allowedFileExtensions: ['jpg', 'png', 'gif'],
 		allowedFileTypes: ['image'],
 		showRemove: false,
 		initialPreview: initFiles,
 		uploadExtraData:{
-			"token":fileConfig["token"],
-			"key":fileConfig["key"]
+			"token":token
+			// "key":fileConfig["key"]
 		},
 		showUpload: false
-	}).on("fileuploaded", function(res) {
+	}).on("fileuploaded", function(event,res) {
 		console.log("res---------------")
 		$.alert("图片上传成功", function () {
-
-			var url = fileConfig["download"]+fileConfig["key"];
+		   console.log(res)
+			var response =  res.response;
+			var url = download + response.key;
 			if(urlName){
 			 var  multiple = 	$('#'+fileId).attr("multiple");
 			 if(multiple){
@@ -671,19 +666,6 @@ function initFileUpload(fileId, urlName, initFileName) {
 			 }
 			}
 
-			//刷新fileConfig 为下一个图片上传使用
-			$.ajax({
-				type: 'get',
-				url: url,
-				dataType: 'json',
-				success: function (res) {
-					var data = res.data;
-					fileConfig["token"] = data.token;
-					fileConfig["uploadUrl"] = data.uploadUrl;
-					fileConfig["key"] = data.key;
-					fileConfig["download"] = data.download;
-				}
-			});
 
 		})
 

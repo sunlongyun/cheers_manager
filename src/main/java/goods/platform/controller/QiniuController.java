@@ -73,17 +73,17 @@ public class QiniuController {
 			}
 		}else{
 			fileName =  LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-			int randowNumber = (int)(Math.random()*1000);
+			int randowNumber = (int)(Math.random()*100);
 			fileName += randowNumber+".jpg";
 			keyBuilder.append(fileName);
 		}
 		String key  = keyBuilder.toString();
-		String token = qiniuAuthUtil.uploadToken(bucket, key);
+		String token = qiniuAuthUtil.uploadToken(bucket);
 
 		Map<String,String> dataMap = new HashMap<>();
 		dataMap.put("token",token);
 		dataMap.put("uploadUrl", uploadUrl);
-		dataMap.put("key", key);
+//		dataMap.put("key", key);
 	    dataMap.put("download", download);
 
 		return Response.success(dataMap);
