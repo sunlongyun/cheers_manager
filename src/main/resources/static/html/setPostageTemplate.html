@@ -1,0 +1,270 @@
+<header class="panel-heading">
+  商品管理 / 设置运费
+</button>
+</header>
+<div class="panel-body">
+  <form class="form-horizontal" id="form" role="form">
+    <div class="form-group">
+      <div class="col-sm-12">
+       <table class="table table-condensed table-hover table-striped">
+         <caption>
+           <h1><button type="button" class="btn btn-primary" style="float:left" onclick="save()"><span
+               class="glyphicon glyphicon-floppy-saved"></span>&nbsp;保存
+           </button>
+             运费模板设置<span style="font-size: 12px;">(多个模板项同时符合订单时，按照模板项的权重来决定)</span></h1>
+         </caption>
+         <thead>
+         <tr>
+           <td>
+             <select class="form-control" name="unit">
+               <option selected value="1">件</option>
+               <option value="2">袋</option>
+               <option value="3">公斤</option>
+               <option value="4">斤</option>
+               <option value="5">瓶</option>
+               <option value="6">升</option>
+               <option value="7">箱</option>
+             </select>
+           </td>
+           <td>
+             <input type="number" class="form-control" name="amount" min="0" placeholder="单位运费(元)">
+           </td>
+           <td>
+             <input type="number" class="form-control" name="freeTotalAmount" placeholder="包邮数量"/>
+           </td>
+           <td>
+             <select name="province" id="province" class="form-control" multiple>
+             </select>
+           </td>
+           <td>
+             <input type="number" name="weight" class="form-control" min="0" max="99" placeholder="权重" value="5"/>
+           </td>
+           <td>
+             <a href="javascript:addItem()">
+               <span class="glyphicon glyphicon-plus"></span>
+             </a>
+           </td>
+         </tr>
+         </thead>
+         <tbody id="tbody">
+         <tr>
+           <th>单位</th><th>运费(元)</th><th>包邮最低数量</th><th width="25%">省份</th><th>权重</th><th>操作</th>
+         </tr>
+         </tbody>
+       </table>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-2 control-label"></label>
+      <div class="col-sm-8">
+
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+  var unitList = [
+      {"unit":1,"unitName":"件"},
+      {"unit":2,"unitName":"袋"},
+      {"unit":3,"unitName":"千克"},
+      {"unit":4,"unitName":"斤"},
+      {"unit":5,"unitName":"瓶"},
+      {"unit":6,"unitName":"升"},
+      {"unit":7,"unitName":"箱"}
+      ];
+var povinceList = [];
+
+//获取省份名称
+function getProvinceName(id){
+  var len = povinceList.length;
+  for(var i=0;i<len;i++){
+    if(povinceList[i].id == id){
+      return povinceList[i].name;
+    }
+  }
+  return "";
+}
+  //根据单位查询
+  function getUnitObjByUnit(unit){
+    var len = unitList.length;
+    for(var i=0;i<len;i++){
+      if(unitList[i].unit == unit){
+        return unitList[i];
+      }
+    }
+   return {};
+  }
+
+  //根据单位查询
+  function getUnitObjByName(unitName){
+    var len = unitList.length;
+    for(var i=0;i<len;i++){
+      if(unitList[i].unitName == unitName){
+        return unitList[i];
+      }
+    }
+    return {};
+  }
+  //获取运费模板设置
+  function getPostTempalteList(){
+    //商品id
+    var id = getQueryString("id");
+    var url = '/template/postage-template/list/'+id;
+    $.ajax({
+      type:'get',
+      dataType:'json',
+      url: url,
+      success:function(res){
+        var dataList = res.data;
+        if(dataList){
+          $.each(dataList, function(i, obj){
+            var unit = obj.unit;
+            var unitObj = getUnitObjByUnit(unit);
+            var unitName = unitObj.unitName;
+            var amount = parseFloat(obj.amount)/100;
+            var freeTotalAmount = "";
+            if(obj.freeTotalAmount){
+              freeTotalAmount = parseFloat(obj.freeTotalAmount)/100;
+            }
+            addDFeeTemplate(unitName, amount,freeTotalAmount , obj.provinces,
+                obj.weight);
+
+          })
+        }
+      }
+    })
+  }
+
+  $(function () {
+
+    getPostTempalteList();
+
+    //查询省份
+    $.ajax({
+      type: 'get',
+      dataType: 'json',
+      url: '/area/getProvinceList',
+      success: function (res) {
+        var list = res.data;
+        $("#province").html("")
+        $.each(list, function (i, obj) {
+          var option = $("<option value='" + obj.id + "'>" + obj.name + "</option>");
+          povinceList.push(obj);
+          $("#province").append(option);
+        })
+
+
+      }
+    })
+  })
+  /**
+   * 添加费项
+   */
+  function addItem() {
+    var unit = $("select[name='unit']").val();
+    var unitObj = getUnitObjByUnit(unit);
+    var unitName = unitObj.unitName;
+    var amount = $("input[name='amount']").val();
+    var freeTotalAmount = $("input[name='freeTotalAmount']").val();
+    var provinces = $("select[name='province']").val();
+    var weight = $("input[name='weight']").val();
+    var provinceNames ="";
+    $.each(provinces, function(i, id){
+     var provinceName = getProvinceName(id);
+      provinceNames += provinceName+",";
+    })
+    var ll  = provinceNames.length;
+    if(ll >0){
+      provinceNames = provinceNames.substr(0, ll-1);
+    }
+
+    if(!amount){
+      $.alert("运费不能为空");
+      return ;
+    }
+    if(!provinces){
+      $.alert("省份不能为空");
+      return ;
+    }
+    if(!weight){
+      $.alert("权重不能为空");
+      return ;
+    }
+    addDFeeTemplate(unitName,amount,freeTotalAmount,provinceNames, weight);
+
+  }
+
+  //添加费项模板
+  function addDFeeTemplate(unitName,amount,freeTotalAmount,provinceNames, weight) {
+    var tr = $("<tr></tr>");
+    var td0 = $("<td>"+unitName+"</td>");
+    var td1 = $("<td>"+amount+"</td>");
+    var td2= $("<td>"+freeTotalAmount+"</td>");
+    var td3 = $("<td>"+provinceNames+"</td>");
+    var td4 = $("<td>"+weight+"</td>");
+    var aObj = $('<a href="javascript:void(0)" title="删除"><span class="glyphicon glyphicon-remove"></span></a>');
+    var td5 = $("<td></td>").append(aObj);
+    tr.append(td0).append(td1).append(td2).append(td3).append(td4).append(td5);
+    aObj.click(function () {
+      $(this).parents("tr").remove();
+    })
+
+    $("#tbody").append(tr);
+
+  }
+
+  //保存模板设置
+  function save() {
+    var postageTemplateDtos = [];
+    var goodsId = getQueryString("id");
+    var trs = $("#tbody").find("tr");
+    $.each(trs, function(i, tr){
+      if(i==0){
+        return;
+      }
+      var tds = $(tr).find("td");
+      var unitName = tds.eq(0).html();
+      var unitObj = getUnitObjByName(unitName.trim());
+      var unit  = unitObj.unit;
+      var amount  = parseInt(parseFloat(tds.eq(1).html())*100) ;
+      var freeTotalAmount = tds.eq(2).html();
+      if(freeTotalAmount){
+        freeTotalAmount = parseInt(parseFloat(freeTotalAmount)*100) ;
+      }
+      var provinces  = tds.eq(3).html();
+      var weight = tds.eq(4).html();
+      var obj =
+          {
+            "goodsId":goodsId,
+            "unit":unit,
+            "amount":amount,
+            "provinces":provinces,
+            "weight":weight
+          };
+      if(freeTotalAmount){
+        obj["freeTotalAmount"] = freeTotalAmount;
+      }
+
+      postageTemplateDtos.push(obj);
+    })
+
+    $.ajax({
+      type:'post',
+      dataType:'json',
+      contentType:"application/json",
+      data:JSON.stringify(postageTemplateDtos),
+      url:'/template/postage-template/save',
+      success:function(res){
+        if(res.code ='0000'){
+          $.alert("设置成功", function () {
+            redirectTo("/goodsList");
+          })
+        }
+      }
+    })
+  }
+</script>
+</body>
+</html>

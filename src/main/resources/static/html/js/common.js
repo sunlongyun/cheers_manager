@@ -146,10 +146,9 @@ $.dialog = function(title, content, fn, params, height){
 					data:{
 						"newPass":newPass
 					},
-					success:function(event,res){
-						alert(res.msg);
+					success:function(res){
 						if(res.code == '0000'){
-							$.dialogClose();
+							alert(res.msg)
 							window.location.href ='/login';
 						}
 

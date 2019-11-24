@@ -162,6 +162,11 @@
 		      <input type="text" placeholder="用户名" autocomplete="off" name="userName"/>
 		      <input type="password" placeholder="密码" name="password"/>
 		      <button id="ll">登　录</button>
+					<p style="text-align: left">
+						<a href="javascript:alert('暂未开启')"><img width="30px" src="https://dingdang.tom235.com/weixin.png"></a>
+						&nbsp;
+						<a href="javascript:alert('暂未开启')"><img width="30px"  src="https://dingdang.tom235.com/alipay.png"></a>
+					</p>
 		    </form>
 		  </div>
 		</div>
@@ -171,18 +176,7 @@
 	<script type="text/javascript">
 		$(function(){
 			
-			$("form.login-form").find("a").click(function(){
-				$("form.login-form").hide();
-				$("form.register-form").show();
-				$("input[name='userName']").val("");
-				$("input[name='password']").val("");
-			});
-			$("form.register-form").find("a").click(function(){
-				$("form.login-form").show();
-				$("form.register-form").hide();
-			});
-			
-			//登录 
+			//登录
 			$("#ll").click(function(){
 				var userName = $("form.login-form").find("input[name='userName']").val();
 				var password = $("form.login-form").find("input[name='password']").val();
@@ -213,43 +207,6 @@
 				return false;
 			});
 			
-			//注册
-			$("#cc").click(function(){
-				
-				var userName = $("form.register-form").find("input[name='userName']").val();
-				var password = $("form.register-form").find("input[name='password']").val();
-				var roomCards = $("form.register-form").find("input[name='roomCards']").val();
-				var remark = $("form.register-form").find("input[name='remark']").val();
-				if(!userName){
-					alert("请填写用户名!");
-					return false;
-				}else if(!password){
-					alert("请填写密码!");
-					return false;
-				}
-				$.ajax({
-					url: '/admin/addUser',
-					type: 'post',
-					dataType:'json',
-					data:{
-						"userName" : userName,
-						"password" : password,
-						"roomCards" : roomCards,
-						"remark" : remark
-					},
-					success:function(res){
-						if("success" == res.code){
-							window.location.href = "/";
-						}else{
-							alert(res.msg);
-						}
-					},
-					error:function(){
-						alert("请求出错");
-					}
-				});
-				return false;
-			});
 		})
 	</script>
 </body>

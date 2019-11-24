@@ -35,7 +35,6 @@
           {"text": "名称", "title": "title"},
           {"text": "供应商", "title": "supplierCompanyName"},
           {"text": "零售价", "title": "price"},
-          {"text": "规格", "title": "specs"},
           {"text": "状态", format:function(obj){
             var statusObj = obj.status;
             var html = "";
@@ -53,6 +52,8 @@
           {"text": "操作", "format":function(obj){
               var html
                   ="<a href='javascript:update("+obj.id+")' title='编辑'><span class='glyphicon glyphicon-edit'></span></a>";
+              html+="&nbsp;"
+              html +="<a href='javascript:setTemplate("+obj.id+")'>【运费】</a>";
               return html;
             }}
         ]
@@ -99,6 +100,14 @@
     var new_url =rootPath+"?id="+id;
     window.history.pushState(null, null, new_url)
     var url ="/updateGoods";
+    redirectTo(url);
+  }
+
+  //运费模板设置
+  function setTemplate(id) {
+    var new_url =rootPath+"?id="+id;
+    window.history.pushState(null, null, new_url)
+    var url ="/setPostageTemplate";
     redirectTo(url);
   }
 </script>
