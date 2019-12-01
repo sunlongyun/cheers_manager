@@ -258,9 +258,7 @@ function getProvinceName(id){
       url:'/template/postage-template/save',
       success:function(res){
         if(res.code ='0000'){
-          $.alert("设置成功", function () {
-            redirectTo("/goodsList");
-          })
+          $.alert("设置成功")
         }
       }
     })
