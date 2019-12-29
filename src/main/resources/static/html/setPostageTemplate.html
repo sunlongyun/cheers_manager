@@ -30,10 +30,17 @@
              <input type="number" class="form-control" name="amount" min="0" placeholder="单位运费(元)">
            </td>
            <td>
-             <input type="number" class="form-control" name="freeTotalAmount" placeholder="包邮数量"/>
+             <input type="number" class="form-control" name="freeNum" placeholder="满X件包邮"/>
            </td>
            <td>
-             <select name="province" id="province" class="form-control" multiple>
+             <input type="number" class="form-control" name="freeTotalAmount" placeholder="满X元包邮"/>
+           </td>
+           <td>
+             <input type="number" class="form-control" value="-1" name="incUnitNum"
+                    placeholder="每X件商品增加一次邮费，-1表示不增加"/>
+           </td>
+           <td>
+             <select name="province" style="height: 300px;" id="province" class="form-control" multiple>
              </select>
            </td>
            <td>
@@ -48,7 +55,8 @@
          </thead>
          <tbody id="tbody">
          <tr>
-           <th>单位</th><th>运费(元)</th><th>包邮最低数量</th><th width="25%">省份</th><th>权重</th><th>操作</th>
+           <th>单位</th><th>运费(元)</th><th>满X件包邮</th><th>满X元包邮</th><th>每X件增加一次邮费</th><th width="25%">省份</th><th>权重</th><th>
+           操作</th>
          </tr>
          </tbody>
        </table>
@@ -124,11 +132,19 @@ function getProvinceName(id){
             var unitObj = getUnitObjByUnit(unit);
             var unitName = unitObj.unitName;
             var amount = parseFloat(obj.amount)/100;
+            var freeNum = obj.freeNum;
+            if(!freeNum){
+              freeNum = "";
+            }
+            var incUnitNum = obj.incUnitNum;
+            if(!incUnitNum){
+              incUnitNum="";
+            }
             var freeTotalAmount = "";
             if(obj.freeTotalAmount){
               freeTotalAmount = parseFloat(obj.freeTotalAmount)/100;
             }
-            addDFeeTemplate(unitName, amount,freeTotalAmount , obj.provinces,
+            addDFeeTemplate(unitName, amount,freeNum, freeTotalAmount ,incUnitNum, obj.provinces,
                 obj.weight);
 
           })
@@ -167,7 +183,9 @@ function getProvinceName(id){
     var unitObj = getUnitObjByUnit(unit);
     var unitName = unitObj.unitName;
     var amount = $("input[name='amount']").val();
+    var freeNum = $("input[name='freeNum']").val();
     var freeTotalAmount = $("input[name='freeTotalAmount']").val();
+    var incUnitNum = $("input[name='incUnitNum']").val();
     var provinces = $("select[name='province']").val();
     var weight = $("input[name='weight']").val();
     var provinceNames ="";
@@ -192,21 +210,23 @@ function getProvinceName(id){
       $.alert("权重不能为空");
       return ;
     }
-    addDFeeTemplate(unitName,amount,freeTotalAmount,provinceNames, weight);
+    addDFeeTemplate(unitName,amount,freeNum, freeTotalAmount,incUnitNum, provinceNames, weight);
 
   }
 
   //添加费项模板
-  function addDFeeTemplate(unitName,amount,freeTotalAmount,provinceNames, weight) {
+  function addDFeeTemplate(unitName,amount,freeNum,freeTotalAmount,incUnitNum,provinceNames, weight) {
     var tr = $("<tr></tr>");
     var td0 = $("<td>"+unitName+"</td>");
     var td1 = $("<td>"+amount+"</td>");
-    var td2= $("<td>"+freeTotalAmount+"</td>");
-    var td3 = $("<td>"+provinceNames+"</td>");
-    var td4 = $("<td>"+weight+"</td>");
+    var td2= $("<td>"+freeNum+"</td>");
+    var td3= $("<td>"+freeTotalAmount+"</td>");
+    var td4= $("<td>"+incUnitNum+"</td>");
+    var td5 = $("<td>"+provinceNames+"</td>");
+    var td6 = $("<td>"+weight+"</td>");
     var aObj = $('<a href="javascript:void(0)" title="删除"><span class="glyphicon glyphicon-remove"></span></a>');
-    var td5 = $("<td></td>").append(aObj);
-    tr.append(td0).append(td1).append(td2).append(td3).append(td4).append(td5);
+    var td7 = $("<td></td>").append(aObj);
+    tr.append(td0).append(td1).append(td2).append(td3).append(td4).append(td5).append(td6).append(td7);
     aObj.click(function () {
       $(this).parents("tr").remove();
     })
@@ -229,18 +249,27 @@ function getProvinceName(id){
       var unitObj = getUnitObjByName(unitName.trim());
       var unit  = unitObj.unit;
       var amount  = parseInt(parseFloat(tds.eq(1).html())*100) ;
-      var freeTotalAmount = tds.eq(2).html();
+
+
+      var freeNum = tds.eq(2).html();
+
+      var freeTotalAmount = tds.eq(3).html();
       if(freeTotalAmount){
         freeTotalAmount = parseInt(parseFloat(freeTotalAmount)*100) ;
       }
-      var provinces  = tds.eq(3).html();
-      var weight = tds.eq(4).html();
+
+      var incUnitNum = tds.eq(4).html();
+
+      var provinces  = tds.eq(5).html();
+      var weight = tds.eq(6).html();
       var obj =
           {
             "goodsId":goodsId,
             "unit":unit,
             "amount":amount,
+            "freeNum":freeNum,
             "provinces":provinces,
+            "incUnitNum":incUnitNum,
             "weight":weight
           };
       if(freeTotalAmount){

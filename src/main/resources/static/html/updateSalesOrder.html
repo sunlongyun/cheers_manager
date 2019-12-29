@@ -19,6 +19,7 @@
            <tr class="text-center text-info">
              <th>商品</th>
              <th>数量</th>
+             <th>规格</th>
              <th>单价</th>
              <th>总价</th>
            </tr>
@@ -32,49 +33,44 @@
     <div class="form-group">
       <label class="col-sm-2 control-label">顾客姓名</label>
       <div class="col-sm-8">
-        <input type="text" name="customerName"  class="form-control"/>
+        <input type="text"  name="customerName"  class="form-control notEdit"/>
       </div>
     </div>
     <div class="form-group">
       <label class="col-sm-2 control-label">顾客手机号</label>
       <div class="col-sm-8">
-        <input type="text" name="mobile"  class="form-control"/>
+        <input type="text" name="mobile"  class="form-control notEdit"/>
       </div>
     </div>
     <div class="form-group">
       <label class="col-sm-2 control-label">订单状态</label>
       <div class="col-sm-8">
-        <select class="form-control" name="status">
-          <option value="0">下单待支付</option>
-          <option value="1">下单已支付</option>
+        <select class="form-control notEdit" name="status">
+          <option value="0">订单待支付</option>
+          <option value="1">订单已支付</option>
           <option value="2">卖家已发货</option>
           <option value="3">买家已收货</option>
           <option value="4">订单已取消</option>
         </select>
       </div>
     </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">顾客手机号</label>
-      <div class="col-sm-8">
-        <input type="text" name="mobile"  class="form-control"/>
-      </div>
-    </div>
+
     <div class="form-group">
       <label class="col-sm-2 control-label">邮费(单位:元)</label>
       <div class="col-sm-8">
-        <input type="number" name="postage" id="postage" class="form-control"/>
+        <input type="number" name="postage" id="postage" class="form-control notEdit"/>
       </div>
     </div>
     <div class="form-group">
       <label class="col-sm-2 control-label">商品总金额(单位:元)</label>
       <div class="col-sm-8">
-        <input type="number" name="totalAmount" id="totalAmount" class="form-control"/>
+        <input type="number" name="totalAmount" id="totalAmount" class="form-control notEdit"/>
       </div>
     </div>
     <div class="form-group">
       <label class="col-sm-2 control-label">收货地址</label>
       <div class="col-sm-8">
-        <input type="text" name="address" class="form-control"/>
+        <input type="text" name="userAddress"  class="form-control notEdit"/>
       </div>
     </div>
     <div class="form-group">
@@ -86,7 +82,7 @@
     <div class="form-group">
       <label class="col-sm-2 control-label">支付流水号</label>
       <div class="col-sm-8">
-        <input type="text" name="payNo" readonly class="form-control"/>
+        <input type="text" name="payNo" readonly class="form-control notEdit"/>
       </div>
     </div>
     <div class="form-group">
@@ -122,7 +118,9 @@
       success:function(res){
         var data = res.data;
         setDataByFormId("form", data);
-
+        if(data.status != 0){
+            $(".notEdit").attr("readonly", "readonly")
+        }
         $("#postage").val(parseFloat(data.postage)/100);
         $("#totalAmount").val(parseFloat(data.totalAmount)/100);
 
@@ -133,6 +131,7 @@
             var tr =$("<tr></tr>");
             tr.append("<td>"+item.title+"</td>");
             tr.append("<td>"+item.num+"</td>");
+            tr.append("<td>"+item.specsName+"</td>");
             tr.append("<td>"+(parseFloat(item.price)/100)+"</td>");
             tr.append("<td>"+(parseFloat(item.totalPrice)/100)+"</td>");
 

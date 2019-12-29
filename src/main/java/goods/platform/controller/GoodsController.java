@@ -39,7 +39,6 @@ public class GoodsController {
 	public Response saveGoods(@RequestBody GoodsDto goodsDto){
 		SupplierDto supplierDto =  supplierService.getById(goodsDto.getSupplierId());
 		goodsDto.setSupplierCompanyName(supplierDto.getCompanyName());
-		goodsDto.setCountryName("中国");
 		goodsDto.setPrice(goodsDto.getPrice() * 100);
 		goodsDto.setOriginPrice(goodsDto.getOriginPrice() * 100);
 		String skuCode = "BE"+new SimpleDateFormat("yyyyMMddHHMMss_").format(new Date())
@@ -85,23 +84,40 @@ public class GoodsController {
 	 */
 	@RequestMapping("getPageInfo")
 	public PageInfo getPageInfo(Integer pageNo, Integer pageSize,
-		String title, String enTitle, String countryName, String chateauTitle, String supplierCompanyName) {
+		String title, String produceArea, String countryName,
+		String supplierCompanyName, Integer salesNumStart, Integer salesNumEnd) {
+		GoodsExample goodsExample = getGoodsExample(title, produceArea, countryName, supplierCompanyName, salesNumStart,
+			salesNumEnd);
+		PageInfo pageInfo = goodsService.getPageInfo(pageNo, pageSize, goodsExample);
+
+		return pageInfo;
+	}
+
+	private GoodsExample getGoodsExample(String title, String produceArea, String countryName,
+		String supplierCompanyName, Integer salesNumStart, Integer salesNumEnd) {
 		GoodsExample goodsExample = new GoodsExample();
 		GoodsExample.Criteria criteria = goodsExample.createCriteria();
 		goodsExample.setOrderByClause("id desc");
+
 		if(!StringUtils.isEmpty(title)) {
 			criteria.andTitleLike("%" + title + "%");
 		}
-		if(!StringUtils.isEmpty(enTitle)) {
-			criteria.andEnTitleLike("%" + enTitle + "%");
+		if(!StringUtils.isEmpty(produceArea)) {
+			criteria.andProduceAreaLike("%" + produceArea + "%");
 		}
 
 		if(!StringUtils.isEmpty(countryName)) {
 			criteria.andCountryNameLike("%" + countryName + "%");
 		}
-
-		PageInfo pageInfo = goodsService.getPageInfo(pageNo, pageSize, goodsExample);
-
-		return pageInfo;
+		if(!StringUtils.isEmpty(supplierCompanyName)) {
+			criteria.andSupplierCompanyNameLike("%" + supplierCompanyName + "%");
+		}
+		if(null != salesNumStart){
+			criteria.andSalesNumGreaterThanOrEqualTo(salesNumStart);
+		}
+		if(null != salesNumEnd){
+			criteria.andSalesNumLessThanOrEqualTo(salesNumEnd);
+		}
+		return goodsExample;
 	}
 }

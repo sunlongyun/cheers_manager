@@ -1,6 +1,7 @@
 package goods.platform.controller;
 
 import com.chisong.green.farm.app.constants.enums.Validity;
+import com.chisong.green.farm.app.dto.CustomerDeliveryAddressDto;
 import com.chisong.green.farm.app.dto.OrderDeliveryAddressMappingDto;
 import com.chisong.green.farm.app.dto.OrderInfoDto;
 import com.chisong.green.farm.app.example.OrderInfoExample;
@@ -40,16 +41,16 @@ public class OrderInfoController {
 		OrderInfoDto oldOrderInfo =  orderInfoService.getOrderById(orderInfoDto.getId());
 		orderInfoService.update(orderInfoDto);
 
-		String address =  orderInfoDto.getAddress();
-		if(address == null){
-			address = "";
-		}
+		CustomerDeliveryAddressDto customerDeliveryAddressDto =  orderInfoDto.getAddress();
+
 		OrderDeliveryAddressMappingDto orderDeliveryAddressMappingDto =
 			orderDeliveryAddressMappingService.getById(oldOrderInfo.getOrderDeliveryAddressMappingDto().getId());
-		if(!address.equals(orderDeliveryAddressMappingDto.getAddress())){
-			orderDeliveryAddressMappingDto.setAddress(address);
-			orderDeliveryAddressMappingService.update(orderDeliveryAddressMappingDto);
-		}
+		orderDeliveryAddressMappingDto.setAddress(orderInfoDto.getUserAddress());
+
+		orderDeliveryAddressMappingDto.setAddress(orderInfoDto.getUserAddress());
+		orderDeliveryAddressMappingDto.setMobile(orderInfoDto.getMobile());
+		orderDeliveryAddressMappingDto.setContact(orderInfoDto.getCustomerName());
+		orderDeliveryAddressMappingService.update(orderDeliveryAddressMappingDto);
 
 		return Response.success();
 	}
@@ -81,6 +82,7 @@ public class OrderInfoController {
 		if(!StringUtils.isEmpty(mobile)) {
 			criteria.andMobileLike("%" + mobile + "%");
 		}
+		orderInfoExample.setOrderByClause("id desc");
 		PageInfo pageInfo = orderInfoService.getPageInfo(pageNo, pageSize, orderInfoExample);
 
 		return pageInfo;
