@@ -1,5 +1,6 @@
 package goods.platform.controller;
 
+import com.chisong.green.farm.app.constants.enums.UserTypeEnum;
 import com.chisong.green.farm.app.constants.enums.Validity;
 import com.chisong.green.farm.app.dto.CustomerInfoDto;
 import com.chisong.green.farm.app.dto.ProvinceCityAreaDto;
@@ -49,7 +50,7 @@ public class SupplierController {
 	 */
 	@RequestMapping("/getPageInfo")
 	public PageInfo getPageInfo(Integer pageNo, Integer pageSize, String companyName, String address,
-		String mobile, String telephone){
+		String mobile, String telephone, HttpSession session){
 		SupplierExample supplierExample = new SupplierExample();
 		Criteria criteria = supplierExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code());
 		if(!StringUtils.isEmpty(companyName)){
@@ -64,6 +65,17 @@ public class SupplierController {
 		if(!StringUtils.isEmpty(telephone)){
 			criteria.andTelephoneLike("%"+telephone+"%");
 		}
+		CustomerInfoDto customerInfoDto = (CustomerInfoDto) session.getAttribute("adminUser");
+
+		if(customerInfoDto.getType() != UserTypeEnum.ADMIN.code()
+			&& customerInfoDto.getType() != UserTypeEnum.SUPER_ADMIN.code()){
+			throw new RuntimeException("只有管理员用户才可以查询供应商");
+		}
+
+		if(customerInfoDto.getType() == UserTypeEnum.ADMIN.code()){
+			criteria.andCreatorIdEqualTo(Integer.parseInt(customerInfoDto.getId()+""));
+		}
+
 		PageInfo pageInfo =  supplierService.getPageInfo(pageNo, pageSize, supplierExample);
 		return pageInfo;
 	}

@@ -2964,7 +2964,9 @@ vertical-align: top;
 .skin-black .sidebar > .sidebar-menu > li > a {
   margin-right: 1px;
 }
-.skin-black .sidebar > .sidebar-menu > li > a:hover,
+.skin-black .sidebar > .sidebar-menu > li > a:hover{
+ color: #aaaaaa;
+}
 .skin-black .sidebar > .sidebar-menu > li.active > a {
   color: #f6f6f6;
   background: #425164;

@@ -22,7 +22,10 @@ $(function(){
 
 	$("a[data-href],button[data-href]").click(function(){
 		var url = $(this).data("href");
-		//window.location.href = url;
+		//修改菜单选中状态
+		$("ul.sidebar-menu").find("li").removeClass("active");
+		$(this).parent().addClass("active");
+
 		$("#mainDiv").load(url);
 	});
 	$("a.sidebar-toggle").click(function(){
@@ -588,6 +591,7 @@ function formToJson(formId){
  * @param url
  */
 function redirectTo(url){
+
 	$("#mainDiv").load(url);
 }
 
