@@ -51,12 +51,13 @@ public class AdminController {
 			CustomerInfoDto customerInfoDto = customerInfoService.getAdminUserByUserName(userName.trim());
 			if(null == customerInfoDto){
 				return Response.fail("管理员信息不存在");
-			}else if(customerInfoDto.getType() == UserTypeEnum.CUSTOMER.code()){
-				return Response.fail("只有平台管理员和供应商可以登录");
+			}else if(customerInfoDto.getType() != UserTypeEnum.SUPER_ADMIN.code()
+			&& customerInfoDto.getType() != UserTypeEnum.ADMIN.code()){
+				return Response.fail("只有管理员角色才能登录");
 			}else if(customerInfoDto.getStatus() == UserStatusEnum.FORZEN.code()){
 				return Response.fail("账号已经冻结，请联系平台管理员");
 			}else{
-				String prePass = MD5(password);
+				String prePass = MD5(userName+password);
 				log.info("prePass:{}", prePass);
 				if(!prePass.equals(customerInfoDto.getPassword())){
 					return Response.fail("密码错误");
@@ -80,7 +81,8 @@ public class AdminController {
 		CustomerInfoExample customerInfoExample = new CustomerInfoExample();
 		Criteria criteria =  customerInfoExample.createCriteria();
 		criteria.andValidityEqualTo(Validity.AVAIL.code()).andTypeIn(Arrays.asList(UserTypeEnum.ADMIN.code(),
-			UserTypeEnum.SUPPLIER.code()));;
+			UserTypeEnum.SUPER_ADMIN.code(),UserTypeEnum.SUPPLIER.code()));
+
 		if(!StringUtils.isEmpty(userName)){
 			criteria.andUserNameLike("%"+userName+"%");
 		}
@@ -114,7 +116,7 @@ public class AdminController {
 	 */
 	@ResponseBody
 	@RequestMapping(value="/changePass", method = RequestMethod.POST)
-	public Response changePass(String newPass, HttpSession session){
+	public Response changePass(Long customerId, String newPass, HttpSession session){
 		if( StringUtils.isEmpty(newPass)){session.setMaxInactiveInterval(1);
 			return Response.fail("新密码都不能为空!");
 		}else{
@@ -123,8 +125,15 @@ public class AdminController {
 				return Response.fail("登录状态过期!");
 			}else{
 				CustomerInfoDto customerInfoDto = new CustomerInfoDto();
-				customerInfoDto.setPassword(MD5(newPass));
-				customerInfoDto.setId(adminUser.getId());
+
+				if(null == customerId){
+					customerInfoDto.setPassword(MD5(adminUser.getUserName()+newPass));
+					customerInfoDto.setId(adminUser.getId());
+				}else{
+					customerInfoDto = customerInfoService.getById(customerId);
+					customerInfoDto.setPassword(MD5(customerInfoDto.getUserName()+newPass));
+				}
+
 				customerInfoService.update(customerInfoDto);
 
 				session.removeAttribute(ADMIN_USER);

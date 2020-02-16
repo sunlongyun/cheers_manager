@@ -27,13 +27,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/customer")
 @RestController
 public class CustomerInfoController {
+
+	public static final int ACCOUNT_TAG = 1;
 	@Autowired
 	private CustomerInfoService customerInfoService;
 	@Autowired
 	private SupplierService supplierService;
 
 	@PostMapping("/bindSupplier/{id}/{supplierId}")
-	public Response bindSupplier(@PathVariable Long id, @PathVariable Integer supplierId){
+	public Response bindSupplier(@PathVariable Long id, @PathVariable Integer supplierId, Integer primary){
 		CustomerInfoDto customerInfoDto=  customerInfoService.getById(id);
 		if(null == customerInfoDto){
 			throw new RuntimeException("客户信息不存在");
@@ -41,6 +43,20 @@ public class CustomerInfoController {
 	    SupplierDto supplierDto =  supplierService.getById(supplierId);
 		customerInfoDto.setSupplierId(supplierId);
 		customerInfoDto.setCompanyName(supplierDto.getCompanyName());
+
+		if(primary == ACCOUNT_TAG){
+			CustomerInfoExample customerInfoExample = new CustomerInfoExample();
+			customerInfoExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code())
+				.andSupplierIdEqualTo(supplierId);
+
+			customerInfoService.getList(customerInfoExample).forEach(customerInfoDto1 -> {
+				customerInfoDto1.setSupplierAccount(false);
+				customerInfoService.update(customerInfoDto1);
+			});
+
+			customerInfoDto.setSupplierAccount(true);
+		}
+
 		customerInfoService.update(customerInfoDto);
 		return Response.success();
 	}

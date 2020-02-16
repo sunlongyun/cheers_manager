@@ -1,5 +1,5 @@
 <header class="panel-heading">
-  管理员/供应商账户管理
+  管理员(供应商)账户
 </header>
 <div class="panel-body">
   <form class="form-inline" id="form" role="form">
@@ -11,6 +11,7 @@
         <option value="">全部</option>
         <option value="2">供应商</option>
         <option value="3">后台管理员</option>
+        <option value="4">超级管理员</option>
       </select>
     </div>
     <button type="button" class="btn btn-primary" onclick="search()"><span
@@ -18,9 +19,15 @@
     </button>
   </form>
   <div id="supplierDialog" style="display: none">
-    <select id="supplierId" class="form-control">
-      <option value="-1">请选择供应商</option>
-    </select>
+    <div class="form-group">
+      <select id="supplierId" class="form-control">
+        <option value="-1">请选择供应商</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <input type="checkbox" id="primaryAccount" value="1" placeholder="收款账户"/> 是否是收款账户？
+    </div>
+
   </div>
   <table id="table" class="text-center table table-bordered table-hover  table-striped"></table>
 </div>
@@ -87,7 +94,10 @@
                 opeHtml += "<a href='javascript:void(0)' onclick='unFrozen(" + obj.id + ")' title='解冻账户'>[解冻]</a>";
               }
               if (obj.type.code == 2) {
-                opeHtml += "<a href='javascript:void(0)' onclick='bind(" + obj.id + ")' title='关联供应商'>[绑定供应商]</a>";
+                opeHtml += "<a href='javascript:void(0)' onclick='bind(" + obj.id + ")' title='关联供应商'>[绑定]</a>";
+              }
+              if (obj.type.code == 3 || obj.type.code == 4) {
+                opeHtml += "<a href='javascript:void(0)' onclick='resetPass(" + obj.id + ")' title='重置密码'>[重置密码]</a>";
               }
               return opeHtml;
             }
@@ -152,11 +162,16 @@
       });
     })
   }
-
   function bind(id) {
     var html = $("#supplierDialog").html();
     $.dialog("绑定供应商", html, function () {
       var supplierId = $("div.modal-dialog").find("#supplierId").val();
+      var primaryAccount = $("div.modal-dialog").find("#primaryAccount");
+      var params = {};
+      if(primaryAccount.is(":checked")){
+        params["primary"] = 1;
+      }
+
       if(supplierId == -1){
         alert("请选择供应商");
       }else{
@@ -165,101 +180,53 @@
           type:'post',
           dataType:'json',
           url:url,
+          data:params,
           success:function(res){
             if(res.code='0000'){
-                redirectTo('/adminList')
+              redirectTo('/adminList')
             }
           }
-      })
+        })
       }
 
     });
   }
-  //添加
-  function add() {
-    var html = '<div class="form-group">' +
-        '<label for="userName" class="col-sm-3 control-label">用户名:</label>' +
-        '<div class="col-sm-7">' +
-        '<input type="text" class="form-control" id="userName" placeholder="请输入用户名">' +
-        '</div>' +
-        '</div>';
-    html += '<div class="form-group">' +
-        '<label for="password" class="col-sm-3 control-label">密码:</label>' +
-        '<div class="col-sm-7">' +
-        '<input type="text" class="form-control" id="password" placeholder="请输入密码">' +
-        '</div>' +
-        '</div>';
-    html += '<div class="form-group">' +
-        '<label for="roomCards" class="col-sm-3 control-label">真实姓名:</label>' +
-        '<div class="col-sm-7">' +
-        '<input type="text" class="form-control" id="realName" value="" placeholder="真实姓名">' +
-        '</div>' +
-        '</div>';
-    html += '<div class="form-group">' +
-        '<label for="roomCards" class="col-sm-3 control-label">昵称:</label>' +
-        '<div class="col-sm-7">' +
-        '<input type="text" class="form-control" id="nick" value="" placeholder="昵称">' +
-        '</div>' +
-        '</div>';
-    html += '<div class="form-group">' +
-        '<label for="roomCards" class="col-sm-3 control-label">联系方式:</label>' +
-        '<div class="col-sm-7">' +
-        '<input type="text" class="form-control" id="mobile" value="" placeholder="联系方式">' +
-        '</div>' +
-        '</div>';
-    html += '<div class="form-group">' +
-        '<label for="remark" class="col-sm-3 control-label">备注:</label>' +
-        '<div class="col-sm-7">' +
-        '<input type="text" class="form-control" id="remark"  placeholder="请填写备注">' +
-        '</div>' +
-        '</div>';
-    $.dialog("添加管理员", html, function () {
-      var userName = $("#userName").val().trim();
-      var password = $("#password").val().trim();
-      var realName = $("#realName").val().trim();
-      var nick = $("#nick").val().trim();
-      var mobile = $("#mobile").val().trim();
-      var remark = $("#remark").val().trim();
+  /**
+   * 重置密码
+   * @param id
+   */
+  function resetPass(id) {
 
-      if (!userName) {
-        alert("用户名不可以为空!");
-        return false;
-      }
-      if (!password) {
-        alert("密码不可以为空!");
-        return false;
-      }
-      if (!realName) {
-        alert("真实姓名不可以为空!");
-        return false;
-      }
+    var html = '<div class="form-group">'+
+        '<label for="lastname" class="col-sm-3 control-label">新密码:</label>'+
+        '<div class="col-sm-7">'+
+        '<input type="password" class="form-control" id="newPass" placeholder="请输入新密码">'+
+        '</div>'+
+        '</div>';
+
+    $.dialog("重置密码", html,function(){
+
+      var newPass = $("#newPass").val().trim();
 
       $.ajax({
-        url: '/admin/addUser',
-        type: 'post',
-        dataType: 'json',
-        data: {
-          "userName": userName,
-          "password": password,
-          "realName": realName,
-          "nick": nick,
-          "mobile": mobile,
-          "remark": remark
+        url:'/admin/changePass',
+        type:'post',
+        dataType:'json',
+        data:{
+          "newPass":newPass,
+          "customerId":id
         },
-        success: function (res) {
-          if (res.code == '0000') {
-            $.dialogClose();
-            search();
-          } else {
-            alert("添加失败，请联系管理员");
+        success:function(res){
+          if(res.code == '0000'){
+            alert(res.msg);
           }
-        }, error: function () {
-          alert("添加失败");
+
+        },error:function(e){
+          $.alert("操作失败:"+e);
         }
       });
-
-    }, null, 150);
-
+    },null,50);
   }
+
 
 </script>
