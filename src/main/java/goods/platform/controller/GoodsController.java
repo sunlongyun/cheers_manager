@@ -1,9 +1,13 @@
 package goods.platform.controller;
 
+import com.chisong.green.farm.app.constants.enums.UserTypeEnum;
 import com.chisong.green.farm.app.constants.enums.Validity;
+import com.chisong.green.farm.app.dto.CustomerInfoDto;
 import com.chisong.green.farm.app.dto.GoodsDto;
 import com.chisong.green.farm.app.dto.SupplierDto;
 import com.chisong.green.farm.app.example.GoodsExample;
+import com.chisong.green.farm.app.example.SupplierExample;
+import com.chisong.green.farm.app.service.CustomerInfoService;
 import com.chisong.green.farm.app.service.GoodsService;
 import com.chisong.green.farm.app.service.SupplierService;
 import com.chisong.green.farm.exception.BizException;
@@ -12,6 +16,8 @@ import com.sun.javafx.binding.StringFormatter;
 import goods.platform.commons.Response;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +40,9 @@ public class GoodsController {
 	private GoodsService goodsService;
 	@Autowired
 	private SupplierService supplierService;
+
+	@Autowired
+	private CustomerInfoService customerInfoService;
 
 	@RequestMapping("/save")
 	public Response saveGoods(@RequestBody GoodsDto goodsDto){
@@ -85,16 +94,27 @@ public class GoodsController {
 	@RequestMapping("getPageInfo")
 	public PageInfo getPageInfo(Integer pageNo, Integer pageSize,
 		String title, String produceArea, String countryName,
-		String supplierCompanyName, Integer salesNumStart, Integer salesNumEnd) {
+		String supplierCompanyName, Integer salesNumStart, Integer salesNumEnd, HttpSession session) {
+		CustomerInfoDto customerInfoDto = (CustomerInfoDto) session.getAttribute("adminUser");
+		Integer customerId = null;
+		if(customerInfoDto.getType() != UserTypeEnum.ADMIN.code()
+			&& customerInfoDto.getType() != UserTypeEnum.SUPER_ADMIN.code()){
+			throw new RuntimeException("只有管理员用户才可以查询供应商");
+		}
+
+		if(customerInfoDto.getType() == UserTypeEnum.ADMIN.code()){
+			customerId = Integer.parseInt(customerInfoDto.getId()+"");
+		}
+
 		GoodsExample goodsExample = getGoodsExample(title, produceArea, countryName, supplierCompanyName, salesNumStart,
-			salesNumEnd);
+			salesNumEnd,  customerId);
 		PageInfo pageInfo = goodsService.getPageInfo(pageNo, pageSize, goodsExample);
 
 		return pageInfo;
 	}
 
 	private GoodsExample getGoodsExample(String title, String produceArea, String countryName,
-		String supplierCompanyName, Integer salesNumStart, Integer salesNumEnd) {
+		String supplierCompanyName, Integer salesNumStart, Integer salesNumEnd, Integer customerId) {
 		GoodsExample goodsExample = new GoodsExample();
 		GoodsExample.Criteria criteria = goodsExample.createCriteria();
 		goodsExample.setOrderByClause("id desc");
@@ -117,6 +137,12 @@ public class GoodsController {
 		}
 		if(null != salesNumEnd){
 			criteria.andSalesNumLessThanOrEqualTo(salesNumEnd);
+		}
+		if(null != customerId){
+			SupplierExample supplierExample = new SupplierExample();
+			supplierExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code())
+				.andCreatorIdEqualTo(customerId);
+			criteria.andSupplierIdIn(supplierService.getList(supplierExample).stream().map(SupplierDto::getId).collect(Collectors.toList()));
 		}
 		return goodsExample;
 	}

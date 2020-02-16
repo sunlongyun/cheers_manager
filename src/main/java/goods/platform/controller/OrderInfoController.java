@@ -1,7 +1,9 @@
 package goods.platform.controller;
 
+import com.chisong.green.farm.app.constants.enums.UserTypeEnum;
 import com.chisong.green.farm.app.constants.enums.Validity;
 import com.chisong.green.farm.app.dto.CustomerDeliveryAddressDto;
+import com.chisong.green.farm.app.dto.CustomerInfoDto;
 import com.chisong.green.farm.app.dto.OrderDeliveryAddressMappingDto;
 import com.chisong.green.farm.app.dto.OrderInfoDto;
 import com.chisong.green.farm.app.example.OrderInfoExample;
@@ -10,6 +12,9 @@ import com.chisong.green.farm.app.service.OrderDeliveryAddressMappingService;
 import com.chisong.green.farm.app.service.OrderInfoService;
 import com.lianshang.generator.commons.PageInfo;
 import goods.platform.commons.Response;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -69,21 +74,35 @@ public class OrderInfoController {
 	 * 分页查询
 	 */
 	@RequestMapping("/getPageInfo")
-	public PageInfo getPageInfo(Integer pageNo, Integer pageSize, String orderNo, String customerName, String mobile) {
+	public PageInfo getPageInfo(Integer pageNo, Integer pageSize, String orderNo,
+		String customerName, String mobile, HttpSession session) {
 
-		OrderInfoExample orderInfoExample = new OrderInfoExample();
-		Criteria criteria = orderInfoExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code());
-		if(!StringUtils.isEmpty(orderNo)) {
-			criteria.andOrderNoLike("%" + orderNo.trim() + "%");
+		CustomerInfoDto customerInfoDto = (CustomerInfoDto) session.getAttribute("adminUser");
+
+
+		Map<String, Object> params = new HashMap<>();
+		if(!StringUtils.isEmpty(orderNo)){
+			params.put("orderNo", orderNo);
 		}
-		if(!StringUtils.isEmpty(customerName)) {
-			criteria.andCustomerNameLike("%" + customerName + "%");
+		if(StringUtils.isEmpty(customerName)){
+			params.put("customerName", customerName);
 		}
-		if(!StringUtils.isEmpty(mobile)) {
-			criteria.andMobileLike("%" + mobile + "%");
+		if(!StringUtils.isEmpty(mobile)){
+			params.put("mobile", mobile);
 		}
-		orderInfoExample.setOrderByClause("id desc");
-		PageInfo pageInfo = orderInfoService.getPageInfo(pageNo, pageSize, orderInfoExample);
+
+		Integer customerId = null;
+		if(customerInfoDto.getType() != UserTypeEnum.ADMIN.code()
+			&& customerInfoDto.getType() != UserTypeEnum.SUPER_ADMIN.code()){
+			throw new RuntimeException("只有管理员用户才可以查询供应商");
+		}
+
+		if(customerInfoDto.getType() == UserTypeEnum.ADMIN.code()){
+			customerId = Integer.parseInt(customerInfoDto.getId()+"");
+			params.put("managerId", customerId);
+		}
+
+		PageInfo pageInfo = orderInfoService.getOrderInfoPageInfo(pageNo,pageSize, params);
 
 		return pageInfo;
 	}
