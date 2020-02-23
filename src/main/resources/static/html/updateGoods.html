@@ -230,8 +230,8 @@
           var specsDtoList =  data.specsDtoList;
           if(specsDtoList){
             $.each(specsDtoList, function (i, item) {
-              appendSpecs(item.name,item.originPrice,
-                  item.price,item.stock);
+              appendSpecs(item.name, parseInt(item.originPrice) /100,
+                  parseInt(item.price) /100,item.stock);
             })
           }
         }
@@ -281,8 +281,8 @@
 
         var spescObj = {};
         spescObj["name"] = name;
-        spescObj["originPrice"] = originPrice;
-        spescObj["price"] = price;
+        spescObj["originPrice"] = parseInt(originPrice) ;
+        spescObj["price"] = parseInt(price);
         spescObj["stock"] = stock;
 
         specsDtoList.push(spescObj);
