@@ -3,68 +3,52 @@
 </button>
 </header>
 <div class="panel-body">
-  <form class="form-horizontal" id="form" role="form">
+  <form class="form-horizontal" id="form"  role="form" enctype="multipart/form-data">
     <div class="form-group">
       <label class="col-sm-2 control-label">商品名称</label>
-      <div class="col-sm-8">
-        <input type="text" name="title" class="form-control"/>
-        <input type="hidden" name="id"/>
+      <div class="col-sm-10">
+        <input type="text" name="title"  class="form-control"/>
+        <input type="hidden" name="id" value="">
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">商品类型</label>
-      <div class="col-sm-8">
-        <select name="type"  class="form-control">
-          <option>粮食</option>
-          <option>蔬菜</option>
-          <option>瓜果</option>
-          <option>干果</option>
-          <option>豆类</option>
-          <option>食用菌</option>
-          <option>其他</option>
+      <label class="col-sm-2 control-label">商品类目</label>
+      <div class="col-sm-4">
+        <select id="firstTypeId" name="firstTypeId"  class="form-control">
+          <option value="-1">请选择一级类目</option>
+        </select>
+      </div>
+      <div class="col-sm-4">
+        <select id="typeId" name="typeId"  class="form-control">
+          <option value="-1">请选择二级类目</option>
+
         </select>
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">国家</label>
-      <div class="col-sm-8">
-        <input type="text" name="countryName" class="form-control" value="中国"/>
-      </div>
-    </div>
-    <div class="form-group">
       <label class="col-sm-2 control-label">产地</label>
-      <div class="col-sm-8">
+      <div class="col-sm-10">
         <input type="text" name="produceArea" class="form-control" value=""/>
       </div>
     </div>
     <div class="form-group">
       <label class="col-sm-2 control-label">供应商</label>
-      <div class="col-sm-8">
+      <div class="col-sm-10">
         <select name="supplierId"  class="form-control">
         </select>
       </div>
     </div>
     <div class="form-group">
       <label class="col-sm-2 control-label">商品图片地址</label>
-      <div class="col-sm-8">
-        <input type="hidden" name="picUrl" class="form-control"  value=""/>
-        <input type="file" id="picUrl" name="file" class="form-control"  value=""/>
+      <div class="col-sm-10">
+        <input type="text" name="picUrl"   class="form-control"  value=""/>
+        <input type="file" id="picUrl" name="file"  class="form-control"  value=""/>
       </div>
     </div>
+
     <div class="form-group">
-      <label class="col-sm-2 control-label">统一规格</label>
-      <div class="col-sm-8">
-        <input type="radio" name="uniformSpecs"  value="1"/> 是
-        &nbsp;&nbsp;
-        <input type="radio" name="uniformSpecs"   value="0"/> 否
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">规格</label>
-      <div class="col-sm-8 uniformSpecs_1">
-        <input type="text" name="specs" class="form-control"  value=""/>
-      </div>
-      <div class="col-sm-8 uniformSpecs_0"  style="display: none">
+      <label class="col-sm-2 control-label">规格设置</label>
+      <div class="col-sm-10">
         <table class="table table-hover table-bordered table-condensed">
           <thead>
           <tr>
@@ -75,7 +59,22 @@
               <input type="number" name="specsOriginPrice" class="form-control" placeholder="进货价格(元)" min="0">
             </td>
             <td>
+              <select name="specsPostage" class="form-control">
+                <option>是</option>
+                <option>否</option>
+              </select>
+            </td>
+            <td>
               <input type="number" name="specsPrice" class="form-control" placeholder="销售价格(元)" min="0">
+            </td>
+            <td>
+              <select name="specsPromote" class="form-control">
+                <option>是</option>
+                <option selected>否</option>
+              </select>
+            </td>
+            <td>
+              <input type="number" name="promotionPrice" class="form-control" placeholder="促销价格(元)" min="1">
             </td>
             <td>
               <input type="number" name="specsStock" class="form-control" placeholder="库存" min="0">
@@ -89,10 +88,13 @@
           </thead>
           <tbody id="spescBody">
           <tr class="text-primary text-center">
-            <th>规格</th>
-            <th>进价(元)</th>
-            <th>售价(元)</th>
-            <th>库存</th>
+            <th width="12.5%">规格</th>
+            <th width="12.5%">进价(元)</th>
+            <th width="12.5%">进价包邮</th>
+            <th width="12.5%">售价(元)</th>
+            <th width="12.5%">参加促销</th>
+            <th width="12.5%">促销价(元)</th>
+            <th width="12.5%">库存</th>
             <th>操作</th>
           </tr>
           </tbody>
@@ -100,76 +102,45 @@
       </div>
     </div>
 
-    <div class="form-group">
-      <label class="col-sm-2 control-label">单位进价(元)</label>
-      <div class="col-sm-8">
-        <input type="number" id="originPrice" name="originPrice" class="form-control" min="0" value="0"/>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">售价(元)</label>
-      <div class="col-sm-8">
-        <input type="number" id="price" name="price" class="form-control" min="0" value="0"/>
-      </div>
-    </div>
-    <div class="form-group uniformSpecs_1">
-      <label class="col-sm-2 control-label">促销价(元)</label>
-      <div class="col-sm-8">
-        <input type="number" name="promotePrice" class="form-control" min="0" placeholder="非促销商品不用填写促销价格"  value="0"/>
-      </div>
-    </div>
     <div class="form-group uniformSpecs_1">
       <label class="col-sm-2 control-label">促销开始时间</label>
-      <div class="col-sm-8">
-        <input type="date" name="promoteStartTime" class="form-control" placeholder="非促销商品不用填写促销时间"/>
+      <div class="col-sm-10">
+        <input type="datetime-local" name="promoteStartTime" class="form-control" placeholder="非促销商品不用填写促销时间"/>
       </div>
     </div>
     <div class="form-group uniformSpecs_1">
       <label class="col-sm-2 control-label">促销结束时间</label>
-      <div class="col-sm-8">
-        <input type="date" name="promoteEndTime" class="form-control"  placeholder="非促销商品不用填写促销时间"  value="0"/>
+      <div class="col-sm-10">
+        <input type="datetime-local" name="promoteEndTime" class="form-control"  placeholder="非促销商品不用填写促销时间"  value="0"/>
       </div>
     </div>
+
     <div class="form-group">
-      <label class="col-sm-2 control-label">库存</label>
-      <div class="col-sm-8">
-        <input type="number" name="stock" class="form-control" min="0" value="0"/>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">状态</label>
-      <div class="col-sm-8">
-        <select name="status" class="form-control">
-          <option value="1">销售中</option>
-          <option value="0">已下架</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">滚动图片</label>
-      <div class="col-sm-8">
-       <textarea name="topImages" class="form-control" rows="2"></textarea>
-       <input type="file" id="topImages"  multiple name="file" class="form-control" />
+      <label class="col-sm-2 control-label">轮播图片</label>
+      <div class="col-sm-10">
+        <textarea name="topImages" class="form-control" rows="2"></textarea>
+        <input type="file" name="file" multiple id="topImages" class="form-control" />
       </div>
     </div>
     <div class="form-group">
       <label class="col-sm-2 control-label">介绍图片</label>
-      <div class="col-sm-8">
+      <div class="col-sm-10">
         <textarea name="tailImages" class="form-control" rows="2"></textarea>
-        <input type="file" id="tailImages" name="file" multiple class="form-control" />
+        <input type="file" id="tailImages" multiple name="file" class="form-control" />
       </div>
     </div>
 
     <div class="form-group">
       <label class="col-sm-2 control-label"></label>
-      <div class="col-sm-8">
-        <button type="button" class="btn btn-primary" onclick="save()"><span
-            class="glyphicon glyphicon-floppy-saved"></span>&nbsp;编辑商品
+      <div class="col-sm-10">
+        <button type="button" id="saveBtn" class="btn btn-primary" onclick="save()"><span
+            class="glyphicon glyphicon-floppy-saved"></span>&nbsp;添加商品
         </button>
       </div>
     </div>
   </form>
 </div>
+
 
 <script>
   //查询供应商列表
@@ -255,41 +226,73 @@
 
     getDetail();
   });
+
+
   /**
-   * 编辑商品
+   * 添加商品
    */
   function save() {
+    if($("#firstTypeId").val()==-1 || !$("#firstTypeId").val()){
+      $.alert("商品一级类目不能为空");
+      return ;
+    }
+    if($("#typeId").val()==-1 || !$("#typeId").val()){
+      $.alert("商品二级类目不能为空");
+      return ;
+    }
+
     var data = getParamsByFormId("form");
     var topImages = $("[name='topImages']").val().trim().split(",");
     var tailImages = $("[name='tailImages']").val().trim().split(",");
     data["topImages"] = topImages;
     data["tailImages"] = tailImages;
 
-    //非统一规格，需要 添加规格列表
-    var uniformSpecs = $("input:checked[name='uniformSpecs']").val();
-    data["uniformSpecs"] =uniformSpecs;
-    if(uniformSpecs == 0) {
-      var specsDtoList = [];
-      data["specsDtoList"] = specsDtoList;
-      var trs = $("tr.specs");
-      $.each(trs, function (i, tr) {
-        var tds = $(tr).find("td");
-        var name = tds.eq(0).html();
-        var originPrice = tds.eq(1).html();
-        var price = tds.eq(2).html();
-        var stock = tds.eq(3).html();
+    //促销时间格式处理
+    var promoteStartTime = $("input[name='promoteStartTime']").val();
+    var promoteEndTime = $("input[name='promoteEndTime']").val();
+    data["promoteStartTime"] = promoteStartTime.replace("T", " ");
+    data["promoteEndTime"] = promoteEndTime.replace("T", " ");
 
-        var spescObj = {};
-        spescObj["name"] = name;
-        spescObj["originPrice"] = parseInt(originPrice) ;
-        spescObj["price"] = parseInt(price);
-        spescObj["stock"] = stock;
+    var specsDtoList = [];
+    data["specsDtoList"] = specsDtoList;
+    var trs = $("tr.specs");
+    $.each(trs, function(i, tr){
+      var tds = $(tr).find("td");
+      var name = tds.eq(0).html();
+      var originPrice = tds.eq(1).html();
+      var postage = tds.eq(2).html();//是否包邮
+      var price = tds.eq(3).html();
+      var promote = tds.eq(4).html();//是否参加促销
+      var promotionPrice =  tds.eq(5).html();
+      var stock = tds.eq(6).html();
 
-        specsDtoList.push(spescObj);
 
-      })
-    }
+      var spescObj = {};
+      spescObj["name"] = name;
+      spescObj["originPrice"] = parseInt(originPrice) * 100;
+      spescObj["postage"] = postage.trim() == "是" ? 1: 0;
+      spescObj["price"] = parseInt(price) * 100;
+      spescObj["promote"] = promote.trim() =="是" ? 1:0;
+      spescObj["stock"] = stock;
+      if(promote.trim() == '是'){
+        if(promotionPrice){
+          spescObj["promotionPrice"] = parseInt(promotionPrice) * 100;
+        }else{
+          if(!promotionPrice){
+            $.alert("【"+name+"】促销价格不能为空");
+            return ;
+          }
+        }
 
+      }
+
+
+      specsDtoList.push(spescObj);
+
+    })
+
+    //防止重复提交，按钮置灰
+    $("#saveBtn").attr("disabled", true);
     $.ajax({
       url:'/admin/goods/save',
       type:'post',
@@ -301,6 +304,7 @@
           var url="/goodsList";
           $("#mainDiv").load(url);
         }else{
+          $("#saveBtn").attr("disabled", false);
           $.alert(res.msg);
         }
       }
@@ -308,12 +312,17 @@
   }
 
 
+
   //添加规格
   function addSpecs(){
-
+    var tbody = $("#spescBody");
     var specsName = $("input[name='specsName']").val().trim();//规格名称
     var specsOriginPrice = $("input[name='specsOriginPrice']").val();//进货价格
+    var specsPostage  =  $("select[name='specsPostage']").val();//进货是否包邮
     var specsPrice = $("input[name='specsPrice']").val();//销售价格
+    var specsPromote = $("select[name='specsPromote']").val();//是否参加促销
+    var promotionPrice = $("input[name='promotionPrice']").val();//促销价格
+
     var specsStock = $("input[name='specsStock']").val();//库存
     if(!specsName){
       $.alert("规格名称不能为空");
@@ -323,15 +332,51 @@
       $.alert("进货价格不能为空");
       return ;
     }
+    if(!specsPostage){
+      $.alert("请选择进货价格是否含邮费");
+      return ;
+    }
+
     if(!specsPrice){
       $.alert("销售不能为空");
       return ;
     }
+    if(!specsPromote){
+      $.alert("是否参加促销");
+      return ;
+    }
+    if(specsPromote == '是' && !promotionPrice){
+      $.alert("促销价格不能为空");
+      return ;
+    }
+
     if(!specsStock){
       $.alert("库存不能为空");
       return ;
     }
-    appendSpecs(specsName,specsOriginPrice,specsPrice,specsStock);
+    var tr = $("<tr class='specs'></tr>");
+    var td0 = $("<td>"+specsName+"</td>");
+    var td1 = $("<td>"+specsOriginPrice+"</td>");
+    var td2 = $("<td>"+specsPostage+"</td>");
+    var td3 = $("<td>"+specsPrice+"</td>");
+    var td4 = $("<td>"+specsPromote+"</td>");
+    var td5 = $("<td>"+promotionPrice+"</td>");
+    var td6 = $("<td>"+specsStock+"</td>");
+    var aObj = $('<a href="javascript:void(0)" title="删除"><span class="glyphicon glyphicon-remove"></span></a>');
+    var td7 = $("<td></td>").append(aObj);
+    tr.append(td0)
+    .append(td1)
+    .append(td2)
+    .append(td3)
+    .append(td4)
+    .append(td5)
+    .append(td6)
+    .append(td7);
+
+    aObj.click(function () {
+      $(this).parents("tr").remove();
+    })
+    tbody.append(tr);
   }
 
   /**

@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController("goodsMangerController")
 @RequestMapping("/admin/goods")
+@Slf4j
 public class GoodsController {
 
 	@Autowired
@@ -46,10 +48,11 @@ public class GoodsController {
 
 	@RequestMapping("/save")
 	public Response saveGoods(@RequestBody GoodsDto goodsDto){
+
+		log.info("goodsDto :{}", goodsDto);
+
 		SupplierDto supplierDto =  supplierService.getById(goodsDto.getSupplierId());
 		goodsDto.setSupplierCompanyName(supplierDto.getCompanyName());
-		goodsDto.setPrice(goodsDto.getPrice() * 100);
-		goodsDto.setOriginPrice(goodsDto.getOriginPrice() * 100);
 		String skuCode = "BE"+new SimpleDateFormat("yyyyMMddHHMMss_").format(new Date())
 			+(int)(Math.random()*1000);
 		goodsDto.setSkuCode(skuCode);
@@ -126,9 +129,7 @@ public class GoodsController {
 			criteria.andProduceAreaLike("%" + produceArea + "%");
 		}
 
-		if(!StringUtils.isEmpty(countryName)) {
-			criteria.andCountryNameLike("%" + countryName + "%");
-		}
+
 		if(!StringUtils.isEmpty(supplierCompanyName)) {
 			criteria.andSupplierCompanyNameLike("%" + supplierCompanyName + "%");
 		}
