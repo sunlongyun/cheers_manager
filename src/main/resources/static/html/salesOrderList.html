@@ -28,10 +28,24 @@
      **/
     $("#table").search2('/admin/order/getPageInfo', 'form',
         [
-          {"text": "订单编码", "title": "orderNo"},
-          {"text": "订单总金额", "title": "totalAmount"},
+          {"text": "订单号", "title": "orderNo"},
+          {"text": "商品总金额", "title": "totalAmount"},
           {"text": "邮费", "title": "postage"},
-          {"text": "物流单号", "title": "logisticsNumber"},
+          {"text": "物流单号", "format":function (obj) {
+            if(obj.status.code == 0){
+              return "--";
+            }
+            var content = obj.logisticsNumber;
+            var opeHtml=content;
+            if(obj.status.code == 2 || obj.status.code == 1){
+              if(!content){
+                content = "发货";
+              }
+              opeHtml="<a href='javascript:send("+obj.id+")' title='物流单号'>"+content+"</span></a>";
+            }
+
+            return opeHtml;
+            }},
           {"text": "支付流水号", "title": "payNo"},
           {"text": "支付金额", "title": "totalAmount"},
           {"text": "客户名称", "title": "customerName"},
@@ -51,6 +65,42 @@
   }
 
   search();
+
+  //发货
+  function send(orderId){
+    var html = '<div class="form-group">' +
+        '<label for="logisticsNumber" class="col-sm-3 control-label">物流单号:</label>' +
+        '<div class="col-sm-7">' +
+        '<input type="text" class="form-control" id="logisticsNumber" value="" placeholder="请填写物流单号">' +
+        '</div>' +
+        '</div>';
+
+   $.dialog("发送填写物流单号", html, function () {
+     var logisticsNumber = $("#logisticsNumber").val().trim();
+     if (!logisticsNumber) {
+       alert("物流单号不能为空");
+       return false;
+     }
+     $.ajax({
+       url: 'admin/order/updateOrder',
+       type: 'post',
+       dataType: 'json',
+       contentType: 'application/json;charset=utf-8',
+       data: JSON.stringify({
+         "id":orderId,
+         "logisticsNumber":logisticsNumber,
+         "status":2
+       }),
+       success:function(res) {
+         if (res.code == '0000') {
+           $.dialogClose();
+           search();
+         }
+       }
+       })
+
+    });
+  }
 
   //添加
   function add() {

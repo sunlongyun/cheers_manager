@@ -105,13 +105,13 @@
     <div class="form-group uniformSpecs_1">
       <label class="col-sm-2 control-label">促销开始时间</label>
       <div class="col-sm-10">
-        <input type="datetime-local" name="promoteStartTime" class="form-control" placeholder="非促销商品不用填写促销时间"/>
+        <input type="text" name="promoteStartTime" class="form-control" placeholder="非促销商品不用填写促销时间"/>
       </div>
     </div>
     <div class="form-group uniformSpecs_1">
       <label class="col-sm-2 control-label">促销结束时间</label>
       <div class="col-sm-10">
-        <input type="datetime-local" name="promoteEndTime" class="form-control"  placeholder="非促销商品不用填写促销时间"  value="0"/>
+        <input type="text" name="promoteEndTime" class="form-control"  placeholder="非促销商品不用填写促销时间"  value="0"/>
       </div>
     </div>
 
@@ -134,7 +134,7 @@
       <label class="col-sm-2 control-label"></label>
       <div class="col-sm-10">
         <button type="button" id="saveBtn" class="btn btn-primary" onclick="save()"><span
-            class="glyphicon glyphicon-floppy-saved"></span>&nbsp;添加商品
+            class="glyphicon glyphicon-floppy-saved"></span>&nbsp;编辑商品
         </button>
       </div>
     </div>
@@ -143,6 +143,29 @@
 
 
 <script>
+  /**
+   * 获取分类列表
+   * *
+   **/
+  function getTypeList(parentId, bindId){
+    $.ajax({
+      type: 'get',
+      dataType: 'json',
+      url: '/goodsType/list/'+parentId,
+      success: function (res) {
+        var dataList = res.data;
+        $("#"+bindId).html("").append("<option value='-1'>请选择类目</option>");
+        $.each(dataList,function(i,obj){
+          var obj = dataList[i];
+          var option= $("<option value='"+obj.id+"'>"+obj.name+"</option>");
+          $("#"+bindId).append(option);
+        });
+
+
+      }
+    });
+  }
+
   //查询供应商列表
   function getSupplier(data){
     $.ajax({
@@ -166,6 +189,8 @@
   //获取商品详情
   function getDetail() {
     var id = getQueryString("id");
+
+
     $.ajax({
       url:'/admin/goods/detail/'+id,
       type:'get',
@@ -178,7 +203,6 @@
        var topImages =  data.topImages;
        var tailImages =  data.tailImages;
 
-
        $("#originPrice").val(parseInt(data.originPrice)/100);
         $("#price").val(parseInt(data.price)/100);
 
@@ -186,26 +210,26 @@
         initFile("topImages", "images/tops/",null, "topImages", topImages);
         initFile("tailImages", "images/tails/",null, "tailImages", tailImages);
 
-        $("input[name='uniformSpecs']").first().val(1);
-        $("input[name='uniformSpecs']").last().val(0);
-        //规格
-        var uniformSpecs = data.uniformSpecs;
-        if(uniformSpecs == 1){
-          $("input[name='uniformSpecs']").first().trigger("click");
-        }else{
-          $("input[name='uniformSpecs']").last().trigger("click");
-        }
-        //$("input[name='uniformSpecs']").val(uniformSpecs).trigger("click");
+
         //规格回显
-        if(uniformSpecs == 0){
           var specsDtoList =  data.specsDtoList;
           if(specsDtoList){
             $.each(specsDtoList, function (i, item) {
-              appendSpecs(item.name, parseInt(item.originPrice) /100,
-                  parseInt(item.price) /100,item.stock);
+              appendSpecs(item.name, parseInt(item.originPrice) /100,item.postage == 1? "是": "否",
+                  parseInt(item.price) /100, item.promote==1?"是":"否" ,
+                  item.promotionPrice ? parseInt(item.promotionPrice):"",
+                      item.stock);
             })
           }
-        }
+
+         //获取一级类目
+         getTypeList(-1, 'firstTypeId');
+          setTimeout(function(){
+            $("#firstTypeId").val(data.firstTypeId).trigger("change");
+            setTimeout(function () {
+              $("#typeId").val(data.typeId);
+            },"1000");
+          },"1000");
 
       }
     })
@@ -213,18 +237,16 @@
 
   $(function () {
 
-    $("input[name='uniformSpecs']").change(function () {
-      var value = $(this).val();
-      if(value == 1){
-        $("div.uniformSpecs_1").show();
-        $("div.uniformSpecs_0").hide();
-      }else if(value == 0){
-        $("div.uniformSpecs_1").hide();
-        $("div.uniformSpecs_0").show();
+    //注册类目选择事件
+    $("#firstTypeId").change(function(){
+      var id = $(this).val();
+      if(id >0){
+        getTypeList(id, 'typeId');
       }
     });
 
     getDetail();
+
   });
 
 
@@ -386,16 +408,29 @@
    * @param specsPrice
    * @param specsStock
    */
-  function appendSpecs(specsName,specsOriginPrice,specsPrice,specsStock){
+  function appendSpecs(specsName,specsOriginPrice,specsPostage,specsPrice,specsPromote,promotionPrice,specsStock){
+    /**
+     *  var td0 = $("<td>"+specsName+"</td>");
+     var td1 = $("<td>"+specsOriginPrice+"</td>");
+     var td2 = $("<td>"+specsPostage+"</td>");
+     var td3 = $("<td>"+specsPrice+"</td>");
+     var td4 = $("<td>"+specsPromote+"</td>");
+     var td5 = $("<td>"+promotionPrice+"</td>");
+     var td6 = $("<td>"+specsStock+"</td>");
+     * @type {v.fn.init|p.fn.init|jQuery|HTMLElement}
+     */
     var tbody = $("#spescBody");
     var tr = $("<tr class='specs'></tr>");
     var td0 = $("<td>"+specsName+"</td>");
     var td1 = $("<td>"+specsOriginPrice+"</td>");
-    var td2 = $("<td>"+specsPrice+"</td>");
-    var td3 = $("<td>"+specsStock+"</td>");
+    var td2 = $("<td>"+specsPostage+"</td>");
+    var td3 = $("<td>"+specsPrice+"</td>");
+    var td4 = $("<td>"+specsPromote+"</td>");
+    var td5 = $("<td>"+promotionPrice+"</td>");
+    var td6 = $("<td>"+specsStock+"</td>");
     var aObj = $('<a href="javascript:void(0)" title="删除"><span class="glyphicon glyphicon-remove"></span></a>');
-    var td4 = $("<td></td>").append(aObj);
-    tr.append(td0).append(td1).append(td2).append(td3).append(td4);
+    var td7 = $("<td></td>").append(aObj);
+    tr.append(td0).append(td1).append(td2).append(td3).append(td4).append(td5).append(td6).append(td7);
     aObj.click(function () {
       $(this).parents("tr").remove();
     })
