@@ -7,6 +7,16 @@
       <input type="text" class="form-control" name="orderNo" placeholder="订单编码">
     </div>
     <div class="form-group">
+      <select class="form-control">
+        <option value="-1">选择订单状态</option>
+        <option value="0">下单待支付</option>
+        <option value="1">买家已支付</option>
+        <option value="2">买家已发货</option>
+        <option value="3">买家已收货</option>
+        <option value="4">订单已取消</option>
+      </select>
+    </div>
+    <div class="form-group">
       <input type="text" class="form-control" name="customerName" placeholder="顾客昵称">
     </div>
     <div class="form-group">
@@ -29,8 +39,23 @@
     $("#table").search2('/admin/order/getPageInfo', 'form',
         [
           {"text": "订单号", "title": "orderNo"},
-          {"text": "商品总金额", "title": "totalAmount"},
-          {"text": "邮费", "title": "postage"},
+          {"text": "商品总价","format":function (obj) {
+            var amount = obj.totalAmount;
+            var html = amount;
+            if(obj.status.code==0){
+              html="<a href='javascript:modifyAmount("+obj.id+")' title='修改价格'>"+amount+"</span></a>";
+            }
+            return html;
+            }},
+          {"text": "商品进价", "title": "costAmount"},
+          {"text": "邮费","format":function (obj) {
+            var postage = obj.postage;
+            var html = postage;
+            if(obj.status.code==0){
+              html="<a href='javascript:modifypPostage("+obj.id+")' title='修改邮费'>"+postage+"</span></a>";
+            }
+            return html;
+          }},
           {"text": "物流单号", "format":function (obj) {
             if(obj.status.code == 0){
               return "--";
@@ -39,7 +64,7 @@
             var opeHtml=content;
             if(obj.status.code == 2 || obj.status.code == 1){
               if(!content){
-                content = "发货";
+                content = "【去发货】";
               }
               opeHtml="<a href='javascript:send("+obj.id+")' title='物流单号'>"+content+"</span></a>";
             }
@@ -198,6 +223,90 @@
     window.history.pushState(null, null, new_url)
     var url ="/updateSalesOrder";
     redirectTo(url);
+  }
+
+  /**
+   * 修改商品价格
+   */
+  function modifyAmount(orderId){
+    var html = '<div class="form-group">' +
+        '<label for="totalAmount" class="col-sm-3 control-label">商品价格:</label>' +
+        '<div class="col-sm-7">' +
+        '<input type="number" class="form-control" id="totalAmount" min="1" value="" placeholder="请填写商品价格">' +
+        '</div>' +
+        '</div>';
+
+    $.dialog("修改商品价格", html, function () {
+      var totalAmount = $("#totalAmount").val().trim();
+      if (!totalAmount) {
+        alert("商品价格不能为空");
+        return false;
+      }
+      var amount = parseInt(totalAmount)*100 ;
+      $.ajax({
+        url: 'admin/order/updateOrder',
+        type: 'post',
+        dataType: 'json',
+        contentType: 'application/json;charset=utf-8',
+        data: JSON.stringify({
+          "id":orderId,
+          "totalAmount":amount
+        }),
+        success:function(res) {
+          if (res.code == '0000') {
+            $.dialogClose();
+            search();
+          }else{
+            $.dialogClose();
+            $.alert(res.msg);
+          }
+        }
+      })
+
+    });
+  }
+
+  //修改邮费
+  function modifypPostage(orderId){
+    var html = '<div class="form-group">' +
+        '<label for="totalAmount" class="col-sm-3 control-label">邮费:</label>' +
+        '<div class="col-sm-7">' +
+        '<input type="number" class="form-control" id="postage" min="0" value="" placeholder="请填写邮费">' +
+        '</div>' +
+        '</div>';
+
+    $.dialog("修改邮费", html, function () {
+      var postage = $("#postage").val().trim();
+      if (!postage) {
+        alert("邮费不能为空");
+        return false;
+      }
+      if(postage<0){
+        alert("邮费不能小于0");
+        return false;
+      }
+      var amount = parseInt(postage)*100 ;
+      $.ajax({
+        url: 'admin/order/updateOrder',
+        type: 'post',
+        dataType: 'json',
+        contentType: 'application/json;charset=utf-8',
+        data: JSON.stringify({
+          "id":orderId,
+          "postage":amount
+        }),
+        success:function(res) {
+          if (res.code == '0000') {
+            $.dialogClose();
+            search();
+          }else{
+            $.dialogClose();
+            $.alert(res.msg);
+          }
+        }
+      })
+
+    });
   }
 </script>
 </body>
