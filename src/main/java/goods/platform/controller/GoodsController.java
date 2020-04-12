@@ -119,7 +119,7 @@ public class GoodsController {
 	private GoodsExample getGoodsExample(String title, String produceArea, String countryName,
 		String supplierCompanyName, Integer salesNumStart, Integer salesNumEnd, Integer customerId) {
 		GoodsExample goodsExample = new GoodsExample();
-		GoodsExample.Criteria criteria = goodsExample.createCriteria();
+		GoodsExample.Criteria criteria = goodsExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code());
 		goodsExample.setOrderByClause("id desc");
 
 		if(!StringUtils.isEmpty(title)) {

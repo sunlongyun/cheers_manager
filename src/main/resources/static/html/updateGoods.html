@@ -205,6 +205,7 @@
 
        $("#originPrice").val(parseInt(data.originPrice)/100);
         $("#price").val(parseInt(data.price)/100);
+        $("#price").val(parseInt(data.price)/100);
 
         initFile("picUrl","images",null ,"picUrl",[data.picUrl]);
         initFile("topImages", "images/tops/",null, "topImages", topImages);
@@ -217,7 +218,7 @@
             $.each(specsDtoList, function (i, item) {
               appendSpecs(item.name, parseInt(item.originPrice) /100,item.postage == 1? "是": "否",
                   parseInt(item.price) /100, item.promote==1?"是":"否" ,
-                  item.promotionPrice ? parseInt(item.promotionPrice):"",
+                  item.promotionPrice ? parseInt(item.promotionPrice)/100:"",
                       item.stock);
             })
           }

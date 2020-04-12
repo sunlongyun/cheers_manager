@@ -60,9 +60,8 @@ public class OrderInfoController {
 			orderDeliveryAddressMappingService.getById(oldOrderInfo.getOrderDeliveryAddressMappingDto().getId());
 		orderDeliveryAddressMappingDto.setAddress(orderInfoDtoReq.getUserAddress());
 
-		orderDeliveryAddressMappingDto.setAddress(orderInfoDtoReq.getUserAddress());
-		orderDeliveryAddressMappingDto.setMobile(orderInfoDtoReq.getMobile());
-		orderDeliveryAddressMappingDto.setContact(orderInfoDtoReq.getCustomerName());
+		orderDeliveryAddressMappingDto.setMobile(orderInfoDtoReq.getUserMobile());
+		orderDeliveryAddressMappingDto.setContact(orderInfoDtoReq.getUserName());
 		orderDeliveryAddressMappingService.update(orderDeliveryAddressMappingDto);
 
 		return Response.success();
@@ -114,7 +113,7 @@ public class OrderInfoController {
 		if(!StringUtils.isEmpty(orderNo)){
 			params.put("orderNo", orderNo);
 		}
-		if(StringUtils.isEmpty(customerName)){
+		if(!StringUtils.isEmpty(customerName)){
 			params.put("customerName", customerName);
 		}
 		if(!StringUtils.isEmpty(mobile)){

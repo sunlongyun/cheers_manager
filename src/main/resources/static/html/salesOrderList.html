@@ -7,7 +7,7 @@
       <input type="text" class="form-control" name="orderNo" placeholder="订单编码">
     </div>
     <div class="form-group">
-      <select class="form-control">
+      <select name="status" class="form-control">
         <option value="-1">选择订单状态</option>
         <option value="0">下单待支付</option>
         <option value="1">买家已支付</option>
@@ -17,15 +17,36 @@
       </select>
     </div>
     <div class="form-group">
-      <input type="text" class="form-control" name="customerName" placeholder="顾客昵称">
+      <input type="text" class="form-control" name="customerName" placeholder="下单人姓名">
     </div>
     <div class="form-group">
-      <input type="text" class="form-control" name="mobile" placeholder="手机号">
+      <input type="text" class="form-control" name="mobile" placeholder="下单人手机号">
     </div>
     <button type="button" class="btn btn-primary" onclick="search()"><span class="glyphicon glyphicon-search"></span>&nbsp;查询
     </button>
   </form>
   <table id="table" class="text-center table table-bordered table-hover  table-striped"></table>
+</div>
+
+<div id="view" style="display: none">
+
+  <div class="form-group">
+    <label class="col-sm-2 control-label">购物清单</label>
+    <div class="col-sm-8">
+      <table class="table table-condensed table-hover table-bordered">
+        <head>
+          <tr class="text-center text-info">
+            <th>商品</th>
+            <th>数量</th>
+            <th>规格</th>
+          </tr>
+        </head>
+        <tbody id="goodsDetail">
+
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 <script src="html/js/bootstrap-paginator.js" type="text/javascript"></script>
 <script type="text/javascript">
@@ -39,92 +60,163 @@
     $("#table").search2('/admin/order/getPageInfo', 'form',
         [
           {"text": "订单号", "title": "orderNo"},
-          {"text": "商品总价","format":function (obj) {
-            var amount = obj.totalAmount;
-            var html = amount;
-            if(obj.status.code==0){
-              html="<a href='javascript:modifyAmount("+obj.id+")' title='修改价格'>"+amount+"</span></a>";
-            }
-            return html;
-            }},
-          {"text": "商品进价", "title": "costAmount"},
-          {"text": "邮费","format":function (obj) {
-            var postage = obj.postage;
-            var html = postage;
-            if(obj.status.code==0){
-              html="<a href='javascript:modifypPostage("+obj.id+")' title='修改邮费'>"+postage+"</span></a>";
-            }
-            return html;
-          }},
-          {"text": "物流单号", "format":function (obj) {
-            if(obj.status.code == 0){
-              return "--";
-            }
-            var content = obj.logisticsNumber;
-            var opeHtml=content;
-            if(obj.status.code == 2 || obj.status.code == 1){
-              if(!content){
-                content = "【去发货】";
-              }
-              opeHtml="<a href='javascript:send("+obj.id+")' title='物流单号'>"+content+"</span></a>";
-            }
-
-            return opeHtml;
-            }},
-          {"text": "支付流水号", "title": "payNo"},
-          {"text": "支付金额", "title": "totalAmount"},
-          {"text": "客户名称", "title": "customerName"},
-          {"text": "联系方式", "title": "mobile"},
-          {"text": "订单状态", "title": "status.value"},
-          {"text": "创建时间", "title": "createTime"},
-          {"text":"操作", "format":function (obj) {
-              var opeHtml = '';
+          {
+            "text": "商品总价", "format": function (obj) {
+              var amount = obj.totalAmount;
+              var html = amount;
               if (obj.status.code == 0) {
-                opeHtml += " <a href='javascript:void(0)'>[关闭]</a>";
+                html = "<a href='javascript:modifyAmount(" + obj.id + ")' title='修改价格'>" + amount + "</span></a>";
               }
-              opeHtml +="<a href='javascript:update("+obj.id+")' title='编辑'><span class='glyphicon glyphicon-edit'></span></a>";
+              return html;
+            }
+          },
+          {"text": "进价", "title": "costAmount"},
+          {
+            "text": "邮费", "format": function (obj) {
+              var postage = obj.postage;
+              var html = postage;
+              if (obj.status.code == 0) {
+                html = "<a href='javascript:modifypPostage(" + obj.id + ")' title='修改邮费'>" + postage + "</span></a>";
+              }
+              return html;
+            }
+          },
+          {
+            "text": "物流单号", "format": function (obj) {
+              if (obj.status.code == 0) {
+                return "--";
+              }
+              var content = obj.logisticsNumber;
+              var opeHtml = content;
+              if (obj.status.code == 2 || obj.status.code == 1) {
+                if (!content) {
+                  content = "【去发货】";
+                }
+                opeHtml = "<a href='javascript:send(" + obj.id + ", \""+obj.logisticsNumber+"\")' title='物流单号'>" +
+                content + "</span></a>";
+              }
+
               return opeHtml;
-            }}
+            }
+          },
+          {"text": "支付流水号", "title": "payNo"},
+          {"text": "已支付金额", "title": "payedAmount"},
+
+          {"text": "订单状态", "title": "status.value"},
+          {"text": "下单时间", "title": "createTime"},
+          {
+            "text": "收件信息", "format": function (obj) {
+              var opeHtml = "<a href='javascript:view(" + obj.id + ")' title='查看'><i class='glyphicon glyphicon-eye-open'></i></a>";
+              return opeHtml;
+            }
+          },
+          {
+            "text": "操作", "format": function (obj) {
+              var opeHtml = '';
+              // if (obj.status.code == 0) {
+              //   opeHtml += " <a href='javascript:void(0)'>[关闭]</a>";
+              // }
+              opeHtml += "<a href='javascript:update(" + obj.id
+                  + ")' title='编辑'><span class='glyphicon glyphicon-edit'></span></a>";
+              return opeHtml;
+            }
+          }
         ]
     );
   }
 
   search();
 
+  //收件人信息
+  function view(id) {
+    $.ajax({
+      url: '/admin/order/detail/' + id,
+      type: 'get',
+      dataType: 'json',
+      success: function (res) {
+        var data = res.data;
+
+        $("#view").find(".address").remove();
+        $("#view").find(".userName").remove();
+        $("#view").find(".userMobile").remove();
+
+        var addressContent = $('<div class="form-group address">\n'
+            + '    <label class="col-sm-2 control-label">收货地址</label>\n'
+            + '    <div class="col-sm-8">\n'
+            + '      <input type="text" name="userAddress"  readonly class="form-control" value="' + data.userAddress
+            + '"/>\n'
+            + '    </div>\n'
+            + '  </div>');
+        var userNameContent = $('<div class="form-group userName">\n'
+            + '    <label class="col-sm-2 control-label">收件姓名</label>\n'
+            + '    <div class="col-sm-8">\n'
+            + '      <input type="text" name="userName"  readonly class="form-control" value="' + data.userName
+            + '"/>\n'
+            + '    </div>\n'
+            + '  </div>');
+        var userMobileContent = $('<div class="form-group userMobile">\n'
+            + '    <label class="col-sm-2 control-label">收件电话</label>\n'
+            + '    <div class="col-sm-8">\n'
+            + '      <input type="text" name="userMobile"  readonly class="form-control" value="' + data.userMobile
+            + '"/>\n'
+            + '    </div>\n'
+            + '  </div>');
+        $("#view").append(addressContent).append(userNameContent)
+        .append(userMobileContent);
+
+        var orderDetailDtoList = data.orderDetailDtoList;
+        $("#goodsDetail").html("");
+        if (orderDetailDtoList) {
+          $.each(orderDetailDtoList, function (i, item) {
+            var tr = $("<tr></tr>");
+            tr.append("<td>" + item.title + "</td>");
+            tr.append("<td>" + item.num + "</td>");
+            tr.append("<td>" + item.specsName + "</td>");
+
+            $("#goodsDetail").append(tr);
+          })
+        }
+
+        var html = $("#view").html();
+         $.alert(html,"收件信息",380);
+      }
+    });
+  }
+
   //发货
-  function send(orderId){
+  function send(orderId, logistics) {
     var html = '<div class="form-group">' +
         '<label for="logisticsNumber" class="col-sm-3 control-label">物流单号:</label>' +
         '<div class="col-sm-7">' +
-        '<input type="text" class="form-control" id="logisticsNumber" value="" placeholder="请填写物流单号">' +
+        '<input type="text" class="form-control" id="logisticsNumber" value='+logistics+' placeholder="请填写物流单号">' +
         '</div>' +
         '</div>';
 
-   $.dialog("发送填写物流单号", html, function () {
-     var logisticsNumber = $("#logisticsNumber").val().trim();
-     if (!logisticsNumber) {
-       alert("物流单号不能为空");
-       return false;
-     }
-     $.ajax({
-       url: 'admin/order/updateOrder',
-       type: 'post',
-       dataType: 'json',
-       contentType: 'application/json;charset=utf-8',
-       data: JSON.stringify({
-         "id":orderId,
-         "logisticsNumber":logisticsNumber,
-         "status":2
-       }),
-       success:function(res) {
-         if (res.code == '0000') {
-           $.dialogClose();
-           search();
-         }
-       }
-       })
+    $.dialog("发送填写物流单号", html, function () {
+      var logisticsNumber = $("#logisticsNumber").val().trim();
+      if (!logisticsNumber) {
+        alert("物流单号不能为空");
+        return false;
+      }
+      $.ajax({
+        url: 'admin/order/updateOrder',
+        type: 'post',
+        dataType: 'json',
+        contentType: 'application/json;charset=utf-8',
+        data: JSON.stringify({
+          "id": orderId,
+          "logisticsNumber": logisticsNumber,
+          "status": 2
+        }),
+        success: function (res) {
+          if (res.code == '0000') {
+            $.dialogClose();
+            search();
+          }
+        }
+      })
 
-    });
+    },null, 150);
   }
 
   //添加
@@ -216,19 +308,18 @@
 
   }
 
-
   //编辑供应商
   function update(id) {
-    var new_url =rootPath+"?id="+id;
+    var new_url = rootPath + "?id=" + id;
     window.history.pushState(null, null, new_url)
-    var url ="/updateSalesOrder";
+    var url = "/updateSalesOrder";
     redirectTo(url);
   }
 
   /**
    * 修改商品价格
    */
-  function modifyAmount(orderId){
+  function modifyAmount(orderId) {
     var html = '<div class="form-group">' +
         '<label for="totalAmount" class="col-sm-3 control-label">商品价格:</label>' +
         '<div class="col-sm-7">' +
@@ -242,21 +333,21 @@
         alert("商品价格不能为空");
         return false;
       }
-      var amount = parseInt(totalAmount)*100 ;
+      var amount = parseInt(totalAmount) * 100;
       $.ajax({
         url: 'admin/order/updateOrder',
         type: 'post',
         dataType: 'json',
         contentType: 'application/json;charset=utf-8',
         data: JSON.stringify({
-          "id":orderId,
-          "totalAmount":amount
+          "id": orderId,
+          "totalAmount": amount
         }),
-        success:function(res) {
+        success: function (res) {
           if (res.code == '0000') {
             $.dialogClose();
             search();
-          }else{
+          } else {
             $.dialogClose();
             $.alert(res.msg);
           }
@@ -267,7 +358,7 @@
   }
 
   //修改邮费
-  function modifypPostage(orderId){
+  function modifypPostage(orderId) {
     var html = '<div class="form-group">' +
         '<label for="totalAmount" class="col-sm-3 control-label">邮费:</label>' +
         '<div class="col-sm-7">' +
@@ -281,25 +372,25 @@
         alert("邮费不能为空");
         return false;
       }
-      if(postage<0){
+      if (postage < 0) {
         alert("邮费不能小于0");
         return false;
       }
-      var amount = parseInt(postage)*100 ;
+      var amount = parseInt(postage) * 100;
       $.ajax({
         url: 'admin/order/updateOrder',
         type: 'post',
         dataType: 'json',
         contentType: 'application/json;charset=utf-8',
         data: JSON.stringify({
-          "id":orderId,
-          "postage":amount
+          "id": orderId,
+          "postage": amount
         }),
-        success:function(res) {
+        success: function (res) {
           if (res.code == '0000') {
             $.dialogClose();
             search();
-          }else{
+          } else {
             $.dialogClose();
             $.alert(res.msg);
           }

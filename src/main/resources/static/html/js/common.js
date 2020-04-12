@@ -114,17 +114,20 @@ $.dialog = function(title, content, fn, params, height){
     /**
      * 选择框
      */
-    $.confirm = function(content, fn, params,title){
+    $.confirm = function(content, fn, params,title,height){
     	if(!title){
     		title = '提示';
     	}
-    	$.dialog(title, content, fn, params);
+    	$.dialog(title, content, fn, params, height);
 	}
     /**
      * 提示
      */
-    $.alert = function(content, title){
-    	$.confirm(content,null,null,title);
+    $.alert = function(content, title, height){
+    	if(!height){
+    		height=100;
+			}
+    	$.confirm(content,null,null,title, height);
     	$("#submit").hide();
     }
 
