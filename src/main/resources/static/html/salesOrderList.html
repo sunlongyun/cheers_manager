@@ -11,7 +11,7 @@
         <option value="-1">选择订单状态</option>
         <option value="0">下单待支付</option>
         <option value="1">买家已支付</option>
-        <option value="2">买家已发货</option>
+        <option value="2">卖家已发货</option>
         <option value="3">买家已收货</option>
         <option value="4">订单已取消</option>
       </select>
@@ -92,7 +92,11 @@
                 if (!content) {
                   content = "【去发货】";
                 }
-                opeHtml = "<a href='javascript:send(" + obj.id + ", \""+obj.logisticsNumber+"\")' title='物流单号'>" +
+                var logisticsNumber = obj.logisticsNumber;
+                if(!logisticsNumber){
+                  logisticsNumber = "";
+                }
+                opeHtml = "<a href='javascript:send(" + obj.id + ", \""+logisticsNumber+"\")' title='物流单号'>" +
                 content + "</span></a>";
               }
 
@@ -183,12 +187,12 @@
     });
   }
 
-  //发货
+  //发货send
   function send(orderId, logistics) {
     var html = '<div class="form-group">' +
         '<label for="logisticsNumber" class="col-sm-3 control-label">物流单号:</label>' +
         '<div class="col-sm-7">' +
-        '<input type="text" class="form-control" id="logisticsNumber" value='+logistics+' placeholder="请填写物流单号">' +
+        '<input type="text" class="form-control" id="logisticsNumber" value="'+logistics+'" placeholder="请填写物流单号">' +
         '</div>' +
         '</div>';
 

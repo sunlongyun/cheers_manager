@@ -34,10 +34,6 @@
      **/
     $("#table").search2('/admin/supplier/getPageInfo', 'form',
         [
-          {"text": "Logo",  "format": function (obj) {
-            var html = "<img width='50px' src='"+obj.logo+"'/>";
-            return html;
-            }},
           {"text": "公司名称", "title": "companyName"},
           {"text": "地址", "format":function(obj){
             var html = "";
@@ -56,7 +52,8 @@
               return html;
             }},
 
-          {"text": "创建人", "title": "creatorName"},
+          {"text": "管理员", "title": "creatorName"},
+          {"text": "手机号", "title": "mobile"},
           {"text": "座机", "title": "telephone"},
           {"text": "联系人", "title": "linker"},
           {"text": "创建时间", "title": "createTime"},
