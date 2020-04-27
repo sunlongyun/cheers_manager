@@ -1,6 +1,5 @@
 package goods.platform;
 
-import com.chisong.green.farm.app.aspect.ControllerAspect;
 import org.springframework.boot.SpringApplication;
 
 import goods.platform.annotation.ChiSongTechApplicationRun;
