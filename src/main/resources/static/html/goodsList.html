@@ -60,10 +60,13 @@
             }},
           {"text": "上架时间", "title": "createTime"},
           {"text": "操作", "format":function(obj){
-              var html
-                  ="<a href='javascript:update("+obj.id+")' title='编辑'><span class='glyphicon glyphicon-edit'></span></a>";
-              html+="&nbsp;"
-              html +="<a href='javascript:setTemplate("+obj.id+")'>【运费】</a>";
+
+              if(user && user.type == 4){
+                var html ="";
+                html +="<a href='javascript:update("+obj.id+")' title='编辑'><span class='glyphicon glyphicon-edit'></span></a>";
+                html+="&nbsp;"
+                html +="<a href='javascript:setTemplate("+obj.id+")'>【运费】</a>";
+              }
               return html;
             }}
         ]
