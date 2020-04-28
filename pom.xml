@@ -58,31 +58,39 @@
 
   </dependencies>
 
+
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
         <configuration>
-          <!-- get all project dependencies -->
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
           <archive>
             <manifest>
+              <addClasspath>true</addClasspath>
+              <classpathPrefix>lib/</classpathPrefix>
               <mainClass>goods.platform.GoodsApplication</mainClass>
             </manifest>
           </archive>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
-            <id>make-assembly</id>
+            <id>copy</id>
             <phase>package</phase>
             <goals>
-              <goal>single</goal>
+              <goal>copy-dependencies</goal>
             </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/lib</outputDirectory>
+            </configuration>
           </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
+
 </project>
