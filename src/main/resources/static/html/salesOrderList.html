@@ -70,6 +70,21 @@
               return html;
             }
           },
+          {
+            "text": "给供应商结款", "format": function (obj) {
+              var supplierAmount = obj.supplierAmount;
+              if(!supplierAmount){
+                supplierAmount= 0;
+              }
+              var html = supplierAmount;
+              if (obj.supplierStatus != 2) {
+                html = "<a href='javascript:modifySupplierAmount(" + obj.id+")' title='修改结算金额'>" +
+                    supplierAmount +
+                    "</span></a>";
+              }
+              return html;
+            }
+          },
           {"text": "进价", "title": "costAmount"},
           {
             "text": "邮费", "format": function (obj) {
@@ -319,7 +334,46 @@
     var url = "/updateSalesOrder";
     redirectTo(url);
   }
+  /**
+   * 修改供应商结款金额
+   */
+  function modifySupplierAmount(orderId, supplierAmount){
+    var html = '<div class="form-group">' +
+        '<label for="supplierAmount" class="col-sm-3 control-label">商品价格:</label>' +
+        '<div class="col-sm-7">' +
+        '<input type="number" class="form-control" id="supplierAmount" min="1" value="" placeholder="供应商结款金额">' +
+        '</div>' +
+        '</div>';
 
+    $.dialog("给供应商结款金额", html, function () {
+      var supplierAmount = $("#supplierAmount").val().trim();
+      if (!supplierAmount) {
+        alert("结款金额不能为空");
+        return false;
+      }
+      var supplierAmount = parseInt(supplierAmount) * 100;
+      $.ajax({
+        url: 'admin/order/updateOrder',
+        type: 'post',
+        dataType: 'json',
+        contentType: 'application/json;charset=utf-8',
+        data: JSON.stringify({
+          "id": orderId,
+          "supplierAmount": supplierAmount
+        }),
+        success: function (res) {
+          if (res.code == '0000') {
+            $.dialogClose();
+            search();
+          } else {
+            $.dialogClose();
+            $.alert(res.msg);
+          }
+        }
+      })
+
+    });
+  }
   /**
    * 修改商品价格
    */
