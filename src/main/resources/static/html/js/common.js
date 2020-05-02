@@ -27,7 +27,7 @@ $(function(){
 		$(this).parent().addClass("active");
 
 		$("#mainDiv").load(url);
-	});
+	}).first().trigger("click");
 	$("a.sidebar-toggle").click(function(){
 		if($("aside.left-side").is(":hidden")){
 			$("aside.left-side").show();

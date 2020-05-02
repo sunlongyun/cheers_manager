@@ -1,6 +1,115 @@
 <header class="panel-heading">
-  首页
+  叮当农场管理后台
 </header>
 <div class="panel-body">
-   叮当农场销售管理后台
+  <div class="panel-group" id="accordion">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          业绩汇总表
+        </h4>
+      </div>
+      <div>
+        <div class="panel-body">
+         <table class="table table-hover table-condensed table-bordered">
+           <tr>
+             <th style="width: 10%" class="text-success">总营业额</th>
+             <td><span class="payedAmount"></span>元</td>
+             <th style="width: 10%" class="text-success">顾客总数量</th>
+             <td><span class="customerNum"></span>人</td>
+           </tr>
+           <tr>
+             <th style="width: 10%" class="text-info">今日订单量</th>
+             <td><i class="glyphicon glyphicon-arrow-up text-success"></i> <span class="todayPayedNum"></span></td>
+             <th style="width: 10%" class="text-info">今日营业额</th>
+             <td><i class="glyphicon glyphicon-arrow-up text-success"></i> <span class="todayPayedAmount"></span>元</td>
+           </tr>
+           <tr>
+             <th style="width: 10%" class="text-info">本月营业额</th>
+             <td><i class="glyphicon glyphicon-arrow-up text-success"></i> <span class="monthPayedAmount"></span></td>
+             <th style="width: 10%" class="text-info">本周营业额</th>
+             <td><i class="glyphicon glyphicon-arrow-up text-success"></i> <span class="weekPayedAmount"></span></td>
+           </tr>
+           <tr>
+             <th style="width: 10%" class="text-info">本周订单量</th>
+             <td><i class="glyphicon glyphicon-arrow-up text-danger"></i> <span class="weekPayedNum"></span></td>
+             <th style="width: 10%" class="text-info">本周订单量</th>
+             <td><i class="glyphicon glyphicon-arrow-up text-danger"></i> <span class="monthPayedNum"></span></td>
+           </tr>
+           <tr>
+             <th style="width: 10%" class="text-info">本周新增粉丝</th>
+             <td><i class="glyphicon glyphicon-arrow-up text-danger"></i> <span class="weekCustomerNum"></span></td>
+             <th style="width: 10%" class="text-info">本月新增粉丝</th>
+             <td><i class="glyphicon glyphicon-arrow-up text-danger"></i> <span class="monthCustomerNum"></span></td>
+           </tr>
+           <tr>
+             <th style="width: 10%" class="text-info">商品总数量</th>
+             <td><span class="goodsNum"></span></td>
+             <th style="width: 10%" class="text-info">供应商总数量</th>
+             <td>1<span class="supplierNum"></span></td>
+           </tr>
+
+
+         </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          平台介绍
+        </h4>
+      </div>
+      <div id="collapseOne">
+        <div class="panel-body">
+          <p>“叮当农场”是上海赤松信息技术限公司开发的一款农产品交易平台。</p>
+          <p>货源地直接发货，没有中间商赚差价， 顾客少花钱，农户多挣钱。</p>
+          <p>解决农产品销售问题，同时让大城市的白领可以比较低廉的价格买到最新鲜的农产品。</p>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          管理后台使用说明
+        </h4>
+      </div>
+      <div>
+        <div class="panel-body">
+          <p><span style="color: darkred">*</span> 商品的排序规则【权重=销售数量*0.6+销售额*0.4】,等比换算成1至100的数字</p>
+          <p><span style="color: darkred">*</span> 管理员拥有 供应商管理、商品管理、订单管理的管理权限</p>
+          <p><span style="color: darkred">*</span> 管理员只能管理自己权限访问内的供应商、商品、订单</p>
+          <p><span style="color: darkred">*</span> 超级管理员拥有全部菜单，全部数据的管理权限</p>
+          <p><span style="color: darkred">*</span> 平台详细记录每一次操作记录，平台管理员需要对每一次操作负责</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
+<script>
+  $(function(){
+    $.ajax({
+      "url":"/admin/summary/info",
+      "type":'get',
+      "dataType":"json",
+      success:function(data){
+        console.log(data);
+        $("span.payedAmount").html(parseInt(data.payedAmount)/100);
+        $("span.customerNum").html(data.customerNum);
+        $("span.todayPayedNum").html(data.todayPayedNum);
+        $("span.todayPayedAmount").html(parseInt(data.todayPayedAmount)/100);
+        $("span.monthPayedAmount").html(parseInt(data.monthPayedAmount)/100);
+        $("span.weekPayedAmount").html(parseInt(data.weekPayedAmount)/100);
+        $("span.weekCustomerNum").html(data.weekCustomerNum);
+        $("span.monthCustomerNum").html(data.monthCustomerNum);
+        $("span.weekPayedNum").html(data.weekPayedNum);
+        $("span.monthPayedNum").html(data.monthPayedNum);
+        $("span.supplierNum").html(data.supplierNum);
+        $("span.goodsNum").html(data.goodsNum);
+
+      }
+    })
+  })
+</script>
