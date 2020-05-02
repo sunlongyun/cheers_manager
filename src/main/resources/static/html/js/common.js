@@ -383,17 +383,17 @@ function getParamsByFormId(formId){
 
 
 		//获取页面参数，表示当前路径的(返回时参数不丢失)
-		var page = getQueryString("page");
-		if(!page){
-			page =CRC.ToModbusCRC16(url, true);
-			var href = window.location.href+"?page="+page;
-           window.history.pushState(null, null, href);
-		}
+//		var page = getQueryString("page");
+//		if(!page){
+//			page =CRC.ToModbusCRC16(url, true);
+//			var href = window.location.href+"?page="+page;
+//            window.history.pushState(null, null, href);
+//		}
 
 		//曾经保存过参数，且当前表单参数为空，则用之前的参数查询
-		if(attrNum == 0 && params.pageNo == 0 && sessionStorage.getItem(page)){
-			params = JSON.parse(sessionStorage.getItem(page)) ;
-		}
+//		if(attrNum == 0 && params.pageNo == 0 && sessionStorage.getItem(page)){
+//			params = JSON.parse(sessionStorage.getItem(page)) ;
+//		}
         if(!params){
             params =  {"pageNo":1, "pageSize":5};
         }else if(params.pageNo == 0){

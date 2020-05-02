@@ -58,6 +58,7 @@ public class GoodsInfoSchedulingJob {
 
 	//更新商品的权重
 	@Scheduled(cron = "30 59 23 * * ? ")
+//	@Scheduled(fixedRate = 3 * 60 * 1000)
 	public void updateWeight(){
 		//1.不再权重保护期内的商品，
 		//2. 根据总盈利额排序 60%
