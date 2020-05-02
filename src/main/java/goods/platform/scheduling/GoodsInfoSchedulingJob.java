@@ -89,7 +89,7 @@ public class GoodsInfoSchedulingJob {
 
 			double bWeight = ((b.getSalesNum()==null?0:b.getSalesNum())*0.4)
 				+ (b.getSalesAmount() == null ?0:b.getSalesAmount())*0.6;
-			return  (int)(aWeight -bWeight);
+			return  (int)(-1 * (aWeight -bWeight));
 		}).forEach(goodsDto -> {
 
 			int size = total>100 ?total/100:1;

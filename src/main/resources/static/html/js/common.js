@@ -171,7 +171,7 @@ $.dialog = function(title, content, fn, params, height){
   /**
 	** 分页
 	**/
-	function showPage(url, currentPage, totalPages, fn, thisObj){
+	function showPage(url, currentPage, totalPages, fn,formId,table, callBak, thisObj){
 		if(!currentPage){
 			currentPage = 1;
 		}
@@ -195,7 +195,8 @@ $.dialog = function(title, content, fn, params, height){
 		         }
 		     },
 		     onPageClicked: function (event, originalEvent, type, page){
-		    	 thisObj.search(url, fn, page);
+		      	//$.fn.search = function(url, fn,pageNo, formId, table, callBak){
+		    	 thisObj.search(url, fn, page,formId,table, callBak);
 		     }
 		 });
 	}
@@ -245,7 +246,7 @@ $.fn.search2 = function(url, formId, titleList,callBack){
         if(tbody.size()==0){
         	tbody = $("<tbody></tbody>");
             table.append(tbody);
-		}
+				}
         tbody.html("");
         $(dataList).each(function(index, obj){
             var tr = $("<tr></tr>");
@@ -382,17 +383,17 @@ function getParamsByFormId(formId){
 
 
 		//获取页面参数，表示当前路径的(返回时参数不丢失)
-//		var page = getQueryString("page");
-//		if(!page){
-//			page =CRC.ToModbusCRC16(url, true);
-//			var href = window.location.href+"?page="+page;
-//            window.history.pushState(null, null, href);
-//		}
+		var page = getQueryString("page");
+		if(!page){
+			page =CRC.ToModbusCRC16(url, true);
+			var href = window.location.href+"?page="+page;
+           window.history.pushState(null, null, href);
+		}
 
 		//曾经保存过参数，且当前表单参数为空，则用之前的参数查询
-//		if(attrNum == 0 && params.pageNo == 0 && sessionStorage.getItem(page)){
-//			params = JSON.parse(sessionStorage.getItem(page)) ;
-//		}
+		if(attrNum == 0 && params.pageNo == 0 && sessionStorage.getItem(page)){
+			params = JSON.parse(sessionStorage.getItem(page)) ;
+		}
         if(!params){
             params =  {"pageNo":1, "pageSize":5};
         }else if(params.pageNo == 0){
@@ -407,7 +408,7 @@ function getParamsByFormId(formId){
 			data: params,
 			success:function(pageInfo){
 				if(pageInfo){
-					showPage(url, pageInfo.pageNo, pageInfo.pages, fn, $(this));
+					showPage(url, pageInfo.pageNo, pageInfo.pages, fn,formId, table, callBak, $(this));
 					var pageSize = pageInfo.pageSize;
 					var pageNo = pageInfo.pageNo;
 					if(fn){
