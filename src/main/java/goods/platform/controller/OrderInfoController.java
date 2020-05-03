@@ -5,8 +5,11 @@ import com.chisong.green.farm.app.constants.enums.UserTypeEnum;
 import com.chisong.green.farm.app.dto.CustomerInfoDto;
 import com.chisong.green.farm.app.dto.OrderDeliveryAddressMappingDto;
 import com.chisong.green.farm.app.dto.OrderInfoDto;
+import com.chisong.green.farm.app.miniProgram.request.PayToPersonRequest;
+import com.chisong.green.farm.app.miniProgram.service.WxPayService;
 import com.chisong.green.farm.app.service.OrderDeliveryAddressMappingService;
 import com.chisong.green.farm.app.service.OrderInfoService;
+import com.chisong.green.farm.app.service.PaymentService;
 import com.lianshang.generator.commons.PageInfo;
 import goods.platform.commons.Response;
 import java.lang.reflect.Field;
@@ -36,6 +39,21 @@ public class OrderInfoController {
 	@Autowired
 	private OrderDeliveryAddressMappingService orderDeliveryAddressMappingService;
 
+	@Autowired
+	private WxPayService wxPayService;
+
+	@RequestMapping("/pay")
+	public Response pay(){
+		PayToPersonRequest payToPersonRequest = new PayToPersonRequest();
+		payToPersonRequest.setAmount(100);
+//		payToPersonRequest.setCheckName("孙龙云");
+		payToPersonRequest.setReUserName("孙龙云");
+		payToPersonRequest.setPartnerTradeNo("test001111");
+		payToPersonRequest.setDesc("付款测试");
+		payToPersonRequest.setOpenid("oqrTq4jLQt0I_9F4vQVQLQGDrBbM");
+		wxPayService.payToPerson(payToPersonRequest);
+		return Response.success();
+	}
 	/**
 	 * 修改订单
 	 *

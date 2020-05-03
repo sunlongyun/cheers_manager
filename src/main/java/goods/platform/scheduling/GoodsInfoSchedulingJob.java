@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -124,23 +125,12 @@ public class GoodsInfoSchedulingJob {
 				.andGoodsIdEqualTo(goodsDto.getId());
 
 			List<GoodsSpecsDto> goodsSpecsDtos = goodsSpecsService.getList(goodsSpecsExample);
-			AtomicInteger atomicInteger = new AtomicInteger(0);
 
 			goodsSpecsDtos.forEach(goodsSpecs->{
 				goodsSpecs.setPromote(1);
-				int index = atomicInteger.get();
-				GoodsSpecsDto lowGoodsSpecsDto = goodsSpecsDtos.get(index);
-				if(lowGoodsSpecsDto.getPromotionPrice() < goodsSpecs.getPromotionPrice()){
-					atomicInteger.set(goodsSpecsDtos.indexOf(goodsSpecs));
-				}
 				goodsSpecsService.update(goodsSpecs);
 			});
-
 			goodsDto.setPromote(true);
-			GoodsSpecsDto lowGoodsSpecsDto = goodsSpecsDtos.get(atomicInteger.get());
-			goodsDto.setPromotePrice(Long.parseLong(lowGoodsSpecsDto.getPromotionPrice()+""));
-			goodsDto.setPrice(Long.parseLong(lowGoodsSpecsDto.getPrice()+"") );
-
 			goodsService.update(goodsDto);
 		});
 	}
@@ -170,10 +160,7 @@ public class GoodsInfoSchedulingJob {
 				goodsSpecsService.update(goodsSpecs);
 
 			});
-
-			goodsDto.setPromotePrice(goodsDto.getPrice());
 			goodsDto.setPromote(false);
-
 			goodsService.update(goodsDto);
 		});
 	}
