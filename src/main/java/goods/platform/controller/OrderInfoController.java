@@ -56,16 +56,21 @@ public class OrderInfoController {
 		return Response.success();
 	}
 
+	/**
+	 * 发起退款申请
+	 * @param orderId
+	 * @param applyAmount
+	 * @return
+	 */
 	@RequestMapping("/refund")
-	public Response refund(){
-		RefundApplyReq refundApplyReq = new RefundApplyReq();
-		refundApplyReq.setOutTradeNo("PY_20200406123011879");
-		refundApplyReq.setTransactionId("4200000478202004061292007147");
-		refundApplyReq.setOutRefundNo("RF0024");
-		refundApplyReq.setRefundFee(100);
-		refundApplyReq.setTotalFee(200);
-		wxPayService.refundOrder(refundApplyReq);
-
+	public Response refund(Long orderId, Long applyAmount){
+		OrderInfoDto orderInfoDto = orderInfoService.getOrderById(orderId);
+		if(null == orderInfoDto){
+			return Response.fail("未找到对应的订单");
+		}
+		if(StringUtils.isEmpty(orderInfoDto.getPayNo())){
+			return Response.fail("未支付的订单不能发起退款申请");
+		}
 		return Response.success();
 	}
 	/**

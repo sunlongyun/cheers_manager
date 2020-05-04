@@ -77,7 +77,7 @@
                 supplierAmount= 0;
               }
               var html = supplierAmount;
-              if (obj.supplierStatus != 2) {
+              if (obj.supplierStatus != 2 && obj.status.code == 3) {
                 html = "<a href='javascript:modifySupplierAmount(" + obj.id+")' title='修改结算金额'>" +
                     supplierAmount +
                     "</span></a>";
@@ -120,7 +120,7 @@
           },
           {"text": "支付流水号", "title": "payNo"},
           {"text": "已支付金额", "title": "payedAmount"},
-
+          {"text": "已退款", "title": "refundAmount"},
           {"text": "订单状态", "title": "status.value"},
           {"text": "下单时间", "title": "createTime"},
           {
@@ -132,9 +132,12 @@
           {
             "text": "操作", "format": function (obj) {
               var opeHtml = '';
-              // if (obj.status.code == 0) {
-              //   opeHtml += " <a href='javascript:void(0)'>[关闭]</a>";
-              // }
+              //订单状态是买家已收货且快递发出时间在一个月之内的菜可以退款
+              if(obj.canRefund){
+                opeHtml +="<a href='javascript:refundApply(" + obj.id
+                    + ")' title='退款'>【退款】</a>";
+              }
+
               opeHtml += "<a href='javascript:update(" + obj.id
                   + ")' title='编辑'><span class='glyphicon glyphicon-edit'></span></a>";
               return opeHtml;
@@ -145,6 +148,40 @@
   }
 
   search();
+
+  //退款申请
+  function refundApply(orderId){
+    var html = '<div class="form-group">' +
+        '<label for="applyAmount" class="col-sm-3 control-label">退款金额:</label>' +
+        '<div class="col-sm-7">' +
+        '<input type="number" class="form-control" id="applyAmount" min="1" value="1" placeholder="请填写退款金额">' +
+        '</div>' +
+        '</div>';
+
+    $.dialog("退款申请", html, function () {
+      var applyAmount = $("#applyAmount").val().trim();
+      if (!applyAmount) {
+        alert("退款金额不能为空");
+        return false;
+      }
+      $.ajax({
+        url: 'admin/order/refund',
+        type: 'post',
+        dataType: 'json',
+        data: {
+          "orderId": orderId,
+          "applyAmount": parseInt(applyAmount)
+        },
+        success: function (res) {
+          if (res.code == '0000') {
+            $.dialogClose();
+            search();
+          }
+        }
+      })
+
+    },null, 150);
+  }
 
   //收件人信息
   function view(id) {

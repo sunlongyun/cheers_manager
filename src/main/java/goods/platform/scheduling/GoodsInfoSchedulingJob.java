@@ -48,7 +48,7 @@ public class GoodsInfoSchedulingJob {
 	/**
 	 * 维护商品状态
 	 */
-	@Scheduled(fixedRate = 3 * 60 * 1000)
+	@Scheduled(fixedRate = 30 * 60 * 1000)
 	public void updateGoodsInfo() {
 		log.info("开始更新商品促销状态-----");
 		//开始促销活动
