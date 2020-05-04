@@ -6,6 +6,7 @@ import com.chisong.green.farm.app.dto.CustomerInfoDto;
 import com.chisong.green.farm.app.dto.OrderDeliveryAddressMappingDto;
 import com.chisong.green.farm.app.dto.OrderInfoDto;
 import com.chisong.green.farm.app.miniProgram.request.PayToPersonRequest;
+import com.chisong.green.farm.app.miniProgram.request.RefundApplyReq;
 import com.chisong.green.farm.app.miniProgram.service.WxPayService;
 import com.chisong.green.farm.app.service.OrderDeliveryAddressMappingService;
 import com.chisong.green.farm.app.service.OrderInfoService;
@@ -46,12 +47,25 @@ public class OrderInfoController {
 	public Response pay(){
 		PayToPersonRequest payToPersonRequest = new PayToPersonRequest();
 		payToPersonRequest.setAmount(100);
-//		payToPersonRequest.setCheckName("孙龙云");
-		payToPersonRequest.setReUserName("孙龙云");
-		payToPersonRequest.setPartnerTradeNo("test001111");
-		payToPersonRequest.setDesc("付款测试");
+//		payToPersonRequest.setCheckName("FORCE_CHECK");
+//		payToPersonRequest.setReUserName("孙龙云");
+		payToPersonRequest.setPartnerTradeNo("11111");
+		payToPersonRequest.setDesc("test");
 		payToPersonRequest.setOpenid("oqrTq4jLQt0I_9F4vQVQLQGDrBbM");
 		wxPayService.payToPerson(payToPersonRequest);
+		return Response.success();
+	}
+
+	@RequestMapping("/refund")
+	public Response refund(){
+		RefundApplyReq refundApplyReq = new RefundApplyReq();
+		refundApplyReq.setOutTradeNo("PY_20200406123011879");
+		refundApplyReq.setTransactionId("4200000478202004061292007147");
+		refundApplyReq.setOutRefundNo("RF0024");
+		refundApplyReq.setRefundFee(100);
+		refundApplyReq.setTotalFee(200);
+		wxPayService.refundOrder(refundApplyReq);
+
 		return Response.success();
 	}
 	/**
