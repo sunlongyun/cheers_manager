@@ -77,7 +77,7 @@
                 supplierAmount= 0;
               }
               var html = supplierAmount;
-              if (obj.supplierStatus != 2 && obj.status.code == 3) {
+              if (obj.supplierStatus != 2 && (obj.status.code == 3 || obj.status.code ==2)) {
                 html = "<a href='javascript:modifySupplierAmount(" + obj.id+")' title='修改结算金额'>" +
                     supplierAmount +
                     "</span></a>";
@@ -118,10 +118,12 @@
               return opeHtml;
             }
           },
-          {"text": "支付流水号", "title": "payNo"},
+         /* {"text": "支付流水号", "title": "payNo"},*/
           {"text": "已支付金额", "title": "payedAmount"},
           {"text": "已退款", "title": "refundAmount"},
           {"text": "订单状态", "title": "status.value"},
+          {"text": "收件人", "title": "orderDeliveryAddressMappingDto.contact"},
+          {"text": "收件人电话", "title": "orderDeliveryAddressMappingDto.mobile"},
           {"text": "下单时间", "title": "createTime"},
           {
             "text": "收件信息", "format": function (obj) {
@@ -175,7 +177,11 @@
         success: function (res) {
           if (res.code == '0000') {
             $.dialogClose();
+            $.alert("提交退款申请成功!")
             search();
+          }else{
+            $.dialogClose();
+            $.alert(res.msg)
           }
         }
       })

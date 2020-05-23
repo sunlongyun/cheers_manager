@@ -1,29 +1,18 @@
 package goods.platform.scheduling;
 
-import com.chisong.green.farm.app.constants.enums.OrderStatusEnum;
 import com.chisong.green.farm.app.constants.enums.Validity;
 import com.chisong.green.farm.app.dto.GoodsDto;
 import com.chisong.green.farm.app.dto.GoodsSpecsDto;
-import com.chisong.green.farm.app.dto.OrderDetailDto;
 import com.chisong.green.farm.app.example.GoodsExample;
 import com.chisong.green.farm.app.example.GoodsSpecsExample;
-import com.chisong.green.farm.app.example.OrderInfoExample;
 import com.chisong.green.farm.app.service.GoodsService;
 import com.chisong.green.farm.app.service.GoodsSpecsService;
 import com.chisong.green.farm.app.service.OrderDetailService;
-import com.chisong.green.farm.app.service.OrderInfoService;
 import com.lianshang.generator.commons.PageInfo;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -43,8 +32,7 @@ public class GoodsInfoSchedulingJob {
 	private GoodsSpecsService goodsSpecsService;
 	@Autowired
 	private    GoodsService goodsService;
-	@Autowired
-	private OrderDetailService orderDetailService;
+
 	/**
 	 * 维护商品状态
 	 */
@@ -109,16 +97,14 @@ public class GoodsInfoSchedulingJob {
 	 * 开始活动到期
 	 */
 	private void startPromote() {
-		LocalDateTime now = LocalDateTime.now();
-
 		GoodsExample goodsExample = new GoodsExample();
 		goodsExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code())
 			.andPromoteStartTimeIsNotNull().andPromoteEndTimeIsNotNull()
-			.andPromoteStartTimeLessThan(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()))
-			.andPromoteEndTimeGreaterThan(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()))
 			.andPromoteEqualTo(0);
 
-		goodsService.getList(goodsExample).forEach(goodsDto -> {
+		goodsService.getList(goodsExample).stream().filter(goodsDto ->
+			goodsDto.getPromoteStartTime().before(new Date())
+				&& goodsDto.getPromoteEndTime().after(new Date())).forEach(goodsDto -> {
 
 			GoodsSpecsExample goodsSpecsExample = new GoodsSpecsExample();
 			goodsSpecsExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code())
@@ -139,16 +125,14 @@ public class GoodsInfoSchedulingJob {
 	 * 促销活动到期
 	 */
 	private void endPromote() {
-		LocalDateTime now = LocalDateTime.now();
 
 		GoodsExample goodsExample = new GoodsExample();
 		goodsExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code())
-			.andPromoteStartTimeIsNotNull().andPromoteEndTimeIsNotNull()
-			.andPromoteEndTimeLessThan(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()))
+			.andPromoteStartTimeIsNotNull()
 			.andPromoteEqualTo(1);
 
-			goodsService.getList(goodsExample).forEach(goodsDto -> {
-
+			goodsService.getList(goodsExample).stream().filter(goodsDto -> goodsDto.getPromoteEndTime() != null
+				&& goodsDto.getPromoteEndTime().before(new Date())).forEach(goodsDto -> {
 
 			GoodsSpecsExample goodsSpecsExample = new GoodsSpecsExample();
 			goodsSpecsExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code())

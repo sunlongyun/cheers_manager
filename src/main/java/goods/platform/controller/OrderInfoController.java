@@ -11,6 +11,7 @@ import com.chisong.green.farm.app.miniProgram.service.WxPayService;
 import com.chisong.green.farm.app.service.OrderDeliveryAddressMappingService;
 import com.chisong.green.farm.app.service.OrderInfoService;
 import com.chisong.green.farm.app.service.PaymentService;
+import com.chisong.green.farm.app.service.RefundOrderService;
 import com.lianshang.generator.commons.PageInfo;
 import goods.platform.commons.Response;
 import java.lang.reflect.Field;
@@ -42,6 +43,8 @@ public class OrderInfoController {
 
 	@Autowired
 	private WxPayService wxPayService;
+	@Autowired
+	private RefundOrderService refundOrderService;
 
 	@RequestMapping("/pay")
 	public Response pay(){
@@ -71,6 +74,7 @@ public class OrderInfoController {
 		if(StringUtils.isEmpty(orderInfoDto.getPayNo())){
 			return Response.fail("未支付的订单不能发起退款申请");
 		}
+		refundOrderService.applyRefund(orderInfoDto.getOrderNo(), Integer.parseInt(applyAmount*100+"") );
 		return Response.success();
 	}
 	/**
@@ -90,9 +94,10 @@ public class OrderInfoController {
 		}
 		oldOrderInfo.setIncome(oldOrderInfo.getTotalAmount() - oldOrderInfo.getCostAmount());
 		//发货
-		if(!StringUtils.isEmpty(orderInfoDtoReq.getLogisticsNumber())
-			&& orderInfoDtoReq.getStatus() == OrderStatusEnum.DELIVERY.code()) {
+		if(!StringUtils.isEmpty(orderInfoDtoReq.getLogisticsNumber())) {
 			oldOrderInfo.setSendTime(new Date());
+			oldOrderInfo.setStatus(OrderStatusEnum.DELIVERY.code());
+			oldOrderInfo.setPostage(null);
 		}
 		//给供应商结款
 		if(orderInfoDtoReq.getSupplierAmount() != null) {
