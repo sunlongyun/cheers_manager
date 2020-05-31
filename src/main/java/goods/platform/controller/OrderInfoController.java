@@ -6,12 +6,12 @@ import com.chisong.green.farm.app.dto.CustomerInfoDto;
 import com.chisong.green.farm.app.dto.OrderDeliveryAddressMappingDto;
 import com.chisong.green.farm.app.dto.OrderInfoDto;
 import com.chisong.green.farm.app.miniProgram.request.PayToPersonRequest;
-import com.chisong.green.farm.app.miniProgram.request.RefundApplyReq;
 import com.chisong.green.farm.app.miniProgram.service.WxPayService;
+import com.chisong.green.farm.app.service.CustomerInfoService;
 import com.chisong.green.farm.app.service.OrderDeliveryAddressMappingService;
 import com.chisong.green.farm.app.service.OrderInfoService;
-import com.chisong.green.farm.app.service.PaymentService;
 import com.chisong.green.farm.app.service.RefundOrderService;
+import com.chisong.green.farm.app.utils.CurrentUserUtils;
 import com.lianshang.generator.commons.PageInfo;
 import goods.platform.commons.Response;
 import java.lang.reflect.Field;
@@ -46,6 +46,9 @@ public class OrderInfoController {
 	@Autowired
 	private RefundOrderService refundOrderService;
 
+	@Autowired
+	private CustomerInfoService customerInfoService;
+
 	@RequestMapping("/pay")
 	public Response pay(){
 		PayToPersonRequest payToPersonRequest = new PayToPersonRequest();
@@ -66,7 +69,16 @@ public class OrderInfoController {
 	 * @return
 	 */
 	@RequestMapping("/refund")
-	public Response refund(Long orderId, Long applyAmount){
+	public Response refund(Long orderId, double applyAmount,  HttpSession session){
+
+
+		CustomerInfoDto customerInfoDto = (CustomerInfoDto) session.getAttribute("adminUser");
+		if(customerInfoDto.getType() != UserTypeEnum.SUPER_ADMIN.code()
+			&& customerInfoDto.getType() != UserTypeEnum.ADMIN.code()
+			&& customerInfoDto.getType() != UserTypeEnum.SALER_AND_CUSTOMER.code()){
+			return Response.fail("只有平台管理员才能发起退款");
+		}
+
 		OrderInfoDto orderInfoDto = orderInfoService.getOrderById(orderId);
 		if(null == orderInfoDto){
 			return Response.fail("未找到对应的订单");
@@ -74,7 +86,33 @@ public class OrderInfoController {
 		if(StringUtils.isEmpty(orderInfoDto.getPayNo())){
 			return Response.fail("未支付的订单不能发起退款申请");
 		}
-		refundOrderService.applyRefund(orderInfoDto.getOrderNo(), Integer.parseInt(applyAmount*100+"") );
+
+		Long refundAmount = orderInfoDto.getRefundAmount();
+		if(null == refundAmount) {
+			refundAmount = 0l;
+		}
+
+		Long income = orderInfoDto.getIncome();
+		if(income == null){
+			income=0l;
+		}
+
+		//已取消或者已删除的订单不可以退款
+		if(OrderStatusEnum.DELETED.code() == orderInfoDto.getStatus()
+		|| OrderStatusEnum.CANCELED.code() == orderInfoDto.getStatus()){
+			return Response.fail("已经删除或者取消的订单不可以发起退款");
+		}
+
+		//已发货或者已收货的订单，普通管理员最多只可以退款利润的50%
+		if(OrderStatusEnum.PAYED.code() != orderInfoDto.getStatus()
+			&& customerInfoDto.getType() != UserTypeEnum.SUPER_ADMIN.code() &&
+			(refundAmount+(applyAmount*100))>(income/2)){
+			return Response.fail("您不能发起退款金额不得大于利润的50%的操作，请联系超级管理员");
+		}
+
+
+
+		refundOrderService.applyRefund(orderInfoDto.getOrderNo(), Float.valueOf(applyAmount*100+"").intValue());
 		return Response.success();
 	}
 	/**

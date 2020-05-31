@@ -180,6 +180,7 @@
     $.ajax({
       type:'get',
       dataType:'json',
+      data:{"pageNo":1,"pageSize":1000},
       url:'/admin/supplier/getPageInfo',
       success:function(pageInfo){
         var list = pageInfo.dataList;
@@ -242,14 +243,14 @@
 
        var spescObj = {};
        spescObj["name"] = name;
-       spescObj["originPrice"] = parseInt(originPrice) * 100;
+       spescObj["originPrice"] = parseFloat(originPrice) * 100;
        spescObj["postage"] = postage.trim() == "是" ? 1: 0;
-       spescObj["price"] = parseInt(price) * 100;
+       spescObj["price"] = parseFloat(price) * 100;
        spescObj["promote"] = promote.trim() =="是" ? 1:0;
        spescObj["stock"] = stock;
        if(promote.trim() == '是'){
          if(promotionPrice){
-           spescObj["promotionPrice"] = parseInt(promotionPrice) * 100;
+           spescObj["promotionPrice"] = parseFloat(promotionPrice) * 100;
          }else{
            if(!promotionPrice){
              $.alert("【"+name+"】促销价格不能为空");

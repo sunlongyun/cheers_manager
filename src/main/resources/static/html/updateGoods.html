@@ -171,6 +171,7 @@
     $.ajax({
       type:'get',
       dataType:'json',
+      data:{"pageNo":1,"pageSize":1000},
       url:'/admin/supplier/getPageInfo',
       success:function(pageInfo){
         var list = pageInfo.dataList;
@@ -203,9 +204,9 @@
        var topImages =  data.topImages;
        var tailImages =  data.tailImages;
 
-       $("#originPrice").val(parseInt(data.originPrice)/100);
-        $("#price").val(parseInt(data.price)/100);
-        $("#price").val(parseInt(data.price)/100);
+       $("#originPrice").val(parseFloat(data.originPrice)/100);
+        $("#price").val(parseFloat(data.price)/100);
+        $("#price").val(parseFloat(data.price)/100);
 
         initFile("picUrl","images",null ,"picUrl",[data.picUrl]);
         initFile("topImages", "images/tops/",null, "topImages", topImages);
@@ -216,9 +217,9 @@
           var specsDtoList =  data.specsDtoList;
           if(specsDtoList){
             $.each(specsDtoList, function (i, item) {
-              appendSpecs(item.name, parseInt(item.originPrice) /100,item.postage == 1? "是": "否",
-                  parseInt(item.price) /100, item.promote==1?"是":"否" ,
-                  item.promotionPrice ? parseInt(item.promotionPrice)/100:"",
+              appendSpecs(item.name, parseFloat(item.originPrice) /100,item.postage == 1? "是": "否",
+                  parseFloat(item.price) /100, item.promote==1?"是":"否" ,
+                  item.promotionPrice ? parseFloat(item.promotionPrice)/100:"",
                       item.stock);
             })
           }
@@ -292,14 +293,14 @@
 
       var spescObj = {};
       spescObj["name"] = name;
-      spescObj["originPrice"] = parseInt(originPrice) * 100;
+      spescObj["originPrice"] = parseFloat(originPrice) * 100;
       spescObj["postage"] = postage.trim() == "是" ? 1: 0;
-      spescObj["price"] = parseInt(price) * 100;
+      spescObj["price"] = parseFloat(price) * 100;
       spescObj["promote"] = promote.trim() =="是" ? 1:0;
       spescObj["stock"] = stock;
       if(promote.trim() == '是'){
         if(promotionPrice){
-          spescObj["promotionPrice"] = parseInt(promotionPrice) * 100;
+          spescObj["promotionPrice"] = parseFloat(promotionPrice) * 100;
         }else{
           if(!promotionPrice){
             $.alert("【"+name+"】促销价格不能为空");

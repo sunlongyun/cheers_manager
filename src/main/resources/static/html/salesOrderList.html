@@ -134,9 +134,9 @@
           {
             "text": "操作", "format": function (obj) {
               var opeHtml = '';
-              //订单状态是买家已收货且快递发出时间在一个月之内的菜可以退款
+              //订单状态是买家已收货且快递发refundApply出时间在一个月之内的菜可以退款
               if(obj.canRefund){
-                opeHtml +="<a href='javascript:refundApply(" + obj.id
+                opeHtml +="<a href='javascript:confirmRefund(" + obj.id
                     + ")' title='退款'>【退款】</a>";
               }
 
@@ -151,8 +151,16 @@
 
   search();
 
+  //确认退款
+  function confirmRefund(orderId){
+    if(confirm("确认退款?")){
+      refundApply(orderId);
+    }
+  }
+
   //退款申请
   function refundApply(orderId){
+    alert(orderId)
     var html = '<div class="form-group">' +
         '<label for="applyAmount" class="col-sm-3 control-label">退款金额:</label>' +
         '<div class="col-sm-7">' +
@@ -172,7 +180,7 @@
         dataType: 'json',
         data: {
           "orderId": orderId,
-          "applyAmount": parseInt(applyAmount)
+          "applyAmount": parseFloat(applyAmount)
         },
         success: function (res) {
           if (res.code == '0000') {

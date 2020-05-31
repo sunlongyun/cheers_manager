@@ -43,6 +43,16 @@
           {"text": "名称", "title": "title"},
           {"text": "产地", "title": "produceArea"},
           {"text": "供应商", "title": "supplierCompanyName"},
+          {"text": "促销中", format:function(obj){
+              var html = "";
+              if(obj.promote){
+                html +="<span style='color:green'>是</span>";
+              }else{
+                html +="<span style='color:red'>否</span>";
+              }
+              return html;
+            }},
+          {"text": "促销价", "title": "promotePrice"},
           {"text": "零售价", "title": "price"},
           {"text": "销量", "title": "salesNum"},
           {"text": "状态", format:function(obj){

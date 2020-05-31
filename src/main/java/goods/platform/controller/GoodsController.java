@@ -101,11 +101,14 @@ public class GoodsController {
 		CustomerInfoDto customerInfoDto = (CustomerInfoDto) session.getAttribute("adminUser");
 		Integer customerId = null;
 		if(customerInfoDto.getType() != UserTypeEnum.ADMIN.code()
-			&& customerInfoDto.getType() != UserTypeEnum.SUPER_ADMIN.code()){
+			&& customerInfoDto.getType() != UserTypeEnum.SUPER_ADMIN.code()
+		&&  customerInfoDto.getType() != UserTypeEnum.SALER_AND_CUSTOMER.code()){
 			throw new RuntimeException("只有管理员用户才可以查询供应商");
 		}
 
-		if(customerInfoDto.getType() == UserTypeEnum.ADMIN.code()){
+		if(customerInfoDto.getType() == UserTypeEnum.ADMIN.code()
+			||  customerInfoDto.getType() == UserTypeEnum.SALER_AND_CUSTOMER.code()
+		){
 			customerId = Integer.parseInt(customerInfoDto.getId()+"");
 		}
 

@@ -52,7 +52,8 @@ public class AdminController {
 			if(null == customerInfoDto){
 				return Response.fail("管理员信息不存在");
 			}else if(customerInfoDto.getType() != UserTypeEnum.SUPER_ADMIN.code()
-			&& customerInfoDto.getType() != UserTypeEnum.ADMIN.code()){
+			&& customerInfoDto.getType() != UserTypeEnum.ADMIN.code()
+				&& customerInfoDto.getType() != UserTypeEnum.SALER_AND_CUSTOMER.code()){
 				return Response.fail("只有管理员角色才能登录");
 			}else if(customerInfoDto.getStatus() == UserStatusEnum.FORZEN.code()){
 				return Response.fail("账号已经冻结，请联系平台管理员");
