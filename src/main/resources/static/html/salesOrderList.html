@@ -386,7 +386,7 @@
     redirectTo(url);
   }
   /**
-   * 修改供应商结款金额
+   * 修改供应商结款金额orderId
    */
   function modifySupplierAmount(orderId, supplierAmount){
     var html = '<div class="form-group">' +
@@ -402,7 +402,7 @@
         alert("结款金额不能为空");
         return false;
       }
-      var supplierAmount = parseInt(supplierAmount) * 100;
+      var supplierAmount = parseFloat(supplierAmount) * 100;
       $.ajax({
         url: 'admin/order/updateOrder',
         type: 'post',
@@ -485,7 +485,7 @@
         alert("邮费不能小于0");
         return false;
       }
-      var amount = parseInt(postage) * 100;
+      var amount = parseFloat(postage) * 100;
       $.ajax({
         url: 'admin/order/updateOrder',
         type: 'post',
