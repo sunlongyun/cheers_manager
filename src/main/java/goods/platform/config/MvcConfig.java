@@ -1,5 +1,6 @@
 package goods.platform.config;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -29,8 +30,6 @@ public class MvcConfig implements WebMvcConfigurer {
 		registry.addViewController("/salesOrderList").setViewName("html/salesOrderList");
 		registry.addViewController("/updateSalesOrder").setViewName("html/updateSalesOrder");
 
-		registry.addViewController("/chateauList").setViewName("html/chateauList");
-		//
 
 	}
 	@Override

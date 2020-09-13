@@ -293,14 +293,14 @@
 
       var spescObj = {};
       spescObj["name"] = name;
-      spescObj["originPrice"] = parseFloat(originPrice) * 100;
+      spescObj["originPrice"] = parseInt(parseFloat(originPrice) * 100+"");
       spescObj["postage"] = postage.trim() == "是" ? 1: 0;
-      spescObj["price"] = parseFloat(price) * 100;
+      spescObj["price"] = parseInt(parseFloat(price) * 100+"");
       spescObj["promote"] = promote.trim() =="是" ? 1:0;
       spescObj["stock"] = stock;
       if(promote.trim() == '是'){
         if(promotionPrice){
-          spescObj["promotionPrice"] = parseFloat(promotionPrice) * 100;
+          spescObj["promotionPrice"] = parseInt(parseFloat(promotionPrice) * 100+"");
         }else{
           if(!promotionPrice){
             $.alert("【"+name+"】促销价格不能为空");
@@ -313,8 +313,12 @@
 
       specsDtoList.push(spescObj);
 
-    })
+    });
 
+    if(!specsDtoList || specsDtoList.length ==0){
+      $.alert("规格列表不能为空!");
+      return;
+    }
     //防止重复提交，按钮置灰
     $("#saveBtn").attr("disabled", true);
     $.ajax({

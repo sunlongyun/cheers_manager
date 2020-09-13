@@ -69,7 +69,7 @@ public class OrderInfoController {
 	 * @return
 	 */
 	@RequestMapping("/refund")
-	public Response refund(Long orderId, double applyAmount,  HttpSession session){
+	public Response refund(Long orderId, int applyAmount,  HttpSession session){
 
 
 		CustomerInfoDto customerInfoDto = (CustomerInfoDto) session.getAttribute("adminUser");
@@ -112,7 +112,7 @@ public class OrderInfoController {
 
 
 
-		refundOrderService.applyRefund(orderInfoDto.getOrderNo(), Float.valueOf(applyAmount*100+"").intValue());
+		refundOrderService.applyRefund(orderInfoDto.getOrderNo(), applyAmount);
 		return Response.success();
 	}
 	/**
@@ -144,7 +144,7 @@ public class OrderInfoController {
 				return Response.fail("给供应商结算金额不能大于\"进货金额+运费\"");
 			}
 			if(oldOrderInfo.getSupplierAmount() ==( oldOrderInfo.getCostAmount()
-				+ oldOrderInfo.getPostage())) {
+				+ oldOrderInfo.getPostage()) || Integer.valueOf(2).equals(orderInfoDtoReq.getSupplierStatus())) {
 				oldOrderInfo.setSupplierStatus(2);
 			} else {
 				oldOrderInfo.setSupplierStatus(1);

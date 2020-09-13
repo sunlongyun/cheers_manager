@@ -81,6 +81,7 @@
                 html = "<a href='javascript:modifySupplierAmount(" + obj.id+")' title='修改结算金额'>" +
                     supplierAmount +
                     "</span></a>";
+
               }
               return html;
             }
@@ -160,7 +161,6 @@
 
   //退款申请
   function refundApply(orderId){
-    alert(orderId)
     var html = '<div class="form-group">' +
         '<label for="applyAmount" class="col-sm-3 control-label">退款金额:</label>' +
         '<div class="col-sm-7">' +
@@ -180,7 +180,7 @@
         dataType: 'json',
         data: {
           "orderId": orderId,
-          "applyAmount": parseFloat(applyAmount)
+          "applyAmount": parseInt(parseFloat(applyAmount) *100)
         },
         success: function (res) {
           if (res.code == '0000') {
@@ -390,11 +390,19 @@
    */
   function modifySupplierAmount(orderId, supplierAmount){
     var html = '<div class="form-group">' +
-        '<label for="supplierAmount" class="col-sm-3 control-label">商品价格:</label>' +
+        '<label for="supplierAmount" class="col-sm-3 control-label">结款金额:</label>' +
         '<div class="col-sm-7">' +
-        '<input type="number" class="form-control" id="supplierAmount" min="1" value="" placeholder="供应商结款金额">' +
+        '<input type="number" class="form-control" id="supplierAmount" min="0" value="0" placeholder="供应商结款金额">' +
         '</div>' +
         '</div>';
+    html +=  '<div class="form-group">' +
+        '<label for="supplierAmount" class="col-sm-3 control-label">是否结清:</label>' +
+        '<div class="col-sm-7">' +
+        '<input type="radio"  checked="checked" name="settleFull" value="0"> 否 &nbsp;' +
+        '<input type="radio"  name="settleFull" value="1"> 是 &nbsp;' +
+        '</div>' +
+        '</div>';
+
 
     $.dialog("给供应商结款金额", html, function () {
       var supplierAmount = $("#supplierAmount").val().trim();
@@ -402,7 +410,8 @@
         alert("结款金额不能为空");
         return false;
       }
-      var supplierAmount = parseFloat(supplierAmount) * 100;
+      var supplierAmount = parseInt(parseFloat(supplierAmount) * 100);
+      var settleFull = $("[name='settleFull']:checked").val();
       $.ajax({
         url: 'admin/order/updateOrder',
         type: 'post',
@@ -410,7 +419,8 @@
         contentType: 'application/json;charset=utf-8',
         data: JSON.stringify({
           "id": orderId,
-          "supplierAmount": supplierAmount
+          "supplierAmount": supplierAmount,
+           "supplierStatus":settleFull==1? 2 : 1,
         }),
         success: function (res) {
           if (res.code == '0000') {
@@ -423,7 +433,7 @@
         }
       })
 
-    });
+    }, 450);
   }
   /**
    * 修改商品价格
