@@ -12,6 +12,7 @@ import com.chisong.green.farm.app.miniProgram.response.LoginResponse;
 import com.chisong.green.farm.app.service.CustomerInfoService;
 import com.chisong.green.farm.app.service.ProvinceCityAreaService;
 import com.chisong.green.farm.app.service.SupplierService;
+import com.chisong.green.farm.app.utils.AppUtils;
 import com.chisong.green.farm.app.utils.CurrentUserUtils;
 import com.lianshang.generator.commons.PageInfo;
 import goods.platform.commons.Response;
@@ -117,6 +118,7 @@ public class SupplierController {
 			CustomerInfoDto customerInfoDto = (CustomerInfoDto) session.getAttribute("adminUser");
 			supplierDto.setCreatorId(customerInfoDto.getId());
 			supplierDto.setCreatorName(customerInfoDto.getNickName());
+			supplierDto.setAppInfoId(AppUtils.get());
 			supplierService.save(supplierDto);
 		}else{
 			supplierService.update(supplierDto);
