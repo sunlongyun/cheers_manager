@@ -1,10 +1,12 @@
 package goods.platform.config;
 
 import com.chisong.green.farm.app.dto.CustomerInfoDto;
+import com.chisong.green.farm.app.utils.AppUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ public class MyIntercept extends HandlerInterceptorAdapter {
 			log.info("customerInfoDto:{}", customerInfoDto);
 			if(null != customerInfoDto){
 				checkResult = true;
+				AppUtils.set(customerInfoDto.getAppInfoId());
 			}
 		}
 		this.log.info("checkResult===>{}", checkResult);
@@ -33,4 +36,9 @@ public class MyIntercept extends HandlerInterceptorAdapter {
 		return true;
 	}
 
+	@Override
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+		ModelAndView modelAndView) throws Exception {
+		AppUtils.remove();
+	}
 }

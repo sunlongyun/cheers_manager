@@ -12,7 +12,7 @@
 
   <groupId>cheers</groupId>
   <artifactId>cheers_manager</artifactId>
-  <version>0.0.8</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
 
   <name>cheers_manager</name>
@@ -42,7 +42,7 @@
     <dependency>
       <groupId>green.farm</groupId>
       <artifactId>app</artifactId>
-      <version>0.0.8</version>
+      <version>1.0.0</version>
       <exclusions>
         <exclusion>
           <artifactId>slf4j-simple</artifactId>
@@ -58,7 +58,7 @@
     <dependency>
       <groupId>green.farm</groupId>
       <artifactId>app</artifactId>
-      <version>0.0.8</version>
+      <version>1.0.0</version>
       <scope>compile</scope>
     </dependency>
 
