@@ -69,68 +69,71 @@ public class SummeryInfoSchedulingJob {
 		SummaryInfoExample summaryInfoExample = new SummaryInfoExample();
 		summaryInfoExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code());
 		List<SummaryInfoDto> summaryInfoDtos = summaryInfoService.getList(summaryInfoExample);
-		SummaryInfoDto summaryInfoDto = summaryInfoDtos.get(0);
-
-		//1.商品总数量
-		buildGoodsNum(summaryInfoDto);
+		summaryInfoDtos.stream().forEach(summaryInfoDto -> {
+			//1.商品总数量
+			buildGoodsNum(summaryInfoDto);
 
 //		//2. 订单总数量
-		buildOrderNum(summaryInfoDto);
+			buildOrderNum(summaryInfoDto);
 
-		//3.支付总金额
-		buildPayedAmount(summaryInfoDto);
+			//3.支付总金额
+			buildPayedAmount(summaryInfoDto);
 
-		//4.供应商数量
-		buildSupplierNum(summaryInfoDto);
+			//4.供应商数量
+			buildSupplierNum(summaryInfoDto);
 
-		//5.顾客数量
-		buildCustomerNum(summaryInfoDto);
-
-
+			//5.顾客数量
+			buildCustomerNum(summaryInfoDto);
 
 
-		//日开始、结束日期
-		LocalDateTime todayStart = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
-		LocalDateTime todayEnd = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
 
-		//周 开始、结束日期
-		TemporalAdjuster FIRST_OF_WEEK =
-			TemporalAdjusters.ofDateAdjuster(localDate -> localDate.minusDays(localDate.getDayOfWeek().getValue()- DayOfWeek.MONDAY.getValue()));
-		LocalDateTime weekStart = LocalDateTime.now().with(FIRST_OF_WEEK);
-		TemporalAdjuster LAST_OF_WEEK =
-			TemporalAdjusters.ofDateAdjuster(localDate -> localDate.plusDays(DayOfWeek.SUNDAY.getValue() - localDate.getDayOfWeek().getValue()));
-		LocalDateTime weekEnd = LocalDateTime.now().with(LAST_OF_WEEK);
 
-		//月开始、结束日期
-		LocalDateTime monthStart = LocalDateTime.of(LocalDateTime.now().getYear(),LocalDateTime.now().getMonth(),1, 0
-			,0,01);
+			//日开始、结束日期
+			LocalDateTime todayStart = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+			LocalDateTime todayEnd = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
 
-		LocalDateTime monthEnd =  LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(),
-			LocalDateTime.now().with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth(), 23,59,59)  ;
+			//周 开始、结束日期
+			TemporalAdjuster FIRST_OF_WEEK =
+				TemporalAdjusters.ofDateAdjuster(localDate -> localDate.minusDays(localDate.getDayOfWeek().getValue()- DayOfWeek.MONDAY.getValue()));
+			LocalDateTime weekStart = LocalDateTime.now().with(FIRST_OF_WEEK);
+			TemporalAdjuster LAST_OF_WEEK =
+				TemporalAdjusters.ofDateAdjuster(localDate -> localDate.plusDays(DayOfWeek.SUNDAY.getValue() - localDate.getDayOfWeek().getValue()));
+			LocalDateTime weekEnd = LocalDateTime.now().with(LAST_OF_WEEK);
 
-		//6. 本日、本周、本月新增粉丝
-		summaryInfoDto.setTodayCustomerNum(buildTodayWeekMonthCustomerNum(todayStart, todayEnd));
-		summaryInfoDto.setWeekCustomerNum(buildTodayWeekMonthCustomerNum(weekStart, weekEnd));
-		summaryInfoDto.setMonthCustomerNum(buildTodayWeekMonthCustomerNum(monthStart, monthEnd));
+			//月开始、结束日期
+			LocalDateTime monthStart = LocalDateTime.of(LocalDateTime.now().getYear(),LocalDateTime.now().getMonth(),1, 0
+				,0,01);
 
-		//7.本日、本周、本月新增订单量
-		summaryInfoDto.setTodayPayedNum(Long.parseLong(buildTodayWeekMonthOrderNum(todayStart, todayEnd)+""));
-		summaryInfoDto.setWeekPayedNum(Long.parseLong(buildTodayWeekMonthOrderNum(weekStart, weekEnd)+""));
-		summaryInfoDto.setMonthPayedNum(Long.parseLong(buildTodayWeekMonthOrderNum(monthStart, monthEnd)+""));
+			LocalDateTime monthEnd =  LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(),
+				LocalDateTime.now().with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth(), 23,59,59)  ;
 
-		//8. 本日，本周，本月营业额
-		summaryInfoDto.setTodayPayedAmount(buildTodayWeekMonthPayedAmount(todayStart, todayEnd));
-		summaryInfoDto.setWeekPayedAmount(buildTodayWeekMonthPayedAmount(weekStart, weekEnd));
-		summaryInfoDto.setMonthPayedAmount(buildTodayWeekMonthPayedAmount(monthStart, monthEnd));
-		summaryInfoService.update(summaryInfoDto);
+			//6. 本日、本周、本月新增粉丝
+			summaryInfoDto.setTodayCustomerNum(buildTodayWeekMonthCustomerNum(todayStart, todayEnd, summaryInfoDto.getAppInfoId()));
+			summaryInfoDto.setWeekCustomerNum(buildTodayWeekMonthCustomerNum(weekStart, weekEnd, summaryInfoDto.getAppInfoId()));
+			summaryInfoDto.setMonthCustomerNum(buildTodayWeekMonthCustomerNum(monthStart, monthEnd, summaryInfoDto.getAppInfoId()));
+
+			//7.本日、本周、本月新增订单量
+			summaryInfoDto.setTodayPayedNum(Long.parseLong(buildTodayWeekMonthOrderNum(todayStart, todayEnd, summaryInfoDto.getAppInfoId())+""));
+			summaryInfoDto.setWeekPayedNum(Long.parseLong(buildTodayWeekMonthOrderNum(weekStart, weekEnd, summaryInfoDto.getAppInfoId())+""));
+			summaryInfoDto.setMonthPayedNum(Long.parseLong(buildTodayWeekMonthOrderNum(monthStart, monthEnd, summaryInfoDto.getAppInfoId())+""));
+
+			//8. 本日，本周，本月营业额
+			summaryInfoDto.setTodayPayedAmount(buildTodayWeekMonthPayedAmount(todayStart, todayEnd, summaryInfoDto.getAppInfoId()));
+			summaryInfoDto.setWeekPayedAmount(buildTodayWeekMonthPayedAmount(weekStart, weekEnd, summaryInfoDto.getAppInfoId()));
+			summaryInfoDto.setMonthPayedAmount(buildTodayWeekMonthPayedAmount(monthStart, monthEnd, summaryInfoDto.getAppInfoId()));
+			summaryInfoService.update(summaryInfoDto);
+		});
+
+
 	}
 
 	private long buildTodayWeekMonthPayedAmount(LocalDateTime todayStart,
-		LocalDateTime todayEnd) {
+		LocalDateTime todayEnd, Long appInfoId) {
 		OrderInfoExample orderInfoExample = new OrderInfoExample();
 		OrderInfoExample.Criteria criteria = orderInfoExample.createCriteria();
 		criteria.andValidityEqualTo(Validity.AVAIL.code());
 		criteria.andPayedAmountGreaterThan(0L);
+		criteria.andAppInfoIdEqualTo(appInfoId);
 		criteria.andCreateTimeGreaterThan(Date.from(todayStart.atZone(ZoneId.systemDefault()).toInstant()));
 		criteria.andCreateTimeLessThan(Date.from(todayEnd.atZone(ZoneId.systemDefault()).toInstant()));
 
@@ -145,11 +148,12 @@ public class SummeryInfoSchedulingJob {
 	}
 
 	private int buildTodayWeekMonthOrderNum(LocalDateTime todayStart,
-		LocalDateTime todayEnd) {
+		LocalDateTime todayEnd, Long appInfoId) {
 		OrderInfoExample orderInfoExample = new OrderInfoExample();
 		OrderInfoExample.Criteria criteria = orderInfoExample.createCriteria();
 		criteria.andValidityEqualTo(Validity.AVAIL.code());
 		criteria.andPayedAmountGreaterThan(0L);
+		criteria.andAppInfoIdEqualTo(appInfoId);
 		criteria.andCreateTimeGreaterThan(Date.from(todayStart.atZone(ZoneId.systemDefault()).toInstant()));
 		criteria.andCreateTimeLessThan(Date.from(todayEnd.atZone(ZoneId.systemDefault()).toInstant()));
 
@@ -157,10 +161,11 @@ public class SummeryInfoSchedulingJob {
 	}
 
 	private int buildTodayWeekMonthCustomerNum(LocalDateTime todayStart,
-		LocalDateTime todayEnd) {
+		LocalDateTime todayEnd, Long appInfoId) {
 		CustomerInfoExample todayCustomerExample = new CustomerInfoExample();
 		Criteria criteria = todayCustomerExample.createCriteria();
 		criteria.andValidityEqualTo(Validity.AVAIL.code());
+		criteria.andAppInfoIdEqualTo(appInfoId);
 		criteria.andCreateTimeGreaterThan(Date.from(todayStart.atZone(ZoneId.systemDefault()).toInstant()));
 		criteria.andCreateTimeLessThan(Date.from(todayEnd.atZone(ZoneId.systemDefault()).toInstant()));
 
@@ -169,19 +174,28 @@ public class SummeryInfoSchedulingJob {
 
 	private void buildCustomerNum(SummaryInfoDto summaryInfoDto) {
 		CustomerInfoExample customerInfoExample = new CustomerInfoExample();
+		customerInfoExample.createCriteria().andAppInfoIdEqualTo(summaryInfoDto.getAppInfoId());
+
 		summaryInfoDto.setCustomerNum((Long.parseLong(customerInfoService.getCount(customerInfoExample)+"")));
 	}
 
 	private void buildSupplierNum(SummaryInfoDto summaryInfoDto) {
 		SupplierExample supplierExample = new SupplierExample();
-		supplierExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code());
+		supplierExample.createCriteria().andAppInfoIdEqualTo(summaryInfoDto.getAppInfoId())
+			.andValidityEqualTo(Validity.AVAIL.code());
+
 		summaryInfoDto.setSupplierNum(supplierService.getCount(supplierExample));
 	}
 
 	private void buildPayedAmount(SummaryInfoDto summaryInfoDto) {
 		OrderInfoExample orderInfoExample =new OrderInfoExample();
+		orderInfoExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code())
+			.andAppInfoIdEqualTo(summaryInfoDto.getAppInfoId());
+
 		summaryInfoDto.setOrderNums(Long.parseLong(orderInfoService.getCount(orderInfoExample)+""));
-		orderInfoExample.createCriteria().andPayedAmountGreaterThan(0L);
+		orderInfoExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code())
+			.andAppInfoIdEqualTo(summaryInfoDto.getAppInfoId()).andPayedAmountGreaterThan(0L);
+
 		long payed = 0l;
 
 		OptionalLong payedResult =
@@ -194,16 +208,22 @@ public class SummeryInfoSchedulingJob {
 
 	private void buildOrderNum(SummaryInfoDto summaryInfoDto) {
 		OrderInfoExample orderInfoExample =new OrderInfoExample();
+		orderInfoExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code())
+			.andAppInfoIdEqualTo(summaryInfoDto.getAppInfoId());
+
 		summaryInfoDto.setOrderNums(Long.parseLong(orderInfoService.getCount(orderInfoExample)+""));
-		orderInfoExample.createCriteria().andPayedAmountGreaterThan(0L);
+		orderInfoExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code())
+			.andAppInfoIdEqualTo(summaryInfoDto.getAppInfoId()).andPayedAmountGreaterThan(0L);
 		summaryInfoDto.setPayedNums((Long.parseLong(orderInfoService.getCount(orderInfoExample)+"")));
 	}
 
 	private void buildGoodsNum(SummaryInfoDto summaryInfoDto) {
 		GoodsExample goodsExample = new GoodsExample();
+		goodsExample.createCriteria().andAppInfoIdEqualTo(summaryInfoDto.getAppInfoId());
 		summaryInfoDto.setGoodsNum(goodsService.getCount(goodsExample));
-		goodsExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code());
-		summaryInfoDto.setGoodsNormalNum(goodsService.getCount(goodsExample));
+
+		;goodsExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code());
+		summaryInfoDto.setGoodsNormalNum( goodsService.getCount(goodsExample));
 	}
 
 
