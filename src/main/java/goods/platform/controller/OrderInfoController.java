@@ -54,8 +54,8 @@ public class OrderInfoController {
 		PayToPersonRequest payToPersonRequest = new PayToPersonRequest();
 		payToPersonRequest.setAmount(100);
 //		payToPersonRequest.setCheckName("FORCE_CHECK");
-//		payToPersonRequest.setReUserName("孙龙云");
-		payToPersonRequest.setPartnerTradeNo("11111");
+//		payToPersonRequest.setReUserName("孙龙");
+		payToPersonRequest.setPartnerTradeNo(System.currentTimeMillis()+"");
 		payToPersonRequest.setDesc("test");
 		payToPersonRequest.setOpenid("oqrTq4jLQt0I_9F4vQVQLQGDrBbM");
 		wxPayService.payToPerson(payToPersonRequest);

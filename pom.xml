@@ -55,13 +55,6 @@
       <artifactId>qiniu-java-sdk</artifactId>
       <version>7.2.0</version>
     </dependency>
-    <dependency>
-      <groupId>green.farm</groupId>
-      <artifactId>app</artifactId>
-      <version>1.0.0</version>
-      <scope>compile</scope>
-    </dependency>
-
   </dependencies>
 
 
