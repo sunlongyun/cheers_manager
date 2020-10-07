@@ -15,6 +15,9 @@ import com.chisong.green.farm.app.utils.CurrentUserUtils;
 import com.lianshang.generator.commons.PageInfo;
 import goods.platform.commons.Response;
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -101,6 +104,17 @@ public class OrderInfoController {
 		if(OrderStatusEnum.DELETED.code() == orderInfoDto.getStatus()
 		|| OrderStatusEnum.CANCELED.code() == orderInfoDto.getStatus()){
 			return Response.fail("已经删除或者取消的订单不可以发起退款");
+		}
+
+		Date feeTransferTime = orderInfoDto.getFeeTransferTime();
+		if(null != feeTransferTime){
+			feeTransferTime = new Date();
+		}
+		//结算之前1个小时之后，不可执行退款
+		LocalDateTime hourBefore =    LocalDateTime.now().plus(-1, ChronoUnit.HOURS);
+		Date date =   Date.from(hourBefore.atZone(ZoneId.systemDefault()).toInstant());
+		if(date.after(new Date())){
+			return Response.fail("订单即将进行结算，无法发起退款申请");
 		}
 
 		//已发货或者已收货的订单，普通管理员最多只可以退款利润的50%
