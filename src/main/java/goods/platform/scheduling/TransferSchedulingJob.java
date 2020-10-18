@@ -34,7 +34,12 @@ public class TransferSchedulingJob {
 				merchantPaymentDto.setStatus(2);
 				merchantPaymentService.update(merchantPaymentDto);
 			}else{
-				merchantPaymentService.tranfer(merchantPaymentDto.getId());
+				try {
+					merchantPaymentService.tranfer(merchantPaymentDto.getId());
+				}catch(Exception e){
+					log.error("转账失败", e);
+				}
+
 			}
 
 		});

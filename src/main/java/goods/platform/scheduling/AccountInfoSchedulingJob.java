@@ -2,20 +2,25 @@ package goods.platform.scheduling;
 
 import com.chisong.green.farm.app.constants.enums.Validity;
 import com.chisong.green.farm.app.dto.AccountInfoDto;
+import com.chisong.green.farm.app.example.AccountFlowExample;
 import com.chisong.green.farm.app.example.CustomerInfoExample;
+import com.chisong.green.farm.app.service.AccountFlowService;
 import com.chisong.green.farm.app.service.AccountInfoService;
 import com.chisong.green.farm.app.service.CustomerInfoService;
+import java.util.Date;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
  * 描述:
- * 对于已授权通过的用户，自动创建账户
+ * 自动入账
  * @AUTHOR 孙龙云
  * @date 2020-05-23 10:53
  */
-//@Component
+@Component
+@Slf4j
 public class AccountInfoSchedulingJob {
 
  @Autowired
@@ -23,16 +28,25 @@ public class AccountInfoSchedulingJob {
 
  @Autowired
  private CustomerInfoService customerInfoService;
- /**
-  * 对于已经授权通过的顾客，自动创建账户
-  */
-// @Scheduled(fixedRate = 3* 60 * 60 * 1000)
- public void updateGoodsInfo() {
-  CustomerInfoExample customerInfoExample = new CustomerInfoExample();
-  customerInfoExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code()).andAvatarUrlIsNotNull();
 
-  customerInfoService.getList(customerInfoExample).forEach(customerInfoDto -> {
-     accountInfoService.createAccountInfo(customerInfoDto);
-  });
+ @Autowired
+ private AccountFlowService accountFlowService;
+ /**
+  * 到期的待入账流水入账
+  */
+ @Scheduled(fixedRate = 5 * 60 * 1000)
+ public void updateGoodsInfo() {
+   AccountFlowExample accountFlowExample = new AccountFlowExample();
+   accountFlowExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code())
+       .andStatusEqualTo(0).andInAccountTimeLessThan(new Date());
+
+   accountFlowService.getList(accountFlowExample).stream().forEach(accountFlowDto -> {
+    try {
+     accountFlowService.inCome(accountFlowDto);
+    }catch(Exception ex){
+     log.error("入账失败,", ex);
+    }
+
+   });
  }
 }
