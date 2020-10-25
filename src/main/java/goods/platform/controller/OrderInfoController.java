@@ -111,7 +111,8 @@ public class OrderInfoController {
 			feeTransferTime = new Date();
 		}
 		//结算之前1个小时之后，不可执行退款
-		LocalDateTime hourBefore =    LocalDateTime.now().plus(-1, ChronoUnit.HOURS);
+		LocalDateTime hourBefore =
+			feeTransferTime.toInstant().plus(-1, ChronoUnit.HOURS).atZone(ZoneId.systemDefault()).toLocalDateTime();
 		Date date =   Date.from(hourBefore.atZone(ZoneId.systemDefault()).toInstant());
 		if(date.after(new Date())){
 			return Response.fail("订单即将进行结算，无法发起退款申请");

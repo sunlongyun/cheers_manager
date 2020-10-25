@@ -35,10 +35,10 @@ public class AccountInfoSchedulingJob {
   * 到期的待入账流水入账
   */
  @Scheduled(fixedRate = 5 * 60 * 1000)
- public void updateGoodsInfo() {
+ public void incomeAccountFlow() {
    AccountFlowExample accountFlowExample = new AccountFlowExample();
    accountFlowExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code())
-       .andStatusEqualTo(0).andInAccountTimeLessThan(new Date());
+       .andTypeEqualTo(1) .andStatusEqualTo(0).andInAccountTimeLessThan(new Date());
 
    accountFlowService.getList(accountFlowExample).stream().forEach(accountFlowDto -> {
     try {
@@ -49,4 +49,24 @@ public class AccountInfoSchedulingJob {
 
    });
  }
+
+    /**
+     * 到期的提现中的金额，执行转出
+     */
+    @Scheduled(fixedRate =10 * 60 * 1000)
+    public void widthDrawAmountFlow() {
+        AccountFlowExample accountFlowExample = new AccountFlowExample();
+        accountFlowExample.createCriteria().andValidityEqualTo(Validity.AVAIL.code())
+            .andTypeEqualTo(0).andSourceEqualTo(1)
+            .andStatusEqualTo(0).andInAccountTimeLessThan(new Date());
+        try {
+            accountFlowService.getList(accountFlowExample).stream().forEach(accountFlowDto -> {
+                accountFlowService.withdraw(accountFlowDto);
+            });
+        }catch(Exception ex){
+            log.error("提现出现异常，请注意,", ex);
+            throw  ex;
+        }
+
+    }
 }
